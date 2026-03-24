@@ -16,6 +16,7 @@ secrets.env
 kubeconfig
 talosconfig
 # Misc.
+_*/
 .private/
 .task/
 .venv/
