@@ -1,0 +1,97 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
+  "extends": [
+    "config:recommended",
+    "docker:enableMajor",
+    "helpers:pinGitHubActionDigests",
+    "github>uncharted311/home-ops//.renovate/changelogs.json5",
+    "github>uncharted311/home-ops//.renovate/groups.json5",
+    "github>uncharted311/home-ops//.renovate/labels.json5",
+    "github>uncharted311/home-ops//.renovate/semanticCommits.json5",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    ":timezone(Europe/Berlin)",
+    ":prConcurrentLimit10",
+    ":prHourlyLimit4"
+  ],
+
+  "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+
+  "assignees": ["uncharted311"],
+
+  "ignorePaths": [
+    "**/*.sops.*",
+    "**/resources/**"
+  ],
+
+  "enabledManagers": [
+    "docker-compose",
+    "github-actions",
+    "custom.regex"
+  ],
+
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Traefik plugins",
+      "managerFilePatterns": [
+        "/\\.ya?ml$/",
+        "/\\.toml$/"
+      ],
+      "matchStrings": [
+        "moduleName:\\s*[\"']?github\\.com/(?<depName>[^\"'\\s]+)[\"']?\\s*\\n\\s*version:\\s*[\"']?(?<currentValue>[^\"'\\s]+)"
+      ],
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver",
+      "extractVersionTemplate": "^v?(?<version>.*)$"
+    }
+  ],
+
+  "packageRules": [
+
+    {
+      "description": "Docker uses docker versioning",
+      "matchDatasources": ["docker"],
+      "versioning": "docker"
+    },
+
+    {
+      "description": "Pin docker image digests",
+      "matchDatasources": ["docker"],
+      "pinDigests": true
+    },
+
+    {
+      "description": "Automerge docker digest updates",
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["digest"],
+      "automerge": true
+    },
+
+    {
+      "description": "Automerge GitHub Actions digest/patch",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["digest", "patch"],
+      "automerge": true
+    },
+
+    {
+      "description": "Separate major container upgrades",
+      "matchDatasources": ["docker"],
+      "separateMajorMinor": true
+    },
+
+    {
+      "description": "Prioritize container updates",
+      "matchDatasources": ["docker"],
+      "prPriority": 10
+    },
+
+    {
+      "description": "Pangolin weird versioning",
+      "matchPackageNames": ["fosrl/pangolin"],
+      "versioning": "regex:^(?<compatibility>.*-)?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
+    }
+  ]
+}

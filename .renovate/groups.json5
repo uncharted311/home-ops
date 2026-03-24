@@ -1,0 +1,15 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  packageRules: [
+    {
+      description: "Victoria Metrics Group",
+      groupName: "victoriaMetrics",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/victoria-metrics/", "/vmagent/", "/vmalert/", "/victoriametrics/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 3,
+    },
+  ],
+}

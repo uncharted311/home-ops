@@ -1,0 +1,68 @@
+name: Mailcow Update Check
+
+on:
+  schedule:
+    - cron: '0 10,18 * * *'
+  workflow_dispatch:
+    inputs:
+      ignore_cache:
+        description: 'Cache ignorieren und Benachrichtigung erzwingen?'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get latest Mailcow release
+        id: get_release
+        run: |
+          RESPONSE=$(curl -s https://api.github.com/repos/mailcow/mailcow-dockerized/releases/latest)
+          
+          TAG_NAME=$(echo "$RESPONSE" | jq -r .tag_name)
+          RELEASE_NAME=$(echo "$RESPONSE" | jq -r .name)
+          RELEASE_URL=$(echo "$RESPONSE" | jq -r .html_url)
+          BODY=$(echo "$RESPONSE" | jq -r .body | head -c 500)
+          
+          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "name=$RELEASE_NAME" >> $GITHUB_OUTPUT
+          echo "url=$RELEASE_URL" >> $GITHUB_OUTPUT
+          
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$BODY..." >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Cache last version
+        id: cache_version
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        with:
+          path: last_version.txt
+          key: mailcow-v2-${{ steps.get_release.outputs.tag }}
+
+      - name: Send Discord Notification
+        if: "${{ steps.cache_version.outputs.cache-hit != 'true' || github.event.inputs.ignore_cache == 'true' }}"
+        run: |
+          echo "${{ steps.get_release.outputs.tag }}" > last_version.txt
+          
+          PAYLOAD=$(jq -n \
+            --arg description "🚀 **Neues Mailcow Update**" \
+            --arg title "${{ steps.get_release.outputs.name }}" \
+            --arg url "${{ steps.get_release.outputs.url }}" \
+            --arg ver "${{ steps.get_release.outputs.tag }}" \
+            --arg body "${{ steps.get_release.outputs.body }}" \
+            '{
+              content: $description,
+              embeds: [{
+                title: $title,
+                url: $url,
+                color: 5814783,
+                fields: [
+                  { name: "Version", value: ("`" + $ver + "`"), inline: true },
+                  { name: "Release Notes (Auszug)", value: ($body + "..."), inline: false }
+                ],
+                footer: { text: "Mailcow Dockerized Update Check" }
+              }]
+            }')
+
+          curl -X POST -H "Content-Type: application/json" -d "$PAYLOAD" ${{ secrets.DISCORD_UPDATE_WEBHOOK }}
