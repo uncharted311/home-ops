@@ -1,0 +1,92 @@
+services:
+
+  # Nginx Reverse Proxy - https://github.com/nginx/nginx
+  nginx:
+    image: nginx:1.29.6-alpine@sha256:f46cb72c7df02710e693e863a983ac42f6a9579058a59a35f1ae36c9958e4ce0
+    container_name: nginx
+    # ToDo: Fixen der DependsOn
+    #depends_on:
+    #  emby:
+    #    condition: service_healthy
+    environment:
+      - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
+      - SECRET_CERT_NAME=emby.srv.${SECRET_DOMAIN}
+    volumes:
+      - /opt/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/docker/nginx/templates:/etc/nginx/templates:ro
+      - /opt/docker/nginx/includes:/etc/nginx/includes:ro
+      - /opt/docker/certbot/certs:/etc/letsencrypt:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -so /dev/null http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: &default-logging
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
+  certbot:
+    image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
+    container_name: certbot
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    environment:
+      - SECRET_CERT_NAME=emby.srv.${SECRET_DOMAIN}
+    volumes:
+      - /opt/docker/certbot/certs:/etc/letsencrypt
+      - /opt/docker/certbot/cloudflare.ini:/cloudflare.ini:ro
+      - /opt/docker/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "openssl x509 -checkend 86400 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
+      interval: 12h
+      timeout: 10s
+      retries: 3
+    logging: *default-logging
+
+  # Emby Medienserver
+  emby:
+    image: emby/embyserver:4.10.0.6@sha256:54e85d50d5c9af9ec7450a71710128b1792a16e588115773347b5e83686eaa77
+    container_name: emby
+    environment:
+      - UID=1000
+      - GID=100
+      - GIDLIST=100,3006,44,992
+    volumes:
+      - /opt/docker/emby/config:/config    # Configuration directory
+      - /mnt/data:/data/content            # Media Content
+    ports:
+      - 8096:8096 # HTTP port
+      #- 8920:8920 # HTTPS port
+      - 7359:7359/udp # Network Discovery
+      - 1900:1900/udp # DLNA
+    expose:
+      - 8920
+    devices:
+      - /dev/dri:/dev/dri # VAAPI/NVDEC/NVENC render nodes
+    restart: unless-stopped
+    networks:
+      - localhost
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8096/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: *default-logging
+  
+networks:
+  localhost:
+    name: localhost
+    external: false

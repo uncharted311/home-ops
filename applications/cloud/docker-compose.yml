@@ -1,0 +1,179 @@
+services:
+  # Nginx Reverse Proxy - https://github.com/nginx/nginx
+  nginx:
+    image: nginx:1.29.6-alpine@sha256:f46cb72c7df02710e693e863a983ac42f6a9579058a59a35f1ae36c9958e4ce0
+    container_name: nginx
+    environment:
+      - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME SECRET_CERT_NAME
+      - SECRET_CERT_NAME=cloud.srv.${SECRET_DOMAIN}
+    volumes:
+      - /opt/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/docker/nginx/templates:/etc/nginx/templates:ro
+      - /opt/docker/nginx/includes:/etc/nginx/includes:ro
+      - /opt/docker/certbot/certs:/etc/letsencrypt:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - nextcloud-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -so /dev/null http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: &default-logging
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
+  certbot:
+    image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
+    container_name: certbot
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    environment:
+      - SECRET_CERT_NAME=cloud.srv.${SECRET_DOMAIN}
+    volumes:
+      - /opt/docker/certbot/certs:/etc/letsencrypt
+      - /opt/docker/certbot/cloudflare.ini:/cloudflare.ini:ro
+      - /opt/docker/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
+    networks:
+      - nextcloud-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "openssl x509 -checkend 86400 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
+      interval: 12h
+      timeout: 10s
+      retries: 3
+    logging: *default-logging
+
+  nextcloud:
+    image: nextcloud:33.0-apache@sha256:4a84a74bb6cf8fed0fcc236d9eb95950f1a20e74484bcf255061aceb94d03413
+    container_name: nextcloud
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      REDIS_HOST: redis
+      APACHE_SERVER_NAME: cloud.srv.${SECRET_DOMAIN}
+      APC_ENABLE: 1
+      NEXTCLOUD_ADMIN_USER: ${NEXTCLOUD_ADMIN_USER}
+      NEXTCLOUD_ADMIN_PASSWORD: ${NEXTCLOUD_ADMIN_PASSWORD}
+    volumes:
+      - nextcloud.redis-data:/redis
+      - /opt/docker/nextcloud/html:/var/www/html
+      - /opt/docker/nextcloud/data:/var/www/html/data
+      - /opt/docker/nextcloud/apache/security.conf:/etc/apache2/conf-enabled/security-custom.conf:ro
+      - /opt/docker/nextcloud/apache/proxy.conf:/etc/apache2/conf-enabled/proxy.conf:ro
+      - /mnt/nfs:/mnt
+    expose:
+      - 80
+    networks:
+      - nextcloud-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/status.php"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging: *default-logging
+
+  nextcloud-cron:
+    image: nextcloud:33.0-apache@sha256:4a84a74bb6cf8fed0fcc236d9eb95950f1a20e74484bcf255061aceb94d03413
+    container_name: nextcloud-cron
+    restart: unless-stopped
+    entrypoint: /cron.sh
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - /opt/docker/nextcloud/html:/var/www/html
+      - /opt/docker/nextcloud/data:/var/www/html/data
+    networks:
+      - nextcloud-net
+    logging: *default-logging
+  
+  redis:
+    container_name: redis
+    image: redis:8.6.1-alpine@sha256:2afba59292f25f5d1af200496db41bea2c6c816b059f57ae74703a50a03a27d0
+    restart: unless-stopped
+    command: >
+      sh -c "
+      mkdir -p /redis &&
+      chown redis:redis /redis &&
+      exec su redis -s /bin/sh -c '
+        redis-server
+          --save \"\"
+          --appendonly no
+          --unixsocket /redis/redis.sock
+          --unixsocketperm 777
+      '
+      "
+    volumes:
+      - nextcloud.redis-data:/redis
+    networks:
+      - nextcloud-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging: *default-logging
+
+  postgres:
+    image: postgres:18.3-alpine@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
+    container_name: postgres
+    volumes:
+      - nextcloud.db-data:/var/lib/postgresql
+    environment:
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - nextcloud-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nextcloud -d nextcloud"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+    logging: *default-logging
+
+  crowdsec:
+    image: crowdsecurity/crowdsec:v1.7.6@sha256:63b595fef92de1778573b375897a45dd226637ee9a3d3db9f57ac7355c369493
+    container_name: crowdsec
+    restart: unless-stopped
+    environment:
+      ENROLL_TAGS: docker
+      GID: "1000"
+      DISABLE_LOCAL_API: true
+      LOCAL_API_URL: ${CROWDSEC_LAPI_URL}                   # Crowdsec Central LAPI URL https://example.com:8443
+      AGENT_USERNAME: ${CROWDSEC_LAPI_USERNAME}             # Crowdsec Maschine Username
+      AGENT_PASSWORD: ${CROWDSEC_LAPI_KEY}             # Crowdsec Maschine Password
+      COLLECTIONS: crowdsecurity/linux crowdsecurity/nginx crowdsecurity/base-http-scenarios crowdsecurity/nextcloud
+      PARSERS: crowdsecurity/whitelists
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/docker/crowdsec/acquis.d:/etc/crowdsec/acquis.d
+      - /opt/docker/crowdsec/data:/var/lib/crowdsec/data
+    networks:
+      - nextcloud-net
+    logging: *default-logging
+
+volumes:
+  nextcloud.db-data:
+  nextcloud.redis-data:
+
+networks:
+  nextcloud-net:
+    name: nextcloud-net
+    external: false

@@ -1,0 +1,356 @@
+services:
+
+  # Nginx Reverse Proxy - https://github.com/nginx/nginx
+  nginx:
+    image: nginx:1.29.6-alpine@sha256:f46cb72c7df02710e693e863a983ac42f6a9579058a59a35f1ae36c9958e4ce0
+    container_name: nginx
+    environment:
+      - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
+      - SECRET_CERT_NAME=srv.${SECRET_DOMAIN}
+    volumes:
+      - /opt/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/docker/nginx/templates:/etc/nginx/templates:ro
+      - /opt/docker/nginx/includes:/etc/nginx/includes:ro
+      - /opt/docker/certbot/certs:/etc/letsencrypt:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -so /dev/null http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: &default-logging
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
+  certbot:
+    image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
+    container_name: certbot
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    environment:
+      - SECRET_CERT_NAME=srv.${SECRET_DOMAIN}
+      - SECRET_CERT_DOMAINS=srv.${SECRET_DOMAIN},*.srv.${SECRET_DOMAIN}
+    volumes:
+      - /opt/docker/certbot/certs:/etc/letsencrypt
+      - /opt/docker/certbot/cloudflare.ini:/cloudflare.ini:ro
+      - /opt/docker/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "openssl x509 -checkend 86400 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
+      interval: 12h
+      timeout: 10s
+      retries: 3
+    logging: *default-logging
+
+  # SABnzbd - https://hub.docker.com/r/linuxserver/sabnzbd
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:4.5.5-ls239@sha256:ed10a7e9fc019aded46f1591f236e9be6d75c99e7017b897b502667cd65afc4c
+    container_name: sabnzbd
+    volumes:
+      - /opt/docker/sabnzbd/config:/config
+      - /opt/docker/sabnzbd/scripts:/scripts
+      - /mnt/data/usenet:/data/usenet
+      - /mnt/download-temp:/incomplete
+    environment:
+      - PUID=3006
+      - PGID=3006
+      - UMASK=002
+    networks:
+      - localhost
+    expose:
+      - 8080
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: *default-logging
+
+  # Seerr - https://github.com/seerr-team/seerr
+  seerr:
+    image: ghcr.io/seerr-team/seerr:v3.1.0@sha256:b35ba0461c4a1033d117ac1e5968fd4cbe777899e4cbfbdeaf3d10a42a0eb7e9
+    container_name: seerr
+    init: true
+    depends_on:
+      - "radarr"
+      - "sonarr"
+    environment:
+      - LOG_LEVEL=info
+      - PORT=5055
+    expose:
+      - 5055
+    networks:
+      - localhost
+    volumes:
+      - /opt/docker/seerr/config:/app/config
+    restart: unless-stopped
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+      retries: 5
+    logging: *default-logging
+    
+
+  # Radarr - https://hub.docker.com/r/linuxserver/radarr
+  radarr:
+    image: lscr.io/linuxserver/radarr:6.0.4.10291-ls289@sha256:6c0948b42c149e36bb3dbc0b64d36c77b2d3c9dccf1b424c4f72af1e57ba0c21
+    container_name: radarr
+    depends_on:
+      - "prowlarr"
+      - "sabnzbd"
+    environment:
+      - PUID=3006
+      - PGID=3006
+      - UMASK=002
+    volumes:
+      - /opt/docker/radarr/config:/config
+      - /mnt/data:/data
+    expose:
+      - 7878
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:7878/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: *default-logging
+
+  # Radarr - https://hub.docker.com/r/linuxserver/radarr
+  radarr-list:
+    image: lscr.io/linuxserver/radarr:6.0.4.10291-ls289@sha256:6c0948b42c149e36bb3dbc0b64d36c77b2d3c9dccf1b424c4f72af1e57ba0c21
+    container_name: radarr-list
+    depends_on:
+      - "prowlarr"
+      - "sabnzbd"
+    environment:
+      - PUID=3006
+      - PGID=3006
+      - UMASK=002
+    volumes:
+      - /opt/docker/radarr-list/config:/config
+      - /mnt/data:/data
+    expose:
+      - 7878
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:7878/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: *default-logging
+
+  # Sonarr - https://hub.docker.com/r/linuxserver/sonarr
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:4.0.16.2944-ls300@sha256:8b9f2138ec50fc9e521960868f79d2ad0d529bc610aef19031ea8ff80b54c5e0
+    container_name: sonarr
+    depends_on:
+      - "prowlarr"
+      - "sabnzbd"
+    environment:
+      - PUID=3006
+      - PGID=3006
+      - UMASK=002
+    volumes:
+      - /opt/docker/sonarr/config:/config
+      - /mnt/data:/data
+    expose:
+      - 8989
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8989/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: *default-logging
+
+  # Prowlarr - Indexer Management - https://github.com/Prowlarr/Prowlarr
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:2.3.0.5236-ls134@sha256:67a8aaedcfd6989f3030b937a6a07007310b1dfc7ee8df16d2cbfa48d1c1158c
+    container_name: prowlarr
+    depends_on:
+      - "umlautadaptarr"
+    environment:
+      - PUID=3006
+      - PGID=3006
+    volumes:
+      - /opt/docker/prowlarr/data:/config
+    expose:
+      - 9696
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9696/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: *default-logging
+    
+  # Notifiarr - https://github.com/Notifiarr/notifiarr
+  notifiarr:
+    image: golift/notifiarr:v0.9.5@sha256:a9a1f37f924d740107874675df6b6a5edd87e5f66ca72ad27481a4bdfd42d162
+    container_name: notifiarr
+    volumes:
+      - /opt/docker/notifiarr/conf:/config
+      - /var/run/utmp:/var/run/utmp
+      - /etc/machine-id:/etc/machine-id:ro
+    expose:
+      - 5454
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5454/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: *default-logging
+
+  # MediathekArr - Indexer & Downloader for Mediathek Content - https://github.com/PCJones/MediathekArr
+  mediathekarr:
+    image: pcjones/mediathekarr:beta@sha256:333f2adbd3d93d196a8a548d2b9b5e70e9172407afc418afcfa5d49ca8c250c9
+    container_name: mediathekarr
+    environment:
+      - PUID=3006
+      - PGID=3006
+      - DOWNLOAD_INCOMPLETE_PATH=/data/mediathek/incomplete # Path to incomplete downloads
+      - DOWNLOAD_COMPLETE_PATH=/data/mediathek/complete # Path to complete downloads"
+    volumes:
+      - /opt/docker/mediathekarr:/app/config
+      - /mnt/data/mediathek:/data/mediathek # Mount for Mediathek Downloader
+    expose:
+      - 5007
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5007/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: *default-logging
+
+  # Umlautadaptarr - https://github.com/PCJones/UmlautAdaptarr
+  umlautadaptarr:
+    image: pcjones/umlautadaptarr:0.7.5@sha256:2c6689d49afe51fcaa5e8a27e139855e0c8782e1e42ec595d8694b74094f991f
+    container_name: umlautadaptarr
+    environment:
+      - SONARR__ENABLED=true
+      - SONARR__HOST=http://sonarr:8989
+      - SONARR__APIKEY=${SONARR_API_KEY}
+      - RADARR__ENABLED=true
+      - RADARR__HOST=http://radarr:787
+      - RADARR__APIKEY=${RADARR_API_KEY}
+    expose:
+      - 5006
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5006/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: *default-logging
+
+  # tracearr - https://github.com/connorgallopo/Tracearr/
+  tracearr:
+    image: ghcr.io/connorgallopo/tracearr:supervised-1.4.17@sha256:32ad3865de40380aa48390e30d8834795c18f78e3e4b3357a13c7f7e8d4b7527
+    container_name: tracearr
+    shm_size: 512mb  # Required for PostgreSQL shared memory (increase for large imports)
+    mem_limit: 3g    # Minimum 3GB required (PostgreSQL + Redis + Node.js)
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536 
+    environment:
+      - LOG_LEVEL=info
+    volumes:
+      - tracearr_postgres:/data/postgres
+      - tracearr_redis:/data/redis
+      - tracearr_data:/data/tracearr
+    expose:
+      - 3000
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    logging: *default-logging
+
+  # Episeerr - https://github.com/vansmak/episeerr
+  episeerr:
+    image: vansmak/episeerr:3.5.5@sha256:2cde3f4d5334d2127fa799e1ef8b668ebfe95385e4f26ac80b6c969c6c3524ce
+    container_name: episeerr
+    depends_on:
+      - "sonarr"
+    environment:
+      - SONARR_URL=http://sonarr:8989
+      - SONARR_API_KEY=${SONARR_API_KEY}
+      - TMDB_API_KEY=${TMDB_API_KEY}
+      - JELLYSEERR_URL=http://seerr:5055
+      - JELLYSEERR_API_KEY=${JELLYSEERR_API_KEY}
+      - JELLYFIN_URL=https://jellyfin.srv.seifert.dev:8920
+      - JELLYFIN_API_KEY=${EPISEERR_JELLYFIN_API_KEY}
+      - JELLYFIN_USER_ID=
+      - CUSTOMAPP_URL=http://sabnzbd:8080
+      - CUSTOMAPP_NAME=SABNZBD
+      - CUSTOMAPP_ICON=fas fa-cog
+    volumes:
+      - /opt/docker/episeerr/config:/app/config
+      - /opt/docker/episeerr/logs:/app/logs
+      - /opt/docker/episeerr/data:/app/data
+      - /opt/docker/episeerr/temp:/app/temp
+    expose:
+      - 5002
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5002/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: *default-logging
+
+volumes:
+  tracearr_postgres:
+  tracearr_redis:
+  tracearr_data:
+  
+networks:
+  localhost:
+    name: localhost
+    external: false

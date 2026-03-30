@@ -1,4 +1,5 @@
 * text=auto eol=lf
+
 *.env linguist-detectable linguist-language=SHELL
 *.json linguist-detectable linguist-language=JSON
 *.json5 linguist-detectable linguist-language=JSON5
@@ -8,3 +9,10 @@
 *.yml linguist-detectable linguist-language=YAML
 *.yaml linguist-detectable linguist-language=YAML
 *.yaml.j2 linguist-detectable linguist-language=YAML
+
+*.sops.env text eol=lf
+*.sops.yaml text eol=lf
+secrets.env text eol=lf
+
+*.sops.env working-tree-encoding=UTF-8
+*.sops.yaml working-tree-encoding=UTF-8

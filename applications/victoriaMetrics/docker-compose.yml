@@ -1,0 +1,274 @@
+services:
+  # Nginx Reverse Proxy - https://github.com/nginx/nginx
+  nginx:
+    image: nginx:1.29.6-alpine@sha256:f46cb72c7df02710e693e863a983ac42f6a9579058a59a35f1ae36c9958e4ce0
+    container_name: nginx
+    environment:
+      - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME SECRET_CERT_NAME
+      - SECRET_CERT_NAME=victoriametrics.srv.${SECRET_DOMAIN}
+    volumes:
+      - /opt/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/docker/nginx/templates:/etc/nginx/templates:ro
+      - /opt/docker/nginx/includes:/etc/nginx/includes:ro
+      - /opt/docker/certbot/certs:/etc/letsencrypt:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -so /dev/null http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: &default-logging
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
+  certbot:
+    image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
+    container_name: certbot
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    environment:
+      - SECRET_CERT_NAME=victoriametrics.srv.${SECRET_DOMAIN}
+    volumes:
+      - /opt/docker/certbot/certs:/etc/letsencrypt
+      - /opt/docker/certbot/cloudflare.ini:/cloudflare.ini:ro
+      - /opt/docker/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "openssl x509 -checkend 86400 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
+      interval: 12h
+      timeout: 10s
+      retries: 3
+    logging: *default-logging
+
+  #  Metrics collector for VicotiraMetrics
+  #  It scrapes targets defined in --promscrape.config
+  #  And forward them to --remoteWrite.url
+  vmagent:
+    image: victoriametrics/vmagent:v1.138.0@sha256:c52ea6273efd1bc06f9f259fe4405dfb1e311f47fff6380026e368bbcf098129
+    container_name: vmagent
+    depends_on:
+      - "victoriametrics"
+    volumes:
+      - /opt/docker/victoria/vmagentdata:/vmagentdata
+      - /opt/docker/victoria/config:/etc/prometheus
+    command:
+      - "--promscrape.config=/etc/prometheus/prometheus.yml"
+      - "--remoteWrite.url=http://victoriametrics:8428/api/v1/write"
+    expose:
+      - 8429
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "/vmagent-prod", "-help"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    logging: *default-logging
+
+  # VictoriaMetrics instance
+  victoriametrics:
+    image: victoriametrics/victoria-metrics:v1.138.0@sha256:b9b667f6709f20044328ddefae8869c56ced840ebafdf89bc3bba1f28f2d7e60
+    container_name: victoriametrics
+    volumes:
+      - /opt/docker/victoria/vmdata:/storage
+    command:
+      - "--storageDataPath=/storage"
+      - "--graphiteListenAddr=:2003"
+      - "--opentsdbListenAddr=:4242"
+      - "--httpListenAddr=:8428"
+      - "--influxListenAddr=:8089"
+      - "--vmalert.proxyURL=http://vmalert:8880"
+      - "--retentionPeriod=5y"
+    ports:
+      - 8428:8428     # webui
+      - 8089:8089     # influx
+      - 8089:8089/udp # influx
+      - 2003:2003     # graphite
+      - 2003:2003/udp # graphite
+      - 4242:4242     # opentsdb
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "/victoria-metrics-prod", "-metricsAuthKey=", "-httpListenAddr=:8428", "-help"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    logging: *default-logging
+
+  # vmalert executes alerting and recording rules
+  vmalert:
+    image: victoriametrics/vmalert:v1.138.0@sha256:ff88a08085f64620a8b16550278f639b300d9771057a8fec5f3f45e6bf69dd21
+    container_name: vmalert
+    depends_on:
+      - "victoriametrics"
+      - "alertmanager"
+    volumes:
+      - /opt/docker/victoria-alert/rules:/etc/alerts:ro
+    command:
+      - "--datasource.url=http://victoriametrics:8428/"
+      - "--remoteRead.url=http://victoriametrics:8428/"
+      - "--remoteWrite.url=http://vmagent:8429/"
+      - "--notifier.url=http://alertmanager:9093/"
+      - "--rule=/etc/alerts/*.yml"
+      # display source of alerts in grafana
+      - "--external.url=http://grafana.srv.${SECRET_DOMAIN}:3000" #grafana outside container
+      - '--external.alert.source=explore?orgId=1&left={"datasource":"VictoriaMetrics","queries":[{"expr":{{.Expr|jsonEscape|queryEscape}},"refId":"A"}],"range":{"from":"{{ .ActiveAt.UnixMilli }}","to":"now"}}'
+    expose:
+      - 8880
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "/vmalert-prod", "-help"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    logging: *default-logging
+
+  # alertmanager receives alerting notifications from vmalert
+  # and distributes them according to --config.file.
+  alertmanager:
+    image: prom/alertmanager:v0.31.1@sha256:88b605de9aba0410775c1eb3438f951115054e0d307f23f274a4c705f51630c1
+    container_name: alertmanager
+    volumes:
+      - /opt/docker/prom-alertmanager:/config
+    command:
+      - "--config.file=/config/alertmanager.yml"
+    expose:
+      - 9093
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 9093 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    logging: *default-logging
+
+  # pve-exporter
+  pve-prometheus-exporter:
+    image: prompve/prometheus-pve-exporter:3.8.2@sha256:e3d501a82df58bc0dd0e3f1fb49f4c10d3069e71ddad68b1fbb773b65da0c177
+    container_name: prometheus-pve-exporter
+    volumes:
+      - /opt/docker/exporter/pve-exporter/pve.yml:/etc/prometheus/pve.yml
+    expose:
+      - 9221
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 9221 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    logging: *default-logging
+
+  # source: https://github.com/prometheus/snmp_exporter
+  snmp-prometheus-exporter:
+    image: prom/snmp-exporter:v0.30.1@sha256:e5fd5e8b43ace6c088fe9bf0b37b7fff0e04380bee352be7ec41b853a4dd5859
+    container_name: prometheus-snmp-exporter
+    #expose:
+    #  - 9116
+    ports:
+      - "9116:9116"
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 9116 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    logging: *default-logging
+
+
+  ## Telegraf APC Exporter
+#  telegraf-exporter-apc:
+#    image: vincejv/telegraf-snmp
+#    container_name: telegraf-exporter-apc
+#    restart: unless-stopped
+#    volumes:
+#      - /opt/docker/exporter/telegraf-exporter-apc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+#    networks:
+#      - localhost
+#    logging: *default-logging
+
+
+  ## ISG Exporter - https://github.com/sfudeus/isg_exporter
+  isg-exporter:
+    image: sfudeus/isg_exporter:1.5.30@sha256:57a4d3847ea699d947bc3de14a66d526b204468476b7c70331c73be39a619d9e
+    container_name: isg-exporter
+    environment:
+      - ISG_URL=http://172.16.20.245
+      - ISG_USER=admin
+      - SKIP_CIRCUIT_2=true
+    #ports:
+    #  - 8088:8080
+    expose:
+      - 8080
+    networks:
+      - localhost
+    restart: unless-stopped
+    logging: *default-logging
+
+  # source: https://github.com/akpw/mktxp
+  mikortik-mktxp:
+    image: ghcr.io/akpw/mktxp:1.2.17@sha256:bd6f22f7db0a79557c4af8a73aa22517f4c32d54fafa19fb0de29e7332440613
+    container_name: mikrotik-mktxp
+    volumes:
+      - /opt/docker/exporter/mktxp:/home/mktxp/mktxp/
+    expose:
+      - 49090
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "mktxp"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    logging: *default-logging
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.28.0@sha256:e753ff9f3fc458d02cca5eddab5a77e1c175eee484a8925ac7d524f04366c2fc
+    container_name: blackbox-exporter
+    command:
+      - '--config.file=/etc/blackbox/blackbox.yml'
+    volumes:
+      - /opt/docker/blackbox/blackbox.yml:/etc/blackbox/blackbox.yml
+    expose:
+      - 9115
+    networks:
+      - localhost
+    restart: unless-stopped
+    logging: *default-logging
+
+networks:
+    localhost:
+        name: localhost
+        external: false
+
+volumes:
+  vmagentdata: {}
+  vmdata: {}
+  grafanadata: {}

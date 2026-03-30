@@ -1,0 +1,154 @@
+services:
+
+  # Nginx Reverse Proxy - https://github.com/nginx/nginx
+  nginx:
+    image: nginx:1.29.6-alpine@sha256:f46cb72c7df02710e693e863a983ac42f6a9579058a59a35f1ae36c9958e4ce0
+    container_name: nginx
+    # ToDo: Fixen der DependsOn
+    #depends_on:
+    #  guacd:
+    #    condition: service_healthy
+    #  guacamole:
+    #    condition: service_healthy
+    environment:
+      - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
+      - SECRET_CERT_NAME=rag.srv.${SECRET_DOMAIN}
+    volumes:
+      - /opt/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/docker/nginx/templates:/etc/nginx/templates:ro
+      - /opt/docker/nginx/includes:/etc/nginx/includes:ro
+      - /opt/docker/certbot/certs:/etc/letsencrypt:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - guac-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -so /dev/null http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: &default-logging
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
+  certbot:
+    image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
+    container_name: certbot
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    environment:
+      - SECRET_CERT_NAME=rag.srv.${SECRET_DOMAIN}
+    volumes:
+      - /opt/docker/certbot/certs:/etc/letsencrypt
+      - /opt/docker/certbot/cloudflare.ini:/cloudflare.ini:ro
+      - /opt/docker/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
+    networks:
+      - guac-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "openssl x509 -checkend 86400 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
+      interval: 12h
+      timeout: 10s
+      retries: 3
+    logging: *default-logging
+
+  # Guacd
+  guacd:
+    image: guacamole/guacd:1.6.0@sha256:8974eaa9ba32f713daf311e7cc8cd7e4cdfba1edea39eed75524e78ef4b08f4f
+    container_name: guacd
+    restart: unless-stopped
+    volumes:
+      - /opt/docker/guacamole/records:/record
+      - /opt/docker/guacamole/drive:/drive
+    networks:
+      - guac-net
+    #healthcheck:
+    #  test: ["CMD", "nc", "-z", "localhost", "3890"]
+    #  interval: 10s
+    #  timeout: 5s
+    #  retries: 5
+    logging: *default-logging
+
+  # Guacamole
+  guacamole:
+    image: guacamole/guacamole:1.6.0@sha256:f344085e618bb05e22b964b0208dbd06d3468275bac70206f93805245e067b40
+    container_name: guacamole
+    depends_on:
+    - guacd
+    - guacamole-db
+    restart: unless-stopped
+    environment:
+      GUACD_HOSTNAME: guacd
+      POSTGRESQL_DATABASE: guacamole
+      POSTGRESQL_HOSTNAME: guacamole-db
+      POSTGRESQL_PASSWORD: ${GUACAMOLE_DB_PASSWORD}
+      POSTGRESQL_USERNAME: guacamole
+      RECORDING_SEARCH_PATH: /record
+      GUACAMOLE_HOME: /home/guacamole/temp/
+    volumes:
+      - /opt/docker/guacamole/records:/record
+      - /opt/docker/guacamole/logback.yml:/home/guacamole/temp/logback.xml:ro
+    networks:
+      - guac-net
+    expose:
+      - 8080
+    #healthcheck:
+    #  test: ["CMD", "nc", "-z", "localhost", "3890"]
+    #  interval: 10s
+    #  timeout: 5s
+    #  retries: 5
+    logging: *default-logging
+
+  # Postgres
+  guacamole-db:
+    image: postgres:18.3-alpine@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
+    container_name: guacamole-db
+    restart: unless-stopped
+    shm_size: '1gb'
+    environment:
+      - POSTGRES_USER=guacamole
+      - POSTGRES_PASSWORD=${GUACAMOLE_DB_PASSWORD}
+      - POSTGRES_DB=guacamole
+    volumes:
+      - guacamole-pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U guacamole"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    logging: *default-logging
+
+  crowdsec:
+    image: crowdsecurity/crowdsec:v1.7.6@sha256:63b595fef92de1778573b375897a45dd226637ee9a3d3db9f57ac7355c369493
+    container_name: crowdsec
+    networks:
+      - guac-net
+    restart: unless-stopped
+    environment:
+      ENROLL_TAGS: docker
+      GID: "1000"
+      DISABLE_LOCAL_API: true
+      LOCAL_API_URL: ${CROWDSEC_LAPI_URL}                   # Crowdsec Central LAPI URL https://example.com:8443
+      AGENT_USERNAME: ${CROWDSEC_LAPI_USERNAME}             # Crowdsec Maschine Username
+      AGENT_PASSWORD: ${CROWDSEC_LAPI_KEY}             # Crowdsec Maschine Password
+      COLLECTIONS: crowdsecurity/linux crowdsecurity/nginx crowdsecurity/base-http-scenarios corvese/apache-guacamole
+      PARSERS: crowdsecurity/whitelists
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/docker/crowdsec/acquis.d:/etc/crowdsec/acquis.d
+      - /opt/docker/crowdsec/data:/var/lib/crowdsec/data
+    logging: *default-logging
+
+volumes:
+  guacamole-pgdata:
+
+networks:
+  guac-net:
+    name: guac-net
+    external: false

@@ -1,0 +1,196 @@
+services:
+
+  # Nginx Reverse Proxy - https://github.com/nginx/nginx
+  crowdsec-nginx:
+    image: nginx:1.29.6-alpine@sha256:f46cb72c7df02710e693e863a983ac42f6a9579058a59a35f1ae36c9958e4ce0
+    container_name: crowdsec-nginx
+    depends_on:
+      - crowdsec
+      - crowdsec-certbot
+    environment:
+      - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME PUBLIC_IPv4_ZTNA PUBLIC_IPv4_OC-ARM1 PUBLIC_IPv4_OC-ARM2 PUBLIC_IPv4_OC-AMD1 PUBLIC_IPv4_OC-AMD2 PUBLIC_IPv4_OC-MAIL
+      - SECRET_CERT_NAME=crowdsec.${SECRET_DOMAIN}
+    volumes:
+      - /opt/crowdsec-central/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/crowdsec-central/nginx/whitelist_admin.conf:/etc/nginx/whitelist_admin.conf:ro
+      - /opt/crowdsec-central/nginx/templates:/etc/nginx/templates:ro
+      - /opt/crowdsec-central/nginx/includes:/etc/nginx/includes:ro
+      - /opt/crowdsec-central/certbot/certs:/etc/letsencrypt:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - crowdsec-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -so /dev/null http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: &default-logging
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
+  crowdsec-certbot:
+    image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
+    container_name: crowdsec-certbot
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    environment:
+      - SECRET_CERT_NAME=crowdsec.${SECRET_DOMAIN}
+    volumes:
+      - /opt/crowdsec-central/certbot/certs:/etc/letsencrypt
+      - /opt/crowdsec-central/certbot/cloudflare.ini:/cloudflare.ini:ro
+      - /opt/crowdsec-central/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
+    networks:
+      - crowdsec-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "openssl x509 -checkend 86400 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
+      interval: 12h
+      timeout: 10s
+      retries: 3
+    logging: *default-logging
+
+  # Crowdsec - https://github.com/crowdsecurity/crowdsec
+  crowdsec:
+    image: crowdsecurity/crowdsec:v1.7.6@sha256:63b595fef92de1778573b375897a45dd226637ee9a3d3db9f57ac7355c369493
+    container_name: crowdsec
+    depends_on:
+      crowdsec-db:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      - GID=1000
+      - COLLECTIONS=crowdsecurity/linux crowdsecurity/sshd crowdsecurity/nginx crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/whitelist-good-actors crowdsecurity/iptables crowdsecurity/teamspeak3 crowdsecurity/postfix crowdsecurity/dovecot crowdsecurity/proftpd crowdsecurity/nextcloud LePresidente/emby andreasbrett/paperless-ngx Dominic-Wagner/vaultwarden corvese/apache-guacamole
+      - DB_ENGINE=postgres
+      - DB_USER=crowdsec
+      - DB_PASSWORD=${CROWDSEC_DB_PASSWORD}
+      - DB_HOST=crowdsec-db
+      - DB_PORT=5432
+      - DB_NAME=crowdsec
+      - APPSEC_URL=0.0.0.0:7422
+      - ENABLE_APPSEC=true
+    volumes:
+      - /opt/crowdsec-central/crowdsec/config:/etc/crowdsec
+      - /opt/crowdsec-central/crowdsec/data:/var/lib/crowdsec/data
+    networks:
+      - crowdsec-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider --quiet --tries=1 --timeout=5 http://localhost:8080/health > /dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging: *default-logging
+
+  # Crowdsec-Datenbank Postgres - https://github.com/postgres/postgres
+  crowdsec-db:
+    image: postgres:18.3-alpine@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
+    container_name: crowdsec-db
+    restart: unless-stopped
+    shm_size: '1gb'
+    environment:
+      - POSTGRES_USER=crowdsec
+      - POSTGRES_PASSWORD=${CROWDSEC_DB_PASSWORD}
+      - POSTGRES_DB=crowdsec
+    volumes:
+      - crowdsec-db-data:/var/lib/postgresql
+    command: >
+      postgres
+      -c shared_buffers=2GB
+      -c effective_cache_size=6GB
+      -c work_mem=32MB
+      -c maintenance_work_mem=512MB
+      -c min_wal_size=1GB
+      -c max_wal_size=4GB
+      -c checkpoint_timeout=30min
+      -c checkpoint_completion_target=0.9
+      -c synchronous_commit=off
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=2
+      -c autovacuum_vacuum_scale_factor=0.01
+      -c autovacuum_analyze_scale_factor=0.01
+      -c max_connections=100
+      -c commit_delay=10000
+      -c commit_siblings=10
+    networks:
+      - crowdsec-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crowdsec -d crowdsec"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 8192M
+        reservations:
+          memory: 4096M
+
+  # Crowdsec Blocklist Import - https://github.com/wolffcatskyy/crowdsec-blocklist-import
+  crowdsec-blocklist-import:
+    image: ghcr.io/wolffcatskyy/crowdsec-blocklist-import:3.6.0@sha256:9311e988088082f6b97bad1c7c58e44383d684e28d3a3c86bcf8521b535752a4
+    container_name: crowdsec-blocklist-import
+    restart: unless-stopped
+    depends_on:
+      - crowdsec
+    environment:
+      - RUN_ON_START=true
+      - LOG_LEVEL=INFO
+      - INTERVAL=14400
+      - DECISION_DURATION=24h
+      - DECISION_REASON=external_blocklist
+      - DECISION_TYPE=ban
+      - DECISION_ORIGIN=blocklist-import
+      - DECISION_SCENARIO=external/blocklist
+      - CONSOLIDATE_ALERTS=true
+      - ALLOWLIST=172.16.0.0/16,1.1.1.1,9.9.9.9
+      - ALLOWLIST_GITHUB=true
+      - LOG_TIMESTAMPS=true
+      - BATCH_SIZE=1000
+      - FETCH_TIMEOUT=60
+      - MAX_RETRIES=3
+      - TELEMETRY_ENABLED=false
+      - METRICS_ENABLED=false
+      - CROWDSEC_LAPI_URL=http://crowdsec:8080
+      - CROWDSEC_LAPI_KEY=${BLOCKLIST_IMPORT_CROWDSEC_LAPI_KEY}
+      - CROWDSEC_MACHINE_ID=${BLOCKLIST_IMPORT_CROWDSEC_MACHINE_ID}
+      - CROWDSEC_MACHINE_PASSWORD=${BLOCKLIST_IMPORT_CROWDSEC_MACHINE_PASSWORD}
+      - ABUSEIPDB_API_KEY=${BLOCKLIST_IMPORT_CROWDSEC_ABUSEIPDB_API_KEY}
+      - WEBHOOK_URL=${BLOCKLIST_IMPORT_DISCORD_WEBHOOK_URL}
+      - WEBHOOK_TYPE=discord
+    networks:
+      - crowdsec-net
+    logging: *default-logging
+
+#   ToDo: Blocklist-Mirror offen
+#  # Crowdsec Blocklist-Mirror
+#  crowdsec-blocklist-mirror:
+#    image: crowdsecurity/blocklist-mirror:v0.0.6
+#    container_name: crowdsec-blocklist-mirror
+#    depends_on:
+#      - crowdsec
+#    volumes:
+#      - /opt/crowdsec-central/blocklist-mirror/blocklist-mirror.yaml:/etc/crowdsec/bouncers/crowdsec-blocklist-mirror.yaml:ro
+#    restart: unless-stopped
+#    networks:
+#      - crowdsec-net
+#    healthcheck:
+#      test: ["CMD", "ps", "aux", "|", "grep", "crowdsec-blocklist-mirror"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#      start_period: 10s
+#    logging: *default-logging
+
+networks:
+  crowdsec-net:
+    driver: bridge
+
+volumes:
+  crowdsec-db-data:

@@ -1,0 +1,131 @@
+services:
+
+  # Nginx Reverse Proxy - https://github.com/nginx/nginx
+  nginx:
+    image: nginx:1.29.6-alpine@sha256:f46cb72c7df02710e693e863a983ac42f6a9579058a59a35f1ae36c9958e4ce0
+    container_name: nginx
+    # ToDo: Fixen der DependsOn
+    #depends_on:
+    #  lldap:
+    #    condition: service_healthy
+    #  authelia:
+    #    condition: service_healthy
+    environment:
+      - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
+      - SECRET_CERT_NAME=auth.${SECRET_DOMAIN}
+    volumes:
+      - /opt/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/docker/nginx/templates:/etc/nginx/templates:ro
+      - /opt/docker/nginx/includes:/etc/nginx/includes:ro
+      - /opt/docker/certbot/certs:/etc/letsencrypt:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - auth-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -so /dev/null http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: &default-logging
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
+  certbot:
+    image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
+    container_name: certbot
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    environment:
+      - SECRET_CERT_NAME=auth.${SECRET_DOMAIN}
+      - SECRET_CERT_DOMAINS=auth.${SECRET_DOMAIN},ldap.${SECRET_DOMAIN}
+    volumes:
+      - /opt/docker/certbot/certs:/etc/letsencrypt
+      - /opt/docker/certbot/cloudflare.ini:/cloudflare.ini:ro
+      - /opt/docker/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
+    networks:
+      - auth-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "openssl x509 -checkend 86400 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
+      interval: 12h
+      timeout: 10s
+      retries: 3
+    logging: *default-logging
+
+  # LLDAP - https://github.com/lldap/lldap
+  lldap:
+    image: ghcr.io/lldap/lldap:2026-02-24-alpine@sha256:a14d2671e7c4fcc5557270c1ca1976777c7ab386c443c9703c573e63e56cf9a0
+    container_name: lldap
+    restart: unless-stopped
+    environment:
+      - LLDAP_JWT_SECRET=${LLDAP_JWT_SECRET}
+      - LLDAP_LDAP_USER_PASS=${LLDAP_LDAP_USER_PASS}
+      - LLDAP_LDAP_BASE_DN=dc=seifert,dc=dev
+    volumes:
+      - /opt/docker/lldap:/data
+    networks:
+      - auth-net
+    expose:
+      - 17170
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "3890"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging: *default-logging
+
+  # Authelia - https://github.com/authelia/authelia
+  authelia:
+    image: authelia/authelia:4.39.16@sha256:edbce01c5125249e4f4faea01e0f76f0031d64b4a1d0c2514a0ca69cb126d05f
+    container_name: authelia
+    restart: unless-stopped
+    environment:
+      - AUTHELIA_JWT_SECRET=${AUTHELIA_JWT_SECRET}
+      - AUTHELIA_SESSION_SECRET=${AUTHELIA_SESSION_SECRET}
+      - AUTHELIA_STORAGE_ENCRYPTION_KEY=${AUTHELIA_STORAGE_ENCRYPTION_KEY}
+    volumes:
+      - /opt/docker/authelia:/config
+      - /opt/docker/authelia/keys:/keys
+    networks:
+      - auth-net
+    expose:
+      - 9091
+    healthcheck:
+      test: ["CMD", "authelia-scripts", "healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging: *default-logging
+
+  # Crowdsec - Engine & AppSec Only - https://github.com/crowdsecurity/crowdsec
+  crowdsec:
+    image: crowdsecurity/crowdsec:v1.7.6@sha256:63b595fef92de1778573b375897a45dd226637ee9a3d3db9f57ac7355c369493
+    container_name: crowdsec
+    networks:
+      - auth-net
+    restart: unless-stopped
+    environment:
+      ENROLL_TAGS: docker
+      GID: "1000"
+      DISABLE_LOCAL_API: true
+      LOCAL_API_URL: ${CROWDSEC_LAPI_URL}              # Crowdsec Central LAPI URL https://example.com:8443
+      AGENT_USERNAME: ${CROWDSEC_LAPI_USERNAME}        # Crowdsec Maschine Username
+      AGENT_PASSWORD: ${CROWDSEC_LAPI_KEY}             # Crowdsec Maschine Password
+      COLLECTIONS: crowdsecurity/linux crowdsecurity/nginx crowdsecurity/base-http-scenarios LePresidente/authelia
+      PARSERS: crowdsecurity/whitelists
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/docker/crowdsec/acquis.d:/etc/crowdsec/acquis.d
+      - /opt/docker/crowdsec/data:/var/lib/crowdsec/data
+    logging: *default-logging
+  
+networks:
+  auth-net:
+    name: auth-net
+    external: false

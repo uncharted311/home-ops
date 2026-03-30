@@ -1,0 +1,8 @@
+creation_rules:
+  - path_regex: .*[/\\]?.*(secrets\.env|sops\.env)$
+    input_type: dotenv
+    age: "age1y0sfh0eqgfyx07jckhchel9fhlxzmnr9jn6lm0adta6ry052mp6qdez8us"
+
+  - path_regex: (infrastructure|applications)[/\\].*\.sops\.ya?ml$
+    encrypted_regex: "^(data|stringData)$"
+    age: "age1y0sfh0eqgfyx07jckhchel9fhlxzmnr9jn6lm0adta6ry052mp6qdez8us"

@@ -1,0 +1,6 @@
+source: docker
+container_name:
+  - authelia
+labels:
+  type: authelia
+---

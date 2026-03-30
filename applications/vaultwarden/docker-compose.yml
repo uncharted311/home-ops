@@ -1,0 +1,122 @@
+services:
+
+  # Nginx Reverse Proxy - https://github.com/nginx/nginx
+  nginx:
+    image: nginx:1.29.6-alpine@sha256:f46cb72c7df02710e693e863a983ac42f6a9579058a59a35f1ae36c9958e4ce0
+    container_name: nginx
+    # ToDo: Fixen der DependsOn
+    #depends_on:
+    #  vaultwarden:
+    #    condition: service_healthy
+    environment:
+      - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
+      - SECRET_CERT_NAME=vaultwarden.srv.${SECRET_DOMAIN}
+    volumes:
+      - /opt/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/docker/nginx/templates:/etc/nginx/templates:ro
+      - /opt/docker/nginx/includes:/etc/nginx/includes:ro
+      - /opt/docker/certbot/certs:/etc/letsencrypt:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - vault-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -so /dev/null http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: &default-logging
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
+  certbot:
+    image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
+    container_name: certbot
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    environment:
+      - SECRET_CERT_NAME=vaultwarden.srv.${SECRET_DOMAIN}
+    volumes:
+      - /opt/docker/certbot/certs:/etc/letsencrypt
+      - /opt/docker/certbot/cloudflare.ini:/cloudflare.ini:ro
+      - /opt/docker/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
+    networks:
+      - vault-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "openssl x509 -checkend 86400 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
+      interval: 12h
+      timeout: 10s
+      retries: 3
+    logging: *default-logging
+
+  # Vaultwarden
+  vaultwarden:
+    image: vaultwarden/server:1.35.4-alpine@sha256:34b4e91ed4c2a4d2191245325608b2a84bedbeb9c9dd561e3c0924b98ef7126c
+    container_name: vaultwarden
+    restart: unless-stopped
+    environment:
+      - ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
+      - WEBSOCKET_ENABLED=true
+    #  - SSO_ENABLED=true
+    #  - SSO_ONLY=false
+    #  - SSO_AUTHORITY=${VAULTWARDEN_SSO_AUTHORITY}
+    #  - SSO_SCOPES=profile email offline_access groups
+    #  - SSO_PKCE=true
+    #  - SSO_CLIENT_ID=${VAULTWARDEN_SSO_CLIENT_ID}
+    #  - SSO_CLIENT_SECRET=${VAULTWARDEN_SSO_CLIENT_SECRET}
+    #  - SSO_ROLES_ENABLED=true
+    #  - SSO_ROLES_DEFAULT_TO_USER=true
+    #  - SSO_ROLES_TOKEN_PATH=/vaultwarden_roles
+      - PUSH_ENABLED=true
+      - PUSH_RELAY_URI=https://api.bitwarden.eu
+      - PUSH_IDENTITY_URI=https://identity.bitwarden.eu
+      - PUSH_INSTALLATION_ID=${VAULTWARDEN_PUSH_ID}
+      - PUSH_INSTALLATION_KEY=${VAULTWARDEN_PUSH_KEY}
+    volumes:
+      - /opt/docker/vaultwarden/data:/data
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    networks:
+      - vault-net
+    expose:
+      - 80
+    # ToDo: Healthcheck
+    #healthcheck:
+    #  test: ["CMD", "nc", "-z", "localhost", "80"]
+    #  interval: 10s
+    #  timeout: 5s
+    #  retries: 5
+    logging: *default-logging
+
+  crowdsec:
+    image: crowdsecurity/crowdsec:v1.7.6@sha256:63b595fef92de1778573b375897a45dd226637ee9a3d3db9f57ac7355c369493
+    container_name: crowdsec
+    networks:
+      - vault-net
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Berlin
+      ENROLL_TAGS: docker
+      GID: "1000"
+      DISABLE_LOCAL_API: true
+      LOCAL_API_URL: ${CROWDSEC_LAPI_URL}                   # Crowdsec Central LAPI URL https://example.com:8443
+      AGENT_USERNAME: ${CROWDSEC_LAPI_USERNAME}             # Crowdsec Maschine Username
+      AGENT_PASSWORD: ${CROWDSEC_LAPI_KEY}             # Crowdsec Maschine Password
+      COLLECTIONS: crowdsecurity/linux crowdsecurity/nginx crowdsecurity/base-http-scenarios Dominic-Wagner/vaultwarden
+      PARSERS: crowdsecurity/whitelists
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/docker/crowdsec/acquis.d:/etc/crowdsec/acquis.d
+      - /opt/docker/crowdsec/data:/var/lib/crowdsec/data
+    logging: *default-logging
+  
+networks:
+  vault-net:
+    name: vault-net
+    external: false

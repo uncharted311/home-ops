@@ -1,0 +1,6 @@
+source: docker
+container_name:
+  - vaultwarden
+labels:
+  type: Vaultwarden
+---

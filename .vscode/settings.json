@@ -1,0 +1,40 @@
+{
+    /* SOPS & Grundlagen */
+    "sops.binPath": "sops",
+    "sops.configPath": "./.sops.yaml",
+    "sops.creationEnabled": false,
+    "files.encoding": "utf8",
+    "files.autoGuessEncoding": false,
+
+    /* Dateizuordnungen */
+    "files.associations": {
+        "*.sops.env": "dotenv",
+        "*.conf.template": "nginx",
+        "*.conf": "nginx",
+        "nginx.conf": "nginx",
+        "secrets.env": "dotenv"
+    },
+
+    /* Sprachspezifische Einstellungen: Dotenv (Secrets) */
+    "[dotenv]": {
+        "files.encoding": "utf8",
+        "editor.formatOnSave": false
+    },
+
+    /* Sprachspezifische Einstellungen: Nginx (Templates) */
+    "[nginx]": {
+        "editor.defaultFormatter": "simonschneider.nginx-format",
+        "editor.formatOnSave": true,
+        "editor.insertSpaces": true,
+        "editor.tabSize": 4,
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true
+        }
+    },
+
+    /* Linter-Integration (falls die Extension installiert ist) */
+    "nginx.linter.enable": true,
+    "nginx.linter.run": "onType"
+}

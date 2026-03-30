@@ -1,0 +1,6 @@
+source: docker
+container_name:
+  - nextcloud
+labels:
+  type: Nextcloud
+---

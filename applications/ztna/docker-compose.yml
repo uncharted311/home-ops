@@ -1,0 +1,193 @@
+services:
+  pangolin:
+    image: fosrl/pangolin:ee-postgresql-1.16.2@sha256:2f5b971b2371d3403f0a8e7cd8728af19b8a994f02a333ad434887b5d21e0b85
+    container_name: pangolin
+    depends_on:
+      geoipupdate:
+        condition: service_healthy
+      pangolin-db:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      SERVER_SECRET: ${PANGOLIN_SERVER_SECRET}
+      EMAIL_SMTP_PASS: ${PANGOLIN_EMAIL_SMTP_PASS}
+      POSTGRES_CONNECTION_STRING: ${PANGOLIN_POSTGRES_CONNECTION_STRING}
+    volumes:
+      - /opt/docker/pangolin/config:/app/config
+      - /opt/docker/geoip:/app/geoip
+    healthcheck:
+      interval: 10s
+      retries: 15
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:3001/api/v1/
+      timeout: 10s
+    logging: &default-logging
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  gerbil:
+    image: fosrl/gerbil:1.3.0@sha256:7d9732af74c5851dde4b39a69a0c5d25b2f86a44464ebe0a4f116280914a8b56
+    container_name: gerbil
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    ports:
+      - 21820:21820/udp
+      - 51820:51820/udp
+      - 443:443
+      - 80:80
+    command:
+      - --reachableAt=http://gerbil:3004
+      - --generateAndSaveKeyTo=/var/config/key
+      - --remoteConfig=http://pangolin:3001/api/v1/
+    volumes:
+      - /opt/docker/gerbil/config:/var/config
+    depends_on:
+      pangolin:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "ip", "link", "show", "wg0"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    logging: *default-logging
+
+  traefik:
+    image: traefik:v3.6.10@sha256:c549d482c55d7a797398562064f35428cc53e748d84d7190997930e7b31bcc32
+    container_name: traefik
+    restart: unless-stopped
+    depends_on:
+      crowdsec:
+        condition: service_healthy
+      pangolin:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    network_mode: service:gerbil
+    environment:
+      CLOUDFLARE_DNS_API_TOKEN: ${CLOUDFLARE_DNS_API_TOKEN}  # Cloudflare ACME API TOKEN
+      TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL: ${SECRET_ADMIN_EMAIL}
+    command:
+      - --configFile=/etc/traefik/traefik_config.yml
+    volumes:
+      - /opt/docker/traefik/config/traefik_config.yml:/etc/traefik/traefik_config.yml
+      - /opt/docker/traefik/config/dynamic/dynamic_config.yml:/etc/traefik/dynamic/dynamic_config.yml
+      - /opt/docker/traefik/config/sites/captcha.html:/etc/traefik/sites/captcha.html
+      - /opt/docker/traefik/config/sites/ban.html:/etc/traefik/sites/ban.html
+      - /opt/docker/traefik/letsencrypt:/letsencrypt
+      - /opt/docker/traefik/geoblock:/var/lib/geoblock
+      - /var/log/traefik:/var/log/traefik
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    logging: *default-logging
+
+  redis:
+    image: redis:8.6.1-alpine@sha256:2afba59292f25f5d1af200496db41bea2c6c816b059f57ae74703a50a03a27d0
+    container_name: redis
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD} --save 60 1 --loglevel warning --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    logging: *default-logging
+
+  pangolin-db:
+    image: postgres:18.3-alpine@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
+    container_name: pangolin-db
+    restart: unless-stopped
+    shm_size: '1gb'
+    environment:
+      - POSTGRES_USER=pangolin
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=pangolin
+    volumes:
+      - pangolin-pgdata:/var/lib/postgresql
+    command: >
+      postgres
+      -c shared_buffers=1GB
+      -c effective_cache_size=3GB
+      -c work_mem=8MB
+      -c maintenance_work_mem=128MB
+      -c min_wal_size=512MB
+      -c max_wal_size=2GB
+      -c checkpoint_timeout=15min
+      -c synchronous_commit=off
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
+      -c max_worker_processes=2
+      -c max_parallel_workers_per_gather=1
+      -c max_parallel_workers=2
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pangolin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    logging: *default-logging
+
+  # https://docs.pangolin.net/self-host/community-guides/geolite2automation
+  geoipupdate:
+    image: ghcr.io/maxmind/geoipupdate:v7.1.1@sha256:faecdca22579730ab0b7dea5aa9af350bb3c93cb9d39845c173639ead30346d2
+    container_name: geoipupdate
+    restart: unless-stopped
+    environment:
+      GEOIPUPDATE_ACCOUNT_ID: ${GEOIPUPDATE_ACCOUNT_ID}         # Account ID
+      GEOIPUPDATE_LICENSE_KEY: ${GEOIPUPDATE_LICENSE_KEY}       # API key
+      GEOIPUPDATE_EDITION_IDS: GeoLite2-Country GeoLite2-ASN    # Which dbs should be downloaded
+      GEOIPUPDATE_FREQUENCY: 72                                 # Update intervall in hours
+    volumes:
+      - '/opt/docker/geoip/GeoLite2:/usr/share/GeoIP'
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /usr/share/GeoIP/GeoLite2-Country.mmdb || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging: *default-logging
+
+  crowdsec:
+    image: crowdsecurity/crowdsec:v1.7.6@sha256:63b595fef92de1778573b375897a45dd226637ee9a3d3db9f57ac7355c369493
+    container_name: crowdsec
+    restart: unless-stopped
+    environment:
+      DISABLE_LOCAL_API: true
+      LOCAL_API_URL: ${CROWDSEC_LAPI_URL}                   # Crowdsec Central LAPI URL https://example.com:8443
+      AGENT_USERNAME: ${CROWDSEC_LAPI_USERNAME}             # Crowdsec Maschine Username
+      AGENT_PASSWORD: ${CROWDSEC_LAPI_PASSWORD}             # Crowdsec Maschine Password
+      COLLECTIONS: crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules crowdsecurity/traefik
+      ENROLL_TAGS: docker
+      GID: "1000"
+      PARSERS: crowdsecurity/whitelists
+    volumes:
+      - /opt/docker/crowdsec/config:/etc/crowdsec
+      - /opt/docker/crowdsec/data:/var/lib/crowdsec/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:7422/ || [ $? -ne 7 ]"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    logging: *default-logging
+
+volumes:
+  pangolin-pgdata:
+
+networks:
+  default:
+    driver: bridge
+    enable_ipv6: true
+    name: pangolin

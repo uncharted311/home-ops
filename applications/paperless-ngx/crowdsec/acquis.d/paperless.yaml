@@ -1,0 +1,11 @@
+source: docker
+container_name:
+  - paperless
+labels:
+  type: paperless
+---
+source: docker
+container_name:
+  - paperless
+labels:
+  type: Paperless-ngx

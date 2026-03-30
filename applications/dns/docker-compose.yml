@@ -1,0 +1,119 @@
+services:
+  # Nginx Reverse Proxy - https://github.com/nginx/nginx
+  nginx:
+    image: nginx:1.29.6-alpine@sha256:f46cb72c7df02710e693e863a983ac42f6a9579058a59a35f1ae36c9958e4ce0
+    container_name: nginx
+    depends_on:
+      blocky:
+        condition: service_healthy
+      certbot:
+        condition: service_healthy
+    environment:
+      - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME SECRET_CERT_NAME
+      - SECRET_CERT_NAME=${NODE_FQDN}
+    volumes:
+      - /opt/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/docker/certbot/certs/live/${NODE_FQDN}:/etc/letsencrypt/live/node-cert:ro
+      - /opt/docker/certbot/certs/archive:/etc/letsencrypt/archive:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    network_mode: host
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -so /dev/null http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: &default-logging
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
+  certbot:
+    image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
+    container_name: certbot
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    environment:
+      - SECRET_CERT_NAME=${NODE_FQDN}
+    volumes:
+      - /opt/docker/certbot/certs:/etc/letsencrypt
+      - /opt/docker/certbot/cloudflare.ini:/cloudflare.ini:ro
+      - /opt/docker/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
+    network_mode: host
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "openssl x509 -checkend 86400 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
+      interval: 12h
+      timeout: 10s
+      retries: 3
+    logging: *default-logging
+
+  blocky:
+    image: ghcr.io/0xerr0r/blocky:v0.29.0@sha256:a6d99f323d3036a99a3767a52ad612f4d8f3f31167492bfc14d4ea57b24cdfd0
+    container_name: blocky
+    restart: always
+    volumes:
+      - /opt/docker/blocky/config.yml:/app/config.yml
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+      - "4000:4000/tcp"
+    logging: *default-logging
+
+  blocky-redis:
+    image: redis:8.6-alpine@sha256:2afba59292f25f5d1af200496db41bea2c6c816b059f57ae74703a50a03a27d0
+    container_name: blocky-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: >
+      redis-server 
+      --requirepass ${REDIS_PW}
+      --bind 0.0.0.0
+      --maxmemory 512mb 
+      --maxmemory-policy allkeys-lru
+      --save "" 
+      --appendonly no
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PW}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging: *default-logging
+  
+  blocky-postgres:
+    image: postgres:18.3-alpine@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
+    container_name: blocky-postgres
+    shm_size: '1gb'
+    restart: unless-stopped
+    command: >
+      postgres 
+      -c shared_buffers=512MB 
+      -c work_mem=16MB 
+      -c maintenance_work_mem=64MB 
+      -c effective_cache_size=1GB 
+      -c random_page_cost=1.1
+    environment:
+      - POSTGRES_USER=blocky
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=blocky_logs
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blocky -d blocky_logs"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging: *default-logging
+
+volumes:
+  redis_data:
+  pgdata:

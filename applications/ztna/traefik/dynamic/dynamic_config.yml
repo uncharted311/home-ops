@@ -1,0 +1,265 @@
+http:
+#####################
+# Middleware Definition
+#####################
+  middlewares:
+    badger:
+      plugin:
+        badger:
+          disableForwardAuth: true
+    crowdsec:
+      plugin:
+        crowdsec:
+          enabled: true
+          crowdsecAppsecEnabled: true
+          logLevel: DEBUG
+          crowdsecMode: stream
+          crowdsecLapiScheme: https
+          crowdsecLapiHost: {{env "TRAEFIK_CROWDSEC_LAPI_HOST"}}
+          crowdsecLapiKey: {{env "TRAEFIK_CROWDSEC_LAPI_KEY"}}
+          crowdsecLapiTlsInsecureVerify: true
+          clientTrustedIPs:
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16
+            - 100.64.0.0/11
+            - 100.96.0.0/16
+          crowdsecAppsecScheme: http
+          crowdsecAppsecHost: "crowdsec:7422"
+          crowdsecAppsecUnreachableBlock: true
+          crowdsecAppsecFailureBlock: true
+          crowdsecAppsecBodyLimit: 10485760        
+          banHTMLFilePath: /etc/traefik/sites/ban.html
+          defaultDecisionSeconds: 60
+          trustForwardHeader: true
+          forwardedHeadersTrustedIPs:
+            - 127.0.0.1/32
+            - 172.16.0.0/12
+          httpTimeoutSeconds: 10
+          updateIntervalSeconds: 30
+          defaultDecisionTimeoutSeconds: 10
+          updateMaxFailure: 0
+          captchaProvider: turnstile
+          captchaSiteKey: {{env "TRAEFIK_CROWDSEC_CAPTCHA_SITE_KEY"}}
+          captchaSecretKey: {{env "TRAEFIK_CROWDSEC_CAPTCHA_SECRET_KEY"}}
+          captchaGracePeriodSeconds: 1800
+          captchaHTMLFilePath: /etc/traefik/sites/captcha.html
+          redisCacheEnabled: true
+          redisCacheHost: "redis:6379"
+          redisCachePassword: {{env "REDIS_PASSWORD"}}
+          redisCacheDatabase: 2
+          redisCacheUnreachableBlock: false
+    geoblock:
+      plugin:
+        geoblock:
+          silentStartUp: true
+          allowLocalRequests: true
+          logLocalRequests: false
+          logAllowedRequests: false
+          logApiRequests: false
+          api: "https://get.geojs.io/v1/ip/country/{ip}"
+          apiTimeoutMs: 500
+          cacheSize: 25
+          ipDatabaseCachePath: "/var/lib/geoblock/ip-cache.db"
+          forceMonthlyUpdate: true
+          allowUnknownCountries: false
+          unknownCountryApiResponse: "nil"
+          countries:
+            - DE
+            - NL
+            - AT
+            - CH
+          excludedPathPatterns:
+            - "^[^/]+/health$"
+            - "^[^/]+/status$"
+          allowedIPAddresses:
+            - 34.254.109.160 # Scanner from securityheaders.com # single IPv4 address --> https://securityheaders.com/.well-known/ipv4.txt
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+    security-headers:
+      headers:
+        contentTypeNosniff: true
+        referrerPolicy: strict-origin-when-cross-origin
+        customFrameOptionsValue: SAMEORIGIN
+        forceSTSHeader: true
+        stsSeconds: 63072000
+        stsIncludeSubdomains: true
+        stsPreload: true
+        hostsProxyHeaders:
+          - X-Forwarded-Host
+        sslProxyHeaders:
+          X-Forwarded-Proto: https
+        customResponseHeaders:
+          Server: ""
+          X-Powered-By: ""
+          Cross-Origin-Opener-Policy: same-origin
+          Cross-Origin-Resource-Policy: same-origin
+          Cross-Origin-Embedder-Policy: credentialless
+          Origin-Agent-Cluster: ?1
+          X-Permitted-Cross-Domain-Policies: none
+          Content-Security-Policy: >
+            default-src 'self';
+            script-src 'self' 'unsafe-inline' 'unsafe-eval';
+            style-src 'self' 'unsafe-inline';
+            img-src 'self' data: blob:;
+            font-src 'self' data:;
+            connect-src 'self' ws: wss:;
+            media-src 'self' blob:;
+            frame-ancestors 'self';
+            object-src 'none';
+            base-uri 'self';
+            form-action 'self';
+          Permissions-Policy: >
+            accelerometer=(),
+            camera=(),
+            geolocation=(),
+            gyroscope=(),
+            magnetometer=(),
+            microphone=(),
+            payment=(),
+            usb=(),
+            interest-cohort=()
+    dashboard-admin:
+      basicAuth:
+        users:
+          - {{env "TRAEFIK_DASHBOARD_BASICAUTH_ADMIN"}}
+    rate-limit:
+      rateLimit:
+        average: 300    # Erlaubt durchschnittlich 100 Anfragen pro Sekunde
+        burst: 150       # Erlaubt kurzzeitige Spitzen von 50 zusätzlichen Anfragen
+        period: 1s
+        sourceCriterion:
+          ipStrategy:
+            depth: 0          
+    secured-stack:
+      chain:
+        middlewares:
+          - geoblock@file
+          - rate-limit@file
+          - crowdsec@file
+          - security-headers@file
+#####################
+# Routers Definition
+#####################
+  routers:
+    # Maindomain - http to https redirect
+    root-http-redirect:
+      rule: "Host(`{{env "SECRET_DOMAIN"}}`)"
+      entryPoints:
+        - web
+      middlewares:
+        - redirect-to-https
+      service: noop@internal
+    # Maindomain - deliver empty site back
+    root-router:
+      rule: "Host(`{{env "SECRET_DOMAIN"}}`)"
+      entryPoints:
+        - websecure
+      middlewares:
+        - secured-stack@file
+      service: noop@internal
+      tls:
+        certResolver: letsencrypt
+    # Management Dashboard for Traefik
+    traefik-dashboard:
+      rule: "Host(`ztna-traefik.{{env "SECRET_DOMAIN"}}`)"
+      service: api@internal            
+      entryPoints:
+        - websecure
+      middlewares:
+        - secured-stack@file
+        - dashboard-admin@file
+        - badger@file
+      tls:
+        certResolver: letsencrypt
+    # HTTP to HTTPS Redirect
+    main-app-router-redirect:
+      rule: "Host(`{{env "SECRET_ZTNA_DOMAIN"}}`)"
+      service: next-service
+      entryPoints:
+        - web
+      middlewares:
+        - redirect-to-https
+        - badger@file
+    # Next.js router (handles everything except API and WebSocket paths)
+    next-router:
+      rule: "Host(`{{env "SECRET_ZTNA_DOMAIN"}}`) && !PathPrefix(`/api/v1`)"
+      service: next-service
+      entryPoints:
+        - websecure
+      middlewares:
+        - secured-stack@file
+        - badger@file
+      tls:
+        certResolver: letsencrypt
+    # API router (handles /api/v1 paths)
+    api-router:
+      rule: "Host(`{{env "SECRET_ZTNA_DOMAIN"}}`) && PathPrefix(`/api/v1`)"
+      service: api-service
+      entryPoints:
+        - websecure
+      middlewares:
+        - secured-stack@file
+        - badger@file
+      tls:
+        certResolver: letsencrypt
+    # WebSocket router
+    ws-router:
+      rule: "Host(`{{env "SECRET_ZTNA_DOMAIN"}}`)"
+      service: api-service
+      entryPoints:
+        - websecure
+      middlewares:
+        - secured-stack@file
+        - badger@file
+      tls:
+        certResolver: letsencrypt
+#####################
+# Services Definition
+#####################
+  services:
+    next-service:
+      loadBalancer:
+        servers:
+          - url: "http://pangolin:3002" # Next.js server
+    api-service:
+      loadBalancer:
+        servers:
+          - url: "http://pangolin:3000" # API/WebSocket server
+#####################
+# TLS Definition
+#####################
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12
+      cipherSuites:
+        - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+        - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+        - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256
+        - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+      curvePreferences:
+        - CurveP256
+        - CurveP384
+  stores:
+    default:
+      defaultGeneratedCert:
+        resolver: letsencrypt
+        domain:
+          main: {{env "SECRET_DOMAIN"}}
+          sans:
+            - "*.{{env "SECRET_DOMAIN"}}"
+#####################
+# TCP Definition
+#####################
+tcp:
+  serversTransports:
+    pp-transport-v1:
+      proxyProtocol:
+        version: 1
+    pp-transport-v2:
+      proxyProtocol:
+        version: 2

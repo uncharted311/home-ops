@@ -1,0 +1,6 @@
+source: docker
+container_name:
+  - emby
+labels:
+  type: emby
+---

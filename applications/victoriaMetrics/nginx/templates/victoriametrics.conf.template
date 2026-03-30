@@ -1,0 +1,33 @@
+server {
+    listen 443 ssl;
+    server_name victoriametrics.srv.${SECRET_DOMAIN};
+    
+    ssl_certificate /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SECRET_CERT_NAME}/privkey.pem;
+
+    include /etc/nginx/includes/default_ssl_params.conf;
+    include /etc/nginx/includes/default_proxy_params.conf;
+    include /etc/nginx/includes/default_header_params.conf;
+
+    access_log /dev/stdout;
+    error_log /dev/stderr;
+
+    location /agent/ {
+        proxy_pass http://vmagent:8429/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
+    }
+    location / {
+        proxy_pass http://victoriametrics:8428;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
+    }
+}

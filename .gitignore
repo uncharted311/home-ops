@@ -3,22 +3,20 @@
 *.key
 *.decrypted~*.yaml
 *.decrypted~*.env
-secrets.env
-/age.key
-/cloudflare-tunnel.json
-/github-deploy.key
-/github-deploy.key.pub
-/github-push-token.txt
-# Template config files
-/cluster.yaml
-/nodes.yaml
-# Kubernetes
+**/secrets.env
+**/*secrets.env
+.sops.tmp*
+
+# Kubernetes & Tools
 kubeconfig
 talosconfig
+.kube/
+.talos/
+
 # Misc.
-_*/
 .private/
 .task/
 .venv/
 .DS_Store
 Thumbs.db
+.history/

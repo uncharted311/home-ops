@@ -1,0 +1,21 @@
+services:
+  newt:
+    image: fosrl/newt:1.10.3@sha256:41a269865ed59dc16a8412b292380b15bf506d2a3a386eca024ffb29e0d18cd5
+    container_name: newt
+    restart: unless-stopped
+    environment:
+      - LOG_LEVEL=INFO
+      - PANGOLIN_ENDPOINT=https://${ZTNA_ENDPOINT}
+      - NEWT_ID=${NEWT_ID}
+      - NEWT_SECRET=${NEWT_SECRET}
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep newt > /dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
