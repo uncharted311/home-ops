@@ -63,13 +63,14 @@ services:
       - blocky-config-vol:/mnt/config
     command: >
       sh -c "apk add --no-cache gettext >/dev/null && 
-             cat /tmp/config.yml.template | envsubst > /mnt/config/config.yml &&
-             chown 100:100 /mnt/config/config.yml" &&
+             envsubst < /tmp/config.yml.template > /mnt/config/config.yml &&
+             chown 100:100 /mnt/config/config.yml &&
              echo 'Config generiert, schlafe jetzt...' &&
              sleep infinity"
     healthcheck:
       test: ["CMD-SHELL", "[ -f /mnt/config/config.yml ] || exit 1"]
       interval: 10s
+      timeout: 10s
       retries: 3
 
   blocky:
