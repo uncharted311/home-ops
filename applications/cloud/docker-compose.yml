@@ -3,6 +3,7 @@ services:
   nginx:
     image: nginx:1.29.6-alpine@sha256:f46cb72c7df02710e693e863a983ac42f6a9579058a59a35f1ae36c9958e4ce0
     container_name: nginx
+    env_file: /opt/docker/secrets.env
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
       - SECRET_CERT_NAME=cloud.srv.${SECRET_DOMAIN}
@@ -34,6 +35,7 @@ services:
     image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
     container_name: certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    env_file: /opt/docker/secrets.env
     environment:
       - SECRET_CERT_NAME=cloud.srv.${SECRET_DOMAIN}
     volumes:
@@ -57,6 +59,7 @@ services:
       - postgres
       - redis
     restart: unless-stopped
+    env_file: /opt/docker/secrets.env
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_DB: nextcloud
@@ -133,6 +136,7 @@ services:
     container_name: postgres
     volumes:
       - nextcloud.db-data:/var/lib/postgresql
+    env_file: /opt/docker/secrets.env
     environment:
       POSTGRES_DB: nextcloud
       POSTGRES_USER: nextcloud
@@ -152,6 +156,7 @@ services:
     image: crowdsecurity/crowdsec:v1.7.6@sha256:63b595fef92de1778573b375897a45dd226637ee9a3d3db9f57ac7355c369493
     container_name: crowdsec
     restart: unless-stopped
+    env_file: /opt/docker/secrets.env
     environment:
       ENROLL_TAGS: docker
       GID: "1000"

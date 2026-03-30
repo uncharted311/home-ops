@@ -8,6 +8,7 @@ services:
     #depends_on:
     #  emby:
     #    condition: service_healthy
+    env_file: /opt/docker/secrets.env
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
       - SECRET_CERT_NAME=emby.srv.${SECRET_DOMAIN}
@@ -39,6 +40,7 @@ services:
     image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
     container_name: certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    env_file: /opt/docker/secrets.env
     environment:
       - SECRET_CERT_NAME=emby.srv.${SECRET_DOMAIN}
     volumes:
@@ -59,6 +61,7 @@ services:
   emby:
     image: emby/embyserver:4.10.0.6@sha256:54e85d50d5c9af9ec7450a71710128b1792a16e588115773347b5e83686eaa77
     container_name: emby
+    env_file: /opt/docker/secrets.env
     environment:
       - UID=1000
       - GID=100

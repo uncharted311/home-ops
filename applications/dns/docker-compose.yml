@@ -8,6 +8,7 @@ services:
         condition: service_healthy
       certbot:
         condition: service_healthy
+    env_file: /opt/docker/secrets.env
     environment:
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
@@ -37,6 +38,7 @@ services:
     image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
     container_name: certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    env_file: /opt/docker/secrets.env
     environment:
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
     volumes:
@@ -73,6 +75,7 @@ services:
       blocky-config-generator:
         condition: service_completed_successfully
     restart: unless-stopped
+    env_file: /opt/docker/secrets.env
     volumes:
       - blocky-config-vol:/app
     ports:
@@ -91,6 +94,7 @@ services:
     image: redis:8.6-alpine@sha256:2afba59292f25f5d1af200496db41bea2c6c816b059f57ae74703a50a03a27d0
     container_name: blocky-redis
     restart: unless-stopped
+    env_file: /opt/docker/secrets.env
     ports:
       - "6379:6379"
     command: >
@@ -122,6 +126,7 @@ services:
       -c maintenance_work_mem=64MB 
       -c effective_cache_size=1GB 
       -c random_page_cost=1.1
+    env_file: /opt/docker/secrets.env
     environment:
       - POSTGRES_USER=blocky
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}

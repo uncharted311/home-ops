@@ -8,6 +8,7 @@ services:
     #depends_on:
     #  paperless:
     #    condition: service_healthy
+    env_file: /opt/docker/secrets.env
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
       - SECRET_CERT_NAME=paperless.srv.${SECRET_DOMAIN}
@@ -39,6 +40,7 @@ services:
     image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
     container_name: certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    env_file: /opt/docker/secrets.env
     environment:
       - SECRET_CERT_NAME=paperless.srv.${SECRET_DOMAIN}
     volumes:
@@ -69,6 +71,7 @@ services:
       - /mnt/paperless/media:/usr/src/paperless/media
       - /mnt/paperless/export:/usr/src/paperless/export
       - /mnt/paperless/import:/usr/src/paperless/consume
+    env_file: /opt/docker/secrets.env
     environment:
       PAPERLESS_REDIS: redis://redis:6379
       PAPERLESS_TIKA_ENABLED: 1
@@ -137,6 +140,7 @@ services:
     image: postgres:18.3-alpine@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
     volumes:
       - pgdata18:/var/lib/postgresql
+    env_file: /opt/docker/secrets.env
     environment:
       POSTGRES_DB: paperless
       POSTGRES_USER: paperless
@@ -194,6 +198,7 @@ services:
     networks:
       - localhost
     restart: unless-stopped
+    env_file: /opt/docker/secrets.env
     environment:
       TZ: Europe/Berlin
       ENROLL_TAGS: docker

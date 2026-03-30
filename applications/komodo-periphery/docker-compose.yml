@@ -6,6 +6,7 @@ services:
       komodo.skip:
     restart: unless-stopped
     network_mode: host
+    env_file: /opt/docker/secrets.env
     environment:
       PERIPHERY_ROOT_DIRECTORY: /etc/komodo
       PERIPHERY_ALLOWED_IPS: 172.16.10.18

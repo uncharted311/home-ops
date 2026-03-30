@@ -10,6 +10,7 @@ services:
     #    condition: service_healthy
     #  authelia:
     #    condition: service_healthy
+    env_file: /opt/docker/secrets.env
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
       - SECRET_CERT_NAME=auth.${SECRET_DOMAIN}
@@ -41,6 +42,7 @@ services:
     image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
     container_name: certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    env_file: /opt/docker/secrets.env
     environment:
       - SECRET_CERT_NAME=auth.${SECRET_DOMAIN}
       - SECRET_CERT_DOMAINS=auth.${SECRET_DOMAIN},ldap.${SECRET_DOMAIN}
@@ -63,6 +65,7 @@ services:
     image: ghcr.io/lldap/lldap:2026-02-24-alpine@sha256:a14d2671e7c4fcc5557270c1ca1976777c7ab386c443c9703c573e63e56cf9a0
     container_name: lldap
     restart: unless-stopped
+    env_file: /opt/docker/secrets.env
     environment:
       - LLDAP_JWT_SECRET=${LLDAP_JWT_SECRET}
       - LLDAP_LDAP_USER_PASS=${LLDAP_LDAP_USER_PASS}
@@ -85,6 +88,7 @@ services:
     image: authelia/authelia:4.39.16@sha256:edbce01c5125249e4f4faea01e0f76f0031d64b4a1d0c2514a0ca69cb126d05f
     container_name: authelia
     restart: unless-stopped
+    env_file: /opt/docker/secrets.env
     environment:
       - AUTHELIA_JWT_SECRET=${AUTHELIA_JWT_SECRET}
       - AUTHELIA_SESSION_SECRET=${AUTHELIA_SESSION_SECRET}
@@ -110,6 +114,7 @@ services:
     networks:
       - auth-net
     restart: unless-stopped
+    env_file: /opt/docker/secrets.env
     environment:
       ENROLL_TAGS: docker
       GID: "1000"

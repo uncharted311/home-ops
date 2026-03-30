@@ -3,6 +3,7 @@ services:
     image: fosrl/newt:1.10.3@sha256:41a269865ed59dc16a8412b292380b15bf506d2a3a386eca024ffb29e0d18cd5
     container_name: newt
     restart: unless-stopped
+    env_file: /opt/docker/secrets.env
     environment:
       - LOG_LEVEL=INFO
       - PANGOLIN_ENDPOINT=https://${ZTNA_ENDPOINT}

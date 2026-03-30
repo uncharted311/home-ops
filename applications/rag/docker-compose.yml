@@ -10,6 +10,7 @@ services:
     #    condition: service_healthy
     #  guacamole:
     #    condition: service_healthy
+    env_file: /opt/docker/secrets.env
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
       - SECRET_CERT_NAME=rag.srv.${SECRET_DOMAIN}
@@ -41,6 +42,7 @@ services:
     image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
     container_name: certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    env_file: /opt/docker/secrets.env
     environment:
       - SECRET_CERT_NAME=rag.srv.${SECRET_DOMAIN}
     volumes:
@@ -82,6 +84,7 @@ services:
     - guacd
     - guacamole-db
     restart: unless-stopped
+    env_file: /opt/docker/secrets.env
     environment:
       GUACD_HOSTNAME: guacd
       POSTGRESQL_DATABASE: guacamole
@@ -110,6 +113,7 @@ services:
     container_name: guacamole-db
     restart: unless-stopped
     shm_size: '1gb'
+    env_file: /opt/docker/secrets.env
     environment:
       - POSTGRES_USER=guacamole
       - POSTGRES_PASSWORD=${GUACAMOLE_DB_PASSWORD}
@@ -130,6 +134,7 @@ services:
     networks:
       - guac-net
     restart: unless-stopped
+    env_file: /opt/docker/secrets.env
     environment:
       ENROLL_TAGS: docker
       GID: "1000"

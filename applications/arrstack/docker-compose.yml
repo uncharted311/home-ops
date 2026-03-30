@@ -4,6 +4,7 @@ services:
   nginx:
     image: nginx:1.29.6-alpine@sha256:f46cb72c7df02710e693e863a983ac42f6a9579058a59a35f1ae36c9958e4ce0
     container_name: nginx
+    env_file: /opt/docker/secrets.env
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
       - SECRET_CERT_NAME=srv.${SECRET_DOMAIN}
@@ -35,6 +36,7 @@ services:
     image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
     container_name: certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    env_file: /opt/docker/secrets.env
     environment:
       - SECRET_CERT_NAME=srv.${SECRET_DOMAIN}
       - SECRET_CERT_DOMAINS=srv.${SECRET_DOMAIN},*.srv.${SECRET_DOMAIN}
@@ -61,6 +63,7 @@ services:
       - /opt/docker/sabnzbd/scripts:/scripts
       - /mnt/data/usenet:/data/usenet
       - /mnt/download-temp:/incomplete
+    env_file: /opt/docker/secrets.env
     environment:
       - PUID=3006
       - PGID=3006
@@ -86,6 +89,7 @@ services:
     depends_on:
       - "radarr"
       - "sonarr"
+    env_file: /opt/docker/secrets.env
     environment:
       - LOG_LEVEL=info
       - PORT=5055
@@ -112,6 +116,7 @@ services:
     depends_on:
       - "prowlarr"
       - "sabnzbd"
+    env_file: /opt/docker/secrets.env
     environment:
       - PUID=3006
       - PGID=3006
@@ -139,6 +144,7 @@ services:
     depends_on:
       - "prowlarr"
       - "sabnzbd"
+    env_file: /opt/docker/secrets.env
     environment:
       - PUID=3006
       - PGID=3006
@@ -166,6 +172,7 @@ services:
     depends_on:
       - "prowlarr"
       - "sabnzbd"
+    env_file: /opt/docker/secrets.env
     environment:
       - PUID=3006
       - PGID=3006
@@ -192,6 +199,7 @@ services:
     container_name: prowlarr
     depends_on:
       - "umlautadaptarr"
+    env_file: /opt/docker/secrets.env
     environment:
       - PUID=3006
       - PGID=3006
@@ -235,6 +243,7 @@ services:
   mediathekarr:
     image: pcjones/mediathekarr:beta@sha256:333f2adbd3d93d196a8a548d2b9b5e70e9172407afc418afcfa5d49ca8c250c9
     container_name: mediathekarr
+    env_file: /opt/docker/secrets.env
     environment:
       - PUID=3006
       - PGID=3006
@@ -260,6 +269,7 @@ services:
   umlautadaptarr:
     image: pcjones/umlautadaptarr:0.7.5@sha256:2c6689d49afe51fcaa5e8a27e139855e0c8782e1e42ec595d8694b74094f991f
     container_name: umlautadaptarr
+    env_file: /opt/docker/secrets.env
     environment:
       - SONARR__ENABLED=true
       - SONARR__HOST=http://sonarr:8989
@@ -290,6 +300,7 @@ services:
       nofile:
         soft: 65536
         hard: 65536 
+    env_file: /opt/docker/secrets.env
     environment:
       - LOG_LEVEL=info
     volumes:
@@ -315,6 +326,7 @@ services:
     container_name: episeerr
     depends_on:
       - "sonarr"
+    env_file: /opt/docker/secrets.env
     environment:
       - SONARR_URL=http://sonarr:8989
       - SONARR_API_KEY=${SONARR_API_KEY}

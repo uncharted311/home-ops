@@ -8,6 +8,7 @@ services:
       pangolin-db:
         condition: service_healthy
     restart: unless-stopped
+    env_file: /opt/docker/secrets.env
     environment:
       SERVER_SECRET: ${PANGOLIN_SERVER_SECRET}
       EMAIL_SMTP_PASS: ${PANGOLIN_EMAIL_SMTP_PASS}
@@ -71,6 +72,7 @@ services:
       redis:
         condition: service_healthy
     network_mode: service:gerbil
+    env_file: /opt/docker/secrets.env
     environment:
       CLOUDFLARE_DNS_API_TOKEN: ${CLOUDFLARE_DNS_API_TOKEN}  # Cloudflare ACME API TOKEN
       TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL: ${SECRET_ADMIN_EMAIL}
@@ -110,6 +112,7 @@ services:
     container_name: pangolin-db
     restart: unless-stopped
     shm_size: '1gb'
+    env_file: /opt/docker/secrets.env
     environment:
       - POSTGRES_USER=pangolin
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -144,6 +147,7 @@ services:
     image: ghcr.io/maxmind/geoipupdate:v7.1.1@sha256:faecdca22579730ab0b7dea5aa9af350bb3c93cb9d39845c173639ead30346d2
     container_name: geoipupdate
     restart: unless-stopped
+    env_file: /opt/docker/secrets.env
     environment:
       GEOIPUPDATE_ACCOUNT_ID: ${GEOIPUPDATE_ACCOUNT_ID}         # Account ID
       GEOIPUPDATE_LICENSE_KEY: ${GEOIPUPDATE_LICENSE_KEY}       # API key
@@ -163,6 +167,7 @@ services:
     image: crowdsecurity/crowdsec:v1.7.6@sha256:63b595fef92de1778573b375897a45dd226637ee9a3d3db9f57ac7355c369493
     container_name: crowdsec
     restart: unless-stopped
+    env_file: /opt/docker/secrets.env
     environment:
       DISABLE_LOCAL_API: true
       LOCAL_API_URL: ${CROWDSEC_LAPI_URL}                   # Crowdsec Central LAPI URL https://example.com:8443
