@@ -9,7 +9,7 @@ services:
       certbot:
         condition: service_healthy
     environment:
-      - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME SECRET_CERT_NAME
+      - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
       - SECRET_CERT_NAME=${NODE_FQDN}
     volumes:
       - /opt/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
