@@ -122,10 +122,11 @@ services:
     command: >
       postgres 
       -c shared_buffers=512MB 
-      -c work_mem=16MB 
-      -c maintenance_work_mem=64MB 
-      -c effective_cache_size=1GB 
+      -c work_mem=128MB 
+      -c maintenance_work_mem=256MB 
+      -c effective_cache_size=2GB 
       -c random_page_cost=1.1
+      -c effective_io_concurrency=200
     env_file: /opt/docker/secrets.env
     environment:
       - POSTGRES_USER=blocky
