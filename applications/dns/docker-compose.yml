@@ -53,8 +53,9 @@ services:
     logging: *default-logging
 
   # Config Generator for Blocky
-  config-generator:
+  blocky-config-generator:
     image: alpine:3.19
+    container_name: blocky-config-generator
     env_file:
       - /opt/docker/secrets.env
     volumes:
@@ -68,13 +69,22 @@ services:
   blocky:
     image: ghcr.io/0xerr0r/blocky:v0.29.0@sha256:a6d99f323d3036a99a3767a52ad612f4d8f3f31167492bfc14d4ea57b24cdfd0
     container_name: blocky
-    restart: always
+    depends_on:
+      blocky-config-generator:
+        condition: service_completed_successfully
+    restart: unless-stopped
     volumes:
       - blocky-config-vol:/app
     ports:
       - "53:53/udp"
       - "53:53/tcp"
       - "4000:4000/tcp"
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 4000 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     logging: *default-logging
 
   blocky-redis:
