@@ -49,9 +49,9 @@ services:
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "openssl x509 -checkend 86400 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
-      interval: 12h
+      interval: 30s
       timeout: 10s
-      retries: 3
+      retries: 10
     logging: *default-logging
 
   # Config Generator for Blocky
@@ -82,12 +82,6 @@ services:
       - "53:53/udp"
       - "53:53/tcp"
       - "4000:4000/tcp"
-    healthcheck:
-      test: ["CMD-SHELL", "nc -z localhost 4000 || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
     logging: *default-logging
 
   blocky-redis:
