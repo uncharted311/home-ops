@@ -11,7 +11,7 @@ dnssec:
 upstreams:
   groups:
     default:
-      - https://dns.quad9.net/dns-query
+      - https://9.9.9.9/dns-query
       - https://1.1.1.1/dns-query
       - tcp-tls:9.9.9.9:853
   strategy: parallel_best
