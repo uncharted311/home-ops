@@ -1,0 +1,104 @@
+connectIPVersion: dual
+
+bootstrapDns:
+  - 1.1.1.1
+  - 9.9.9.9
+
+dnssec:
+  validate: true
+  trustAnchors: []
+
+upstreams:
+  groups:
+    default:
+      - https://dns.quad9.net/dns-query
+      - https://1.1.1.1/dns-query
+      - tcp-tls:9.9.9.9:853
+  strategy: parallel_best
+  timeout: 2s
+
+conditional:
+  mapping:
+    ${SECRET_DOMAIN}: 172.16.10.1
+    ${SECRET_FAMILY_DOMAIN}: 172.16.10.1
+    lan: 172.16.10.1
+    local: 172.16.10.1
+    10.16.172.in-addr.arpa: 172.16.10.1
+    b.0.0.b.9.1.b.0.b.a.d.f.ip6.arpa: 172.16.10.1
+
+customDNS:
+  customTTL: 1h
+  filterUnmappedTypes: true
+  mapping:
+    dns02.srv.${SECRET_DOMAIN}: fdab:b19:b00b:10::253, 172.16.10.253
+    dns01.srv.${SECRET_DOMAIN}: fdab:b19:b00b:10::254, 172.16.10.254
+
+clientLookup:
+  upstream: 172.16.10.1
+
+ports:
+  dns: 53
+  http: 4000
+
+blocking:
+  denylists:
+    ads:
+      - https://raw.githubusercontent.com/uncharted311/charts/main/dns-lists/blocklist.txt  # Seifert Blocklist
+      - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts         # Basic Block List
+      - https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt               # Blocky Default Ads
+      - https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt         # Blocky Default Tracking
+      - http://sysctl.org/cameleon/hosts                                         # Blocky Default Cameleon
+      - https://big.oisd.nl/domainswild                                          # https://oisd.nl/setup/blocky - Blocks Ads, (Mobile) App Ads, Phishing, Malvertising, Malware, Spyware, Ransomware, CryptoJacking, Telemetry/Analytics/Tracking
+    #  - https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/pro.txt # HaGeZi's Pro DNS Blocklist
+      - https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/pro.plus.txt # HaGeZi's Pro++ DNS Blocklist --> Sweeper - Aggressive cleans the Internet and protects your privacy! Blocks Ads, Affiliate, Tracking, Metrics, Telemetry, Phishing, Malware, Scam, Fake, Crytojacking and other "Crap".
+      - https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/fake.txt # HaGeZi's Fake DNS Blocklist - Blocks internet scams, traps & fakes! Blocks fake stores, -streaming, rip-offs, cost traps and co.
+    malware:
+      - https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.txt # HaGeZi's Threat Intelligence Feeds DNS Blocklist - Blocks Malware, Cryptojacking, Spam, Scam and Phishing.
+      - https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/domains/nrd7.txt # HaGeZi's Newly Registered Domains (NRD) - max. 7 days old
+      - https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/domains/nrd14-8.txt # HaGeZi's Newly Registered Domains (NRD) - max. 14 days old and min. 8 days old
+    porn:
+      - https://nsfw.oisd.nl/domainswild                                          # https://oisd.nl/setup/blocky - Blocks porn/shock/adult sites
+  allowlists:
+    whitelist:
+      - https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/whitelist.txt
+      - https://raw.githubusercontent.com/uncharted311/charts/main/dns-lists/whitelist.txt  # Seifert Whitelist
+  clientGroupsBlock:
+    default:
+      - ads
+      - malware
+      - porn
+  loading:
+    refreshPeriod: 24h
+    strategy: fast
+    downloads:
+      timeout: 60s
+      attempts: 3
+      cooldown: 5m
+
+caching:
+  minTime: 10m
+  maxTime: 48h
+  prefetching: true
+  prefetchThreshold: 3
+  prefetchMaxItemsCount: 0
+  cacheTimeNegative: 1m
+
+redis:
+  address: 172.16.10.254:6379
+  password: ${REDIS_PASSWORD}
+  database: 0
+  required: false
+
+prometheus:
+  enable: true
+  path: /metrics
+
+queryLog:
+  type: postgresql
+  target: postgres://blocky:${POSTGRES_PASSWORD}@172.16.10.254:5432/blocky_logs
+  logRetentionDays: 90
+
+log:
+  level: info
+  format: json
+  timestamp: true

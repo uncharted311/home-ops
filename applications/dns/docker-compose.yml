@@ -52,12 +52,25 @@ services:
       retries: 3
     logging: *default-logging
 
+  # Config Generator for Blocky
+  config-generator:
+    image: alpine:3.19
+    env_file:
+      - /opt/docker/secrets.env
+    volumes:
+      - /opt/docker/blocky/config.yml.template:/tmp/config.yml.template:ro
+      - blocky-config-vol:/mnt/config
+    command: >
+      sh -c "apk add --no-cache gettext && 
+             envsubst < /tmp/config.yml.template > /mnt/config/config.yml &&
+             chown 100:100 /mnt/config/config.yml"
+
   blocky:
     image: ghcr.io/0xerr0r/blocky:v0.29.0@sha256:a6d99f323d3036a99a3767a52ad612f4d8f3f31167492bfc14d4ea57b24cdfd0
     container_name: blocky
     restart: always
     volumes:
-      - /opt/docker/blocky/config.yml:/app/config.yml
+      - blocky-config-vol:/app
     ports:
       - "53:53/udp"
       - "53:53/tcp"
@@ -72,7 +85,7 @@ services:
       - "6379:6379"
     command: >
       redis-server 
-      --requirepass ${REDIS_PW}
+      --requirepass ${REDIS_PASSWORD}
       --bind 0.0.0.0
       --maxmemory 512mb 
       --maxmemory-policy allkeys-lru
@@ -81,7 +94,7 @@ services:
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PW}", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -117,3 +130,4 @@ services:
 volumes:
   redis_data:
   pgdata:
+  blocky-config-vol:
