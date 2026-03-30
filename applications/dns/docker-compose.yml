@@ -19,7 +19,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    network_mode: host
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -so /dev/null http://localhost/ || exit 1"]
@@ -45,7 +44,6 @@ services:
       - /opt/docker/certbot/certs:/etc/letsencrypt
       - /opt/docker/certbot/cloudflare.ini:/cloudflare.ini:ro
       - /opt/docker/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
-    network_mode: host
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "openssl x509 -checkend 86400 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
@@ -66,14 +64,20 @@ services:
     command: >
       sh -c "apk add --no-cache gettext >/dev/null && 
              cat /tmp/config.yml.template | envsubst > /mnt/config/config.yml &&
-             chown 100:100 /mnt/config/config.yml"
+             chown 100:100 /mnt/config/config.yml" &&
+             echo 'Config generiert, schlafe jetzt...' &&
+             sleep infinity"
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f /mnt/config/config.yml ] || exit 1"]
+      interval: 10s
+      retries: 3
 
   blocky:
     image: ghcr.io/0xerr0r/blocky:v0.29.0@sha256:a6d99f323d3036a99a3767a52ad612f4d8f3f31167492bfc14d4ea57b24cdfd0
     container_name: blocky
     depends_on:
       blocky-config-generator:
-        condition: service_completed_successfully
+        condition: service_healthy
     restart: unless-stopped
     env_file: /opt/docker/secrets.env
     volumes:
