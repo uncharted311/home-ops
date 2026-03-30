@@ -9,8 +9,8 @@ services:
       certbot:
         condition: service_healthy
     environment:
-      - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
       - SECRET_CERT_NAME=${NODE_FQDN}
+      - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
     volumes:
       - /opt/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - /opt/docker/certbot/certs/live/${NODE_FQDN}:/etc/letsencrypt/live/node-cert:ro
