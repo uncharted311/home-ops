@@ -64,16 +64,15 @@ services:
     env_file:
       - /opt/docker/secrets.env
     volumes:
-      - /opt/docker/traefik/config/dynamic/dynamic_config.yml.template:/tmp/config.yml.template:ro
-      - /opt/docker/traefik/config/dynamic/dynamic_config.yml:/mnt/config/config.yml:rw
+      - /opt/docker/traefik/config/dynamic/:/mnt/config/
     command: >
       sh -c "apk add --no-cache gettext >/dev/null && 
-             envsubst < /tmp/config.yml.template > /mnt/config/config.yml &&
-             chown 100:100 /mnt/config/config.yml &&
+             envsubst < /mnt/config/dynamic_config.yml.template > /mnt/config/dynamic_config.yml &&
+             chown 100:100 /mnt/config/dynamic_config.yml &&
              echo 'Config generiert, schlafe jetzt...' &&
              sleep infinity"
     healthcheck:
-      test: ["CMD-SHELL", "[ -f /mnt/config/config.yml ] || exit 1"]
+      test: ["CMD-SHELL", "[ -f /mnt/config/dynamic_config.yml ] || exit 1"]
       interval: 10s
       timeout: 10s
       retries: 3
