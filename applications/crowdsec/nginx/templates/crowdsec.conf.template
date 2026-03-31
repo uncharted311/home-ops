@@ -22,7 +22,7 @@ server {
     proxy_busy_buffers_size 256k;
 
     # --- IP-Whitelist (Zugriffsschutz) --- #
-    include /etc/nginx/whitelist_admin.conf;
+    include /etc/nginx/admin.conf/whitelist_admin.conf;
     allow ${PUBLIC_IPv4_ZTNA};
     allow ${PUBLIC_IPv4_OC-ARM1};
     allow ${PUBLIC_IPv4_OC-ARM2};
