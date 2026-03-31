@@ -18,8 +18,7 @@ services:
       - /opt/crowdsec-central/nginx/includes:/etc/nginx/includes:ro
       - /opt/crowdsec-central/certbot/certs:/etc/letsencrypt:ro
     ports:
-      - "80:80"
-      - "443:443"
+      - "8443:8443"
     networks:
       - crowdsec-net
     restart: unless-stopped
