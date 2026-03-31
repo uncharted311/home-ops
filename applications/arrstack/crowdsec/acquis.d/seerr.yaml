@@ -1,0 +1,6 @@
+source: docker
+container_name:
+  - seerr
+labels:
+  type: jellyseerr
+---

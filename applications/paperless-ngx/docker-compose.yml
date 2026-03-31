@@ -204,9 +204,9 @@ services:
       ENROLL_TAGS: docker
       GID: "1000"
       DISABLE_LOCAL_API: true
-      LOCAL_API_URL: ${PAPERLESS_CROWDSEC_LAPI_URL}                   # Crowdsec Central LAPI URL https://example.com:8443
-      AGENT_USERNAME: ${PAPERLESS_CROWDSEC_LAPI_USERNAME}             # Crowdsec Maschine Username
-      AGENT_PASSWORD: ${PAPERLESS_CROWDSEC_LAPI_KEY}             # Crowdsec Maschine Password
+      LOCAL_API_URL: ${CROWDSEC_LAPI_URL}                   # Crowdsec Central LAPI URL https://example.com:8443
+      AGENT_USERNAME: ${CROWDSEC_LAPI_USERNAME}             # Crowdsec Maschine Username
+      AGENT_PASSWORD: ${CROWDSEC_LAPI_KEY}             # Crowdsec Maschine Password
       COLLECTIONS: crowdsecurity/linux crowdsecurity/nginx crowdsecurity/base-http-scenarios andreasbrett/paperless-ngx
       PARSERS: crowdsecurity/whitelists
     volumes:

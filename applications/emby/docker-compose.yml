@@ -89,6 +89,30 @@ services:
       start_period: 30s
     logging: *default-logging
   
+  # Crowdsec AppSec for Emby
+  crowdsec:
+    image: crowdsecurity/crowdsec:v1.7.6@sha256:63b595fef92de1778573b375897a45dd226637ee9a3d3db9f57ac7355c369493
+    container_name: crowdsec
+    networks:
+      - localhost
+    restart: unless-stopped
+    env_file: /opt/docker/secrets.env
+    environment:
+      TZ: Europe/Berlin
+      ENROLL_TAGS: docker
+      GID: "1000"
+      DISABLE_LOCAL_API: true
+      LOCAL_API_URL: ${CROWDSEC_LAPI_URL}                   # Crowdsec Central LAPI URL https://example.com:8443
+      AGENT_USERNAME: ${CROWDSEC_LAPI_USERNAME}             # Crowdsec Maschine Username
+      AGENT_PASSWORD: ${CROWDSEC_LAPI_KEY}             # Crowdsec Maschine Password
+      COLLECTIONS: crowdsecurity/linux crowdsecurity/nginx crowdsecurity/base-http-scenarios LePresidente/emby
+      PARSERS: crowdsecurity/whitelists
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/docker/crowdsec/acquis.d:/etc/crowdsec/acquis.d
+      - /opt/docker/crowdsec/data:/var/lib/crowdsec/data
+    logging: *default-logging
+  
 networks:
   localhost:
     name: localhost
