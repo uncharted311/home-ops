@@ -19,7 +19,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /proc:/proc
       - /etc/komodo:/etc/komodo:rw
+      - /etc/komodo/keys:/config/keys:rw
       - /opt/docker:/opt/docker:rw
+
     logging:
       driver: "json-file"
       options:
