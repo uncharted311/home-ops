@@ -14,7 +14,6 @@ server {
     include /etc/nginx/includes/default_ssl_params.conf;
     include /etc/nginx/includes/default_proxy_params.conf;
     include /etc/nginx/includes/default_header_params.conf;
-    include /etc/nginx/includes/crowdsec_header_params.conf;
 
     # --- Buffer Settings --- #
     proxy_buffer_size 128k;
