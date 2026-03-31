@@ -15,8 +15,8 @@ http:
           logLevel: DEBUG
           crowdsecMode: stream
           crowdsecLapiScheme: https
-          crowdsecLapiHost: {{env "TRAEFIK_CROWDSEC_LAPI_HOST"}}
-          crowdsecLapiKey: {{env "TRAEFIK_CROWDSEC_LAPI_KEY"}}
+          crowdsecLapiHost: {{ env "TRAEFIK_CROWDSEC_LAPI_HOST" }}
+          crowdsecLapiKey: {{ env "TRAEFIK_CROWDSEC_LAPI_KEY" }}
           crowdsecLapiTlsInsecureVerify: true
           clientTrustedIPs:
             - 10.0.0.0/8
@@ -40,13 +40,13 @@ http:
           defaultDecisionTimeoutSeconds: 10
           updateMaxFailure: 0
           captchaProvider: turnstile
-          captchaSiteKey: {{env "TRAEFIK_CROWDSEC_CAPTCHA_SITE_KEY"}}
-          captchaSecretKey: {{env "TRAEFIK_CROWDSEC_CAPTCHA_SECRET_KEY"}}
+          captchaSiteKey: {{ env "TRAEFIK_CROWDSEC_CAPTCHA_SITE_KEY" }}
+          captchaSecretKey: {{ env "TRAEFIK_CROWDSEC_CAPTCHA_SECRET_KEY" }}
           captchaGracePeriodSeconds: 1800
           captchaHTMLFilePath: /etc/traefik/sites/captcha.html
           redisCacheEnabled: true
           redisCacheHost: "redis:6379"
-          redisCachePassword: {{env "REDIS_PASSWORD"}}
+          redisCachePassword: {{ env "TRAEFIK_REDIS_PASSWORD" }}
           redisCacheDatabase: 2
           redisCacheUnreachableBlock: false
     geoblock:
@@ -123,7 +123,7 @@ http:
     dashboard-admin:
       basicAuth:
         users:
-          - {{env "TRAEFIK_DASHBOARD_BASICAUTH_ADMIN"}}
+          - {{ env "TRAEFIK_DASHBOARD_BASICAUTH_ADMIN" }}
     rate-limit:
       rateLimit:
         average: 300    # Erlaubt durchschnittlich 100 Anfragen pro Sekunde
@@ -145,7 +145,7 @@ http:
   routers:
     # Maindomain - http to https redirect
     root-http-redirect:
-      rule: "Host(`{{env "SECRET_DOMAIN"}}`)"
+      rule: "Host(`{{ env "TRAEFIK_SECRET_DOMAIN" }}`)"
       entryPoints:
         - web
       middlewares:
@@ -153,7 +153,7 @@ http:
       service: noop@internal
     # Maindomain - deliver empty site back
     root-router:
-      rule: "Host(`{{env "SECRET_DOMAIN"}}`)"
+      rule: "Host(`{{ env "TRAEFIK_SECRET_DOMAIN" }}`)"
       entryPoints:
         - websecure
       middlewares:
@@ -163,7 +163,7 @@ http:
         certResolver: letsencrypt
     # Management Dashboard for Traefik
     traefik-dashboard:
-      rule: "Host(`ztna-traefik.{{env "SECRET_DOMAIN"}}`)"
+      rule: "Host(`ztna-traefik.{{ env "TRAEFIK_SECRET_DOMAIN" }}`)"
       service: api@internal            
       entryPoints:
         - websecure
@@ -175,7 +175,7 @@ http:
         certResolver: letsencrypt
     # HTTP to HTTPS Redirect
     main-app-router-redirect:
-      rule: "Host(`{{env "SECRET_ZTNA_DOMAIN"}}`)"
+      rule: "Host(`{{ env "TRAEFIK_SECRET_ZTNA_DOMAIN" }}`)"
       service: next-service
       entryPoints:
         - web
@@ -184,7 +184,7 @@ http:
         - badger@file
     # Next.js router (handles everything except API and WebSocket paths)
     next-router:
-      rule: "Host(`{{env "SECRET_ZTNA_DOMAIN"}}`) && !PathPrefix(`/api/v1`)"
+      rule: "Host(`{{ env "TRAEFIK_SECRET_ZTNA_DOMAIN" }}`) && !PathPrefix(`/api/v1`)"
       service: next-service
       entryPoints:
         - websecure
@@ -195,7 +195,7 @@ http:
         certResolver: letsencrypt
     # API router (handles /api/v1 paths)
     api-router:
-      rule: "Host(`{{env "SECRET_ZTNA_DOMAIN"}}`) && PathPrefix(`/api/v1`)"
+      rule: "Host(`{{ env "TRAEFIK_SECRET_ZTNA_DOMAIN" }}`) && PathPrefix(`/api/v1`)"
       service: api-service
       entryPoints:
         - websecure
@@ -206,7 +206,7 @@ http:
         certResolver: letsencrypt
     # WebSocket router
     ws-router:
-      rule: "Host(`{{env "SECRET_ZTNA_DOMAIN"}}`)"
+      rule: "Host(`{{ env "TRAEFIK_SECRET_ZTNA_DOMAIN" }}`)"
       service: api-service
       entryPoints:
         - websecure
@@ -249,9 +249,9 @@ tls:
       defaultGeneratedCert:
         resolver: letsencrypt
         domain:
-          main: {{env "SECRET_DOMAIN"}}
+          main: {{ env "TRAEFIK_SECRET_DOMAIN" }}
           sans:
-            - "*.{{env "SECRET_DOMAIN"}}"
+            - "*.{{ env "TRAEFIK_SECRET_DOMAIN" }}"
 #####################
 # TCP Definition
 #####################
