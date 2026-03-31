@@ -21,7 +21,7 @@ services:
       - "80:80"
       - "443:443"
     networks:
-      - vault-net
+      - localhost
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -so /dev/null http://localhost/ || exit 1"]
@@ -48,7 +48,7 @@ services:
       - /opt/docker/certbot/cloudflare.ini:/cloudflare.ini:ro
       - /opt/docker/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
     networks:
-      - vault-net
+      - localhost
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "openssl x509 -checkend 86400 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
