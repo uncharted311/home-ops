@@ -23,11 +23,11 @@ server {
     # --- IP-Whitelist (Zugriffsschutz) --- #
     include /etc/nginx/admin.conf/whitelist_admin.conf;
     allow ${PUBLIC_IPv4_ZTNA};
-    allow ${PUBLIC_IPv4_OC-ARM1};
-    allow ${PUBLIC_IPv4_OC-ARM2};
-    allow ${PUBLIC_IPv4_OC-AMD1};
-    allow ${PUBLIC_IPv4_OC-AMD2};
-    allow ${PUBLIC_IPv4_OC-MAIL};
+    allow ${PUBLIC_IPv4_OC_ARM1};
+    allow ${PUBLIC_IPv4_OC_ARM2};
+    allow ${PUBLIC_IPv4_OC_AMD1};
+    allow ${PUBLIC_IPv4_OC_AMD2};
+    allow ${PUBLIC_IPv4_MAIL};
     allow 172.16.0.0/12;  # Docker Bridge Network
     deny all;
 
