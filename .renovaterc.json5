@@ -63,23 +63,10 @@
     },
 
     {
-      "description": "Automerge docker digest updates",
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["digest"],
-      "automerge": true
-    },
-
-    {
       "description": "Automerge GitHub Actions digest/patch",
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["digest", "patch"],
       "automerge": true
-    },
-
-    {
-      "description": "Crowdsec versioning fix",
-      "matchPackageNames": ["crowdsecurity/crowdsec"],
-      "versioning": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
     },
 
     {
