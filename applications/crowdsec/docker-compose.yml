@@ -13,8 +13,7 @@ services:
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
     volumes:
       - /opt/crowdsec-central/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - /opt/crowdsec-central/nginx/whitelist_admin.conf:/etc/nginx/whitelist_admin.conf:ro
-      - /opt/crowdsec-central/nginx/map_whitelist.conf:/etc/nginx/map_whitelist.conf:ro
+      - /opt/crowdsec-central/nginx/admin.conf:/etc/nginx/admin.conf:ro
       - /opt/crowdsec-central/nginx/templates:/etc/nginx/templates:ro
       - /opt/crowdsec-central/nginx/includes:/etc/nginx/includes:ro
       - /opt/crowdsec-central/certbot/certs:/etc/letsencrypt:ro
