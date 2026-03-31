@@ -10,7 +10,7 @@ services:
     env_file: /opt/docker/secrets.env
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME PUBLIC_IPv4_ZTNA PUBLIC_IPv4_OC-ARM1 PUBLIC_IPv4_OC-ARM2 PUBLIC_IPv4_OC-AMD1 PUBLIC_IPv4_OC-AMD2 PUBLIC_IPv4_OC-MAIL
-      - SECRET_CERT_NAME=crowdsec.${SECRET_DOMAIN}
+      - SECRET_CERT_NAME=${SECRET_CERT_NAME}
     volumes:
       - /opt/crowdsec-central/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - /opt/crowdsec-central/nginx/whitelist_admin.conf:/etc/nginx/whitelist_admin.conf:ro
@@ -42,7 +42,7 @@ services:
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
     env_file: /opt/docker/secrets.env
     environment:
-      - SECRET_CERT_NAME=crowdsec.${SECRET_DOMAIN}
+      - SECRET_CERT_NAME=${SECRET_CERT_NAME}
     volumes:
       - /opt/crowdsec-central/certbot/certs:/etc/letsencrypt
       - /opt/crowdsec-central/certbot/cloudflare.ini:/cloudflare.ini:ro
