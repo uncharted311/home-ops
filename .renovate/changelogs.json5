@@ -12,6 +12,11 @@
       changelogUrl: "https://github.com/cloudflare/cloudflared/blob/master/RELEASE_NOTES",
     },
     {
+      description: "Changelog URL for Apache Tika",
+      matchPackageNames: ["/tika/"],
+      changelogUrl: "https://github.com/apache/tika/blob/main/CHANGES.txt",
+    },
+    {
       description: "Changelog URL for Spegel",
       matchPackageNames: ["/spegel/"],
       changelogUrl: "https://github.com/spegel-org/spegel/blob/main/CHANGELOG.md",
