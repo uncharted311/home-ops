@@ -21,7 +21,7 @@ services:
         - -f
         - http://localhost:3001/api/v1/
       timeout: 10s
-    logging: &default-logging
+    logging: &default-logging # default logging
       driver: "json-file"
       options:
         max-size: "10m"
