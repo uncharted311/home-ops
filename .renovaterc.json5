@@ -77,6 +77,12 @@
     },
 
     {
+      "description": "Crowdsec versioning fix",
+      "matchPackageNames": ["crowdsecurity/crowdsec"],
+      "versioning": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
+    },
+
+    {
       "description": "Separate major container upgrades",
       "matchDatasources": ["docker"],
       "separateMajorMinor": true
