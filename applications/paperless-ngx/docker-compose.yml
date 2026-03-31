@@ -2,7 +2,7 @@ services:
 
   # Nginx Reverse Proxy - https://github.com/nginx/nginx
   nginx:
-    image: nginx:1.29.6-alpine@sha256:f46cb72c7df02710e693e863a983ac42f6a9579058a59a35f1ae36c9958e4ce0
+    image: nginx:1.29.7-alpine@sha256:e7257f1ef28ba17cf7c248cb8ccf6f0c6e0228ab9c315c152f9c203cd34cf6d1
     container_name: nginx
     # ToDo: Fixen der DependsOn
     #depends_on:
@@ -120,7 +120,7 @@ services:
   # Redis Cache
   redis:
     container_name: redis
-    image: redis:8.6.1-alpine@sha256:2afba59292f25f5d1af200496db41bea2c6c816b059f57ae74703a50a03a27d0
+    image: redis:8.6.2-alpine@sha256:81b6f81d6a6c5b9019231a2e8eb10085e3a139a34f833dcc965a8a959b040b72
     volumes:
       - redisdata:/data
     networks:
@@ -159,7 +159,7 @@ services:
 
   # Gotenberg for Paperless
   gotenberg:
-    image: gotenberg/gotenberg:8.28.0@sha256:f172b1ce5ec7516ab9452d33bfe3f198d778d3de39655825aa550f4a33946666
+    image: gotenberg/gotenberg:8.29.1@sha256:36c925776fa0db0fd1030408d131fde7ac3453027a559883555155b72adb16a7
     container_name: gotenberg
     command:
       - "gotenberg"
@@ -178,7 +178,7 @@ services:
 
   # Tika for Paperless
   tika:
-    image: apache/tika:3.2.3.0@sha256:c0154cb95587cde64be74f35ada1a2bd7892219f3f0ac3c9dc6cab34046b3573
+    image: apache/tika:3.3.0.0@sha256:2a565f1ea1290bdcb74a7d35957d16a989ed44ef98790dcdcc28121d728fa583
     container_name: tika
     networks:
       - localhost
