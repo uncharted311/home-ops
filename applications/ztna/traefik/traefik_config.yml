@@ -12,7 +12,7 @@ experimental:
   plugins:
     badger:
       moduleName: "github.com/fosrl/badger"
-      version: "1.4.0"
+      version: "v1.4.0"
     crowdsec:
       moduleName: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
       version: "v1.5.1"
