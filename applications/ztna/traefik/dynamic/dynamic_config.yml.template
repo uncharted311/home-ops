@@ -12,7 +12,7 @@ http:
         crowdsec:
           enabled: true
           crowdsecAppsecEnabled: true
-          logLevel: DEBUG
+          logLevel: INFO
           crowdsecMode: stream
           crowdsecLapiScheme: https
           crowdsecLapiHost: "${TRAEFIK_CROWDSEC_LAPI_HOST}"
@@ -123,7 +123,7 @@ http:
     dashboard-admin:
       basicAuth:
         users:
-          - ${TRAEFIK_DASHBOARD_BASICAUTH_ADMIN}
+          - "${TRAEFIK_DASHBOARD_BASICAUTH_ADMIN}"
     rate-limit:
       rateLimit:
         average: 300    # Erlaubt durchschnittlich 100 Anfragen pro Sekunde
