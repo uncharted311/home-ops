@@ -7,7 +7,7 @@ services:
     depends_on:
       - crowdsec
       - crowdsec-certbot
-    env_file: /opt/docker/secrets.env
+    env_file: /opt/crowdsec-central/secrets.env
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME PUBLIC_IPv4_ZTNA PUBLIC_IPv4_OC-ARM1 PUBLIC_IPv4_OC-ARM2 PUBLIC_IPv4_OC-AMD1 PUBLIC_IPv4_OC-AMD2 PUBLIC_IPv4_OC-MAIL
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
@@ -40,7 +40,7 @@ services:
     image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
     container_name: crowdsec-certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
-    env_file: /opt/docker/secrets.env
+    env_file: /opt/crowdsec-central/secrets.env
     environment:
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
     volumes:
@@ -65,7 +65,7 @@ services:
       crowdsec-db:
         condition: service_healthy
     restart: unless-stopped
-    env_file: /opt/docker/secrets.env
+    env_file: /opt/crowdsec-central/secrets.env
     environment:
       - GID=1000
       - COLLECTIONS=crowdsecurity/linux crowdsecurity/sshd crowdsecurity/nginx crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/whitelist-good-actors crowdsecurity/iptables crowdsecurity/teamspeak3 crowdsecurity/postfix crowdsecurity/dovecot crowdsecurity/proftpd crowdsecurity/nextcloud LePresidente/emby andreasbrett/paperless-ngx Dominic-Wagner/vaultwarden corvese/apache-guacamole
@@ -96,7 +96,7 @@ services:
     container_name: crowdsec-db
     restart: unless-stopped
     shm_size: '1gb'
-    env_file: /opt/docker/secrets.env
+    env_file: /opt/crowdsec-central/secrets.env
     environment:
       - POSTGRES_USER=crowdsec
       - POSTGRES_PASSWORD=${CROWDSEC_DB_PASSWORD}
@@ -143,7 +143,7 @@ services:
     restart: unless-stopped
     depends_on:
       - crowdsec
-    env_file: /opt/docker/secrets.env
+    env_file: /opt/crowdsec-central/secrets.env
     environment:
       - RUN_ON_START=true
       - LOG_LEVEL=INFO
