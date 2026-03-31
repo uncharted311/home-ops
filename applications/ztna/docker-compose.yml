@@ -56,6 +56,28 @@ services:
       start_period: 5s
     logging: *default-logging
 
+  # Config Generator for Blocky
+  traefik-config-generator:
+    image: alpine:3.23@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659
+    container_name: traefik-config-generator
+    restart: always
+    env_file:
+      - /opt/docker/secrets.env
+    volumes:
+      - /opt/docker/traefik/config/dynamic/dynamic_config.yml.template:/tmp/config.yml.template:ro
+      - /opt/docker/traefik/config/dynamic/dynamic_config.yml:/mnt/config/config.yml:rw
+    command: >
+      sh -c "apk add --no-cache gettext >/dev/null && 
+             envsubst < /tmp/config.yml.template > /mnt/config/config.yml &&
+             chown 100:100 /mnt/config/config.yml &&
+             echo 'Config generiert, schlafe jetzt...' &&
+             sleep infinity"
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f /mnt/config/config.yml ] || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
   traefik:
     image: traefik:v3.6.12@sha256:171c9c3565b29f6c133f1c1b43c5d4e5853415198e9e1078c001f8702ff66aec
     container_name: traefik
@@ -67,22 +89,13 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      traefik-config-generator:
+        condition: service_healthy
     network_mode: service:gerbil
     env_file: /opt/docker/secrets.env
     environment:
       CLOUDFLARE_DNS_API_TOKEN: ${CLOUDFLARE_DNS_API_TOKEN}  # Cloudflare ACME API TOKEN
       TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL: ${SECRET_ADMIN_EMAIL}
-      TRAEFIK_SECRET_DOMAIN: ${SECRET_DOMAIN}
-      TRAEFIK_SECRET_CERT_NAME: ${SECRET_CERT_NAME}
-      TRAEFIK_SECRET_ADMIN_EMAIL: ${SECRET_ADMIN_EMAIL}
-      TRAEFIK_SECRET_ZTNA_DOMAIN: ${SECRET_ZTNA_DOMAIN}
-      TRAEFIK_REDIS_PASSWORD: ${REDIS_PASSWORD}
-      TRAEFIK_CROWDSEC_LAPI_HOST: ${TRAEFIK_CROWDSEC_LAPI_HOST}
-      TRAEFIK_CROWDSEC_LAPI_KEY: ${TRAEFIK_CROWDSEC_LAPI_KEY}
-      TRAEFIK_CROWDSEC_CAPTCHA_SITE_KEY: ${TRAEFIK_CROWDSEC_CAPTCHA_SITE_KEY}
-      TRAEFIK_CROWDSEC_CAPTCHA_SECRET_KEY: ${TRAEFIK_CROWDSEC_CAPTCHA_SECRET_KEY}
-      TRAEFIK_DASHBOARD_BASICAUTH_ADMIN: ${TRAEFIK_DASHBOARD_BASICAUTH_ADMIN}
-
     command:
       - --configFile=/etc/traefik/traefik_config.yml
     volumes:
