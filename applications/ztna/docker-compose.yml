@@ -9,10 +9,6 @@ services:
         condition: service_healthy
     restart: unless-stopped
     env_file: /opt/docker/secrets.env
-    environment:
-      SERVER_SECRET: ${PANGOLIN_SERVER_SECRET}
-      EMAIL_SMTP_PASS: ${PANGOLIN_EMAIL_SMTP_PASS}
-      POSTGRES_CONNECTION_STRING: ${PANGOLIN_POSTGRES_CONNECTION_STRING}
     volumes:
       - /opt/docker/pangolin/config:/app/config
       - /opt/docker/geoip:/app/geoip
