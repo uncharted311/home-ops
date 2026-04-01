@@ -45,7 +45,7 @@ services:
     env_file: /opt/docker/secrets.env
     environment:
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
-      - SECRET_CERT_DOMAINS=auth.${SECRET_DOMAIN},ldap.${SECRET_DOMAIN}
+      - SECRET_CERT_DOMAINS=auth.${SECRET_DOMAIN},auth.srv.${SECRET_DOMAIN},ldap.srv.${SECRET_DOMAIN}
     volumes:
       - /opt/docker/certbot/certs:/etc/letsencrypt
       - /opt/docker/certbot/cloudflare.ini:/cloudflare.ini:ro
