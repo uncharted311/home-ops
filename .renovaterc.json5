@@ -27,6 +27,7 @@
 
   "enabledManagers": [
     "docker-compose",
+    "dockerfile",
     "github-actions",
     "custom.regex"
   ],
