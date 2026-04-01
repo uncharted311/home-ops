@@ -9,8 +9,8 @@ server {
     include /etc/nginx/includes/default_proxy_params.conf;
     include /etc/nginx/includes/default_header_params.conf;
 
-    access_log  off;
-    #access_log /dev/stdout;
+    #access_log  off;
+    access_log /dev/stdout;
     error_log /dev/stderr;
 
     location / {
