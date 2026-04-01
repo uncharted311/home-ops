@@ -59,7 +59,6 @@ services:
       - postgres
       - redis
     restart: unless-stopped
-    user: root
     env_file: /opt/docker/secrets.env
     environment:
       POSTGRES_HOST: postgres
