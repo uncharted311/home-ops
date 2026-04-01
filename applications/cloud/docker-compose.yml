@@ -77,9 +77,9 @@ services:
       - /opt/docker/nextcloud/apache/security.conf:/etc/apache2/conf-enabled/security-custom.conf:ro
       - /opt/docker/nextcloud/apache/servername.conf:/etc/apache2/conf-enabled/servername.conf
       - /opt/docker/nextcloud/apache/proxy.conf:/etc/apache2/conf-enabled/proxy.conf:ro
-      - /mnt/nas/heinrich:/var/www/html/data/heinrich
-      - /mnt/nas/regina:/var/www/html/data/regina
-      - /mnt/nas/seifert:/var/www/html/data/seifert
+      - /mnt/nas/heinrich:/mnt/heinrich
+      - /mnt/nas/regina:/mnt/regina
+      - /mnt/nas/seifert:/mnt/seifert
     expose:
       - 80
     networks:
