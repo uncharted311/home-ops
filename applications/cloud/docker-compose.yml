@@ -58,10 +58,6 @@ services:
     depends_on:
       - postgres
       - redis
-    entrypoint: >
-      sh -c "apt-get update && apt-get install -y libsmbclient-dev smbclient && 
-             pecl install smbclient && docker-php-ext-enable smbclient && 
-             /entrypoint.sh apache2-foreground"
     restart: unless-stopped
     env_file: /opt/docker/secrets.env
     environment:
@@ -81,7 +77,9 @@ services:
       - /opt/docker/nextcloud/apache/security.conf:/etc/apache2/conf-enabled/security-custom.conf:ro
       - /opt/docker/nextcloud/apache/servername.conf:/etc/apache2/conf-enabled/servername.conf
       - /opt/docker/nextcloud/apache/proxy.conf:/etc/apache2/conf-enabled/proxy.conf:ro
-      - /mnt/nfs:/mnt
+      - /mnt/nas/heinrich:/var/www/html/data/heinrich
+      - /mnt/nas/regina:/var/www/html/data/regina
+      - /mnt/nas/seifert:/var/www/html/data/seifert
     expose:
       - 80
     networks:
