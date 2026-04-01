@@ -9,5 +9,3 @@ RUN apt-get update && apt-get install -y \
 
 RUN pecl install smbclient && \
     docker-php-ext-enable smbclient
-
-USER www-data
