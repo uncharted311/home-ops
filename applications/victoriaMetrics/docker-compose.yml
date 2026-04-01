@@ -56,7 +56,7 @@ services:
   #  It scrapes targets defined in --promscrape.config
   #  And forward them to --remoteWrite.url
   vmagent:
-    image: victoriametrics/vmagent:v1.138.0@sha256:c52ea6273efd1bc06f9f259fe4405dfb1e311f47fff6380026e368bbcf098129
+    image: victoriametrics/vmagent:v1.139.0@sha256:3aa7be574942ac5951dfd3ace7849dcc854730b4517a4f9e8f3824705c4bb978
     container_name: vmagent
     depends_on:
       - "victoriametrics"
@@ -81,7 +81,7 @@ services:
 
   # VictoriaMetrics instance
   victoriametrics:
-    image: victoriametrics/victoria-metrics:v1.138.0@sha256:b9b667f6709f20044328ddefae8869c56ced840ebafdf89bc3bba1f28f2d7e60
+    image: victoriametrics/victoria-metrics:v1.139.0@sha256:67c689e152183138ff68eb237ca53d236e92bbef314545733dcb40324829b7c4
     container_name: victoriametrics
     volumes:
       - /opt/docker/victoria/vmdata:/storage
@@ -113,7 +113,7 @@ services:
 
   # vmalert executes alerting and recording rules
   vmalert:
-    image: victoriametrics/vmalert:v1.138.0@sha256:ff88a08085f64620a8b16550278f639b300d9771057a8fec5f3f45e6bf69dd21
+    image: victoriametrics/vmalert:v1.139.0@sha256:26f877d5de545e9d7a9a80be10efcc5f3928ee36572d55281363efcc616cb3ad
     container_name: vmalert
     depends_on:
       - "victoriametrics"
