@@ -85,6 +85,9 @@ services:
       - 80
     networks:
       - nextcloud-net
+    dns:
+      - 172.16.10.254
+      - 172.16.10.253
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/status.php"]
       interval: 30s
