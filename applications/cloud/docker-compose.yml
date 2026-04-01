@@ -74,6 +74,7 @@ services:
       - nextcloud.redis-data:/redis
       - /opt/docker/nextcloud/html:/var/www/html
       - /opt/docker/nextcloud/data:/var/www/html/data
+      - /opt/docker/nextcloud/entrypoints/install-smb.sh:/docker-entrypoint-init.d/install-smb.sh:ro
       - /opt/docker/nextcloud/apache/security.conf:/etc/apache2/conf-enabled/security-custom.conf:ro
       - /opt/docker/nextcloud/apache/proxy.conf:/etc/apache2/conf-enabled/proxy.conf:ro
       - /mnt/nfs:/mnt
