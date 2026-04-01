@@ -1,6 +1,6 @@
 server {
     listen 443 ssl;
-    server_name lldap.srv.${SECRET_DOMAIN};
+    server_name ldap.srv.${SECRET_DOMAIN};
     
     ssl_certificate /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${SECRET_CERT_NAME}/privkey.pem;
