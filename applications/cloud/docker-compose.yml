@@ -58,6 +58,10 @@ services:
     depends_on:
       - postgres
       - redis
+    entrypoint: >
+      sh -c "apt-get update && apt-get install -y libsmbclient-dev smbclient && 
+             pecl install smbclient && docker-php-ext-enable smbclient && 
+             /entrypoint.sh apache2-foreground"
     restart: unless-stopped
     env_file: /opt/docker/secrets.env
     environment:
