@@ -55,13 +55,13 @@ accessLog:
       TLSCipher: keep
       TLSVersion: keep
   filePath: /var/log/traefik/access.log
-  filters:
-    minDuration: 100ms
-    retryAttempts: true
-    statusCodes:
-      - 200-299
-      - 400-499
-      - 500-599
+  #filters:
+  #  minDuration: 100ms
+  #  retryAttempts: true
+  #  statusCodes:
+  #    - 200-299
+  #    - 400-499
+  #    - 500-599
   format: json
 certificatesResolvers:
   letsencrypt:
