@@ -4,3 +4,7 @@ container_name:
 labels:
   type: Nextcloud
 ---
+filenames:
+ - /var/log/nextcloud/nextcloud.log
+labels:
+  type: Nextcloud
