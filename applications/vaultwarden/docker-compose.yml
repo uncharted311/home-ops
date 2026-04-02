@@ -71,7 +71,8 @@ services:
       - SSO_ENABLED=true
       - SSO_ONLY=false
       - SSO_AUTHORITY=${VAULTWARDEN_SSO_AUTHORITY}
-      - SSO_SCOPES=profile email offline_access groups
+      - SSO_SCOPES=profile email offline_access groups vaultwarden
+      - SSO_AUTHORIZE_EXTRA_PARAMS="access_type=offline"
       - SSO_PKCE=true
       - SSO_CLIENT_ID=${VAULTWARDEN_SSO_CLIENT_ID}
       - SSO_CLIENT_SECRET=${VAULTWARDEN_SSO_CLIENT_SECRET}
