@@ -65,17 +65,20 @@ services:
     env_file: /opt/docker/secrets.env
     environment:
       - ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
+      - DOMAIN=https://vault.${SECRET_DOMAIN}
+      - IP_HEADER=X-Real-IP
       - WEBSOCKET_ENABLED=true
-    #  - SSO_ENABLED=true
-    #  - SSO_ONLY=false
-    #  - SSO_AUTHORITY=${VAULTWARDEN_SSO_AUTHORITY}
-    #  - SSO_SCOPES=profile email offline_access groups
-    #  - SSO_PKCE=true
-    #  - SSO_CLIENT_ID=${VAULTWARDEN_SSO_CLIENT_ID}
-    #  - SSO_CLIENT_SECRET=${VAULTWARDEN_SSO_CLIENT_SECRET}
-    #  - SSO_ROLES_ENABLED=true
-    #  - SSO_ROLES_DEFAULT_TO_USER=true
-    #  - SSO_ROLES_TOKEN_PATH=/vaultwarden_roles
+      - SSO_ENABLED=true
+      - SSO_ONLY=false
+      - SSO_AUTHORITY=${VAULTWARDEN_SSO_AUTHORITY}
+      - SSO_SCOPES=profile email offline_access groups
+      - SSO_PKCE=true
+      - SSO_CLIENT_ID=${VAULTWARDEN_SSO_CLIENT_ID}
+      - SSO_CLIENT_SECRET=${VAULTWARDEN_SSO_CLIENT_SECRET}
+      - SSO_ROLES_ENABLED=true
+      - SSO_ROLES_DEFAULT_TO_USER=true
+      - SSO_ROLES_TOKEN_PATH=/vaultwarden_roles
+      - TRASH_AUTO_DELETE_DAYS=90
       - PUSH_ENABLED=true
       - PUSH_RELAY_URI=https://api.bitwarden.eu
       - PUSH_IDENTITY_URI=https://identity.bitwarden.eu
