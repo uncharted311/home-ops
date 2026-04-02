@@ -80,7 +80,7 @@ services:
       - SMTP_FROM_NAME=Seifert Passwort-Vault
       - SMTP_USERNAME=${SECURE_SMTP_USERNAME}
       - SMTP_PASSWORD=${SECURE_SMTP_PASSWORD}
-      - SMTP_SECURITY=ssl
+      - SMTP_SECURITY=force_tls
       - SMTP_PORT=465
       - SMTP_TIMEOUT=15
     volumes:
