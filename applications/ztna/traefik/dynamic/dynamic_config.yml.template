@@ -173,6 +173,17 @@ http:
         - badger@file
       tls:
         certResolver: letsencrypt
+    crowdsec-dashboard:
+      rule: "Host(`ztna-crowdsec.${SECRET_DOMAIN}`)"
+      service: crowdsec-manager            
+      entryPoints:
+        - websecure
+      middlewares:
+        - secured-stack@file
+        - dashboard-admin@file
+        - badger@file
+      tls:
+        certResolver: letsencrypt
     # HTTP to HTTPS Redirect
     main-app-router-redirect:
       rule: "Host(`ztna.${SECRET_DOMAIN}`)"
@@ -227,6 +238,10 @@ http:
       loadBalancer:
         servers:
           - url: "http://pangolin:3000" # API/WebSocket server
+    crowdsec-manager:
+      loadBalancer:
+        servers:
+          - url: "http://crowdsec-manager:8080" # Crowdsec-Manager server
 #####################
 # TLS Definition
 #####################
