@@ -56,7 +56,7 @@ services:
 
   # SABnzbd - https://hub.docker.com/r/linuxserver/sabnzbd
   sabnzbd:
-    image: linuxserver/sabnzbd:version-4.5.5
+    image: linuxserver/sabnzbd:version-4.5.5@sha256:f0abed8e9450d5b71631a89b663fbfbfbb6909b254f94911c7e77162a3827854
     container_name: sabnzbd
     volumes:
       - /opt/docker/sabnzbd/config:/config
@@ -111,7 +111,7 @@ services:
 
   # Radarr - https://hub.docker.com/r/linuxserver/radarr
   radarr:
-    image: linuxserver/radarr:version-6.1.1.10360
+    image: linuxserver/radarr:version-6.1.1.10360@sha256:581f159c2b67436863cb4da30e158ef6f6b8878472abbba79ee5d5f7e6b7d28d
     container_name: radarr
     depends_on:
       - "prowlarr"
@@ -139,7 +139,7 @@ services:
 
   # Radarr - https://hub.docker.com/r/linuxserver/radarr
   radarr-list:
-    image: linuxserver/radarr:version-6.1.1.10360
+    image: linuxserver/radarr:version-6.1.1.10360@sha256:581f159c2b67436863cb4da30e158ef6f6b8878472abbba79ee5d5f7e6b7d28d
     container_name: radarr-list
     depends_on:
       - "prowlarr"
@@ -167,7 +167,7 @@ services:
 
   # Sonarr - https://hub.docker.com/r/linuxserver/sonarr
   sonarr:
-    image: linuxserver/sonarr:version-4.0.16.2944
+    image: linuxserver/sonarr:version-4.0.16.2944@sha256:21c1c3d52248589bb064f5adafec18cad45812d7a01d317472955eef051e619b
     container_name: sonarr
     depends_on:
       - "prowlarr"
@@ -195,7 +195,7 @@ services:
 
   # Prowlarr - Indexer Management - https://github.com/Prowlarr/Prowlarr
   prowlarr:
-    image: linuxserver/prowlarr:version-2.3.0.5236
+    image: linuxserver/prowlarr:version-2.3.0.5236@sha256:e50f3b188a7d1771b61f395c4203e35476bd3047683508740305e830e15bacf7
     container_name: prowlarr
     depends_on:
       - "umlautadaptarr"
