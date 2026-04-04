@@ -235,6 +235,8 @@ services:
       - VPN_PORT_FORWARDING=on
       - VPN_PORT_FORWARDING_PROVIDER=protonvpn
       - HTTP_CONTROL_SERVER_ADDRESS=:8000
+    volumes:
+      - /opt/docker/gluetun-qbit:/tmp/gluetun
     expose:
       - 8080 # qBittorrent WebUI
     networks:
@@ -246,23 +248,43 @@ services:
     #  timeout: 10s
     #  retries: 3
     logging: *default-logging
+  
+  qbit-port-sync:
+    image: alpine:3.19.1
+    container_name: qbit-port-sync
+    network_mode: "service:gluetun-qbi"
+    depends_on:
+      gluetun-qbit:
+        condition: service_healthy
+      qbittorrent:
+        condition: service_healthy
+    volumes:
+      - /opt/docker/gluetun-qbit:/tmp/gluetun:ro
+      - /opt/docker/qbit/qbit-port-sync.sh:/sync.sh:ro
+    entrypoint: ["/bin/sh", "-c", "apk add --no-cache curl jq && sh /sync.sh"]
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f /tmp/gluetun/forwarded_port ] || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 3"]
+    restart: unless-stopped
+    logging: *default-logging
 
   qbittorrent:
     image: ghcr.io/hotio/qbittorrent:release-5.1.4
     container_name: qbittorrent
     depends_on:
-      - "gluetun-qbit"
-      #gluetun-qbit:
-      #  condition: service_healthy
+      gluetun-qbit:
+        condition: service_healthy
     network_mode: "service:gluetun-qbit"
     env_file: /opt/docker/secrets.env
     environment:
       - PUID=3006
       - PGID=3006
       - UMASK=002
-      - VPN_ENABLED=true
-      - VPN_PORT_FORWARDING=true
-      - VPN_PORT_FORWARDING_PROVIDER=protonvpn
+      - VPN_ENABLED=false
+      #- VPN_PORT_FORWARDING=true
+      #- VPN_PORT_FORWARDING_PROVIDER=protonvpn
     volumes:
       - /opt/docker/qbit:/config
       - /mnt/data:/data
