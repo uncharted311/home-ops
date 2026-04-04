@@ -478,6 +478,17 @@ services:
       start_period: 30s
     logging: *default-logging
 
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:v3.4.6
+    container_name: flaresolverr
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - TIMEZONE=Europe/Berlin
+    ports:
+      - "8191:8191"
+    restart: unless-stopped
+    logging: *default-logging
+
   # Crowdsec AppSec for Arrstack
   crowdsec:
     image: crowdsecurity/crowdsec:v1.7.7@sha256:6ca53ad26196ca59ddd4fa692a586b73d8fcde085046163b9ca2f04887dca563
