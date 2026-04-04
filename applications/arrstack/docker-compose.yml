@@ -484,8 +484,10 @@ services:
     environment:
       - LOG_LEVEL=${LOG_LEVEL:-info}
       - TIMEZONE=Europe/Berlin
-    ports:
-      - "8191:8191"
+    networks:
+      - arr_network
+    expose:
+      - 8191
     restart: unless-stopped
     logging: *default-logging
 
