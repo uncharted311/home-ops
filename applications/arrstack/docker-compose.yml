@@ -321,10 +321,11 @@ services:
     image: ghcr.io/cross-seed/cross-seed:6.13.6
     container_name: cross-seed
     env_file: /opt/docker/secrets.env
+    command: daemon
+    user: "3006:3006"
     environment:
       - PUID=3006
       - PGID=3006
-    entrypoint: ["cross-seed", "daemon"]
     volumes:
       - /opt/docker/cross-seed:/config
       - /mnt/data:/data
