@@ -248,7 +248,7 @@ services:
     logging: *default-logging
 
   qbittorrent:
-    image: cr.hotio.dev/hotio/qbittorrent:release-5.1.4
+    image: ghcr.io/hotio/qbittorrent:release-5.1.4
     container_name: qbittorrent
     depends_on:
       gluetun-qbit:
