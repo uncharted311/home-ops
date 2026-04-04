@@ -17,7 +17,7 @@ services:
       - "80:80"
       - "443:443"
     networks:
-      - localhost
+      - arr_network
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -so /dev/null http://localhost/ || exit 1"]
@@ -45,7 +45,7 @@ services:
       - /opt/docker/certbot/cloudflare.ini:/cloudflare.ini:ro
       - /opt/docker/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
     networks:
-      - localhost
+      - arr_network
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "openssl x509 -checkend 86400 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
@@ -69,7 +69,7 @@ services:
       - PGID=3006
       - UMASK=002
     networks:
-      - localhost
+      - arr_network
     expose:
       - 8080
     restart: unless-stopped
@@ -96,7 +96,7 @@ services:
     expose:
       - 5055
     networks:
-      - localhost
+      - arr_network
     volumes:
       - /opt/docker/seerr/config:/app/config
     restart: unless-stopped
@@ -127,7 +127,7 @@ services:
     expose:
       - 7878
     networks:
-      - localhost
+      - arr_network
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:7878/ || exit 1"]
@@ -155,7 +155,7 @@ services:
     expose:
       - 7878
     networks:
-      - localhost
+      - arr_network
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:7878/ || exit 1"]
@@ -183,7 +183,7 @@ services:
     expose:
       - 8989
     networks:
-      - localhost
+      - arr_network
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8989/ || exit 1"]
@@ -208,7 +208,7 @@ services:
     expose:
       - 9696
     networks:
-      - localhost
+      - arr_network
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9696/ || exit 1"]
@@ -216,6 +216,103 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
+    logging: *default-logging
+
+  gluetun-qbit:
+    image: qmcgaw/gluetun:v3.41.1
+    container_name: gluetun-qbit
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    env_file: /opt/docker/secrets.env
+    environment:
+      - VPN_SERVICE_PROVIDER=protonvpn
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${QBIT_PROTON_PRIVATE_KEY}
+      - WIREGUARD_ADDRESSES=${QBIT_PROTON_ADDRESSES}
+      - SERVER_COUNTRIES=${QBIT_PROTON_COUNTRIES}
+      - VPN_PORT_FORWARDING=on
+      - VPN_PORT_FORWARDING_PROVIDER=protonvpn
+      - HTTP_CONTROL_SERVER_ADDRESS=:8000
+    expose:
+      - 8080 # qBittorrent WebUI
+    networks:
+      - arr_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8000/v1/vpn/status | grep -q 'up'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging: *default-logging
+
+  qbittorrent:
+    image: cr.hotio.dev/hotio/qbittorrent:release-5.1.4
+    container_name: qbittorrent
+    depends_on:
+      gluetun-qbit:
+        condition: service_healthy
+    network_mode: "service:gluetun-qbit"
+    env_file: /opt/docker/secrets.env
+    environment:
+      - PUID=3006
+      - PGID=3006
+      - UMASK=002
+      - VPN_ENABLED=true
+      - VPN_PORT_FORWARDING=true
+      - VPN_PORT_FORWARDING_PROVIDER=protonvpn
+    volumes:
+      - /opt/docker/qbit:/config
+      - /mnt/data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/v2/app/version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging: *default-logging
+  
+  autobrr:
+    image: ghcr.io/autobrr/autobrr:v1.75.0
+    container_name: autobrr
+    env_file: /opt/docker/secrets.env
+    environment:
+      - PUID=3006
+      - PGID=3006
+    volumes:
+      - /opt/docker/autobrr:/config
+    expose:
+      - 7474
+    networks:
+      - arr_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7474/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging: *default-logging
+    
+  cross-seed:
+    image: ghcr.io/cross-seed/cross-seed:v6.0.0
+    container_name: cross-seed
+    env_file: /opt/docker/secrets.env
+    environment:
+      - PUID=3006
+      - PGID=3006
+    command: daemon
+    volumes:
+      - /opt/docker/cross-seed:/config
+      - /mnt/data:/data
+    networks:
+      - arr_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "ps aux | grep -v grep | grep -q 'cross-seed'"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
     logging: *default-logging
     
   # Notifiarr - https://github.com/Notifiarr/notifiarr
@@ -229,7 +326,7 @@ services:
     expose:
       - 5454
     networks:
-      - localhost
+      - arr_network
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:5454/ || exit 1"]
@@ -255,7 +352,7 @@ services:
     expose:
       - 5007
     networks:
-      - localhost
+      - arr_network
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:5007/ || exit 1"]
@@ -280,7 +377,7 @@ services:
     expose:
       - 5006
     networks:
-      - localhost
+      - arr_network
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:5006/ || exit 1"]
@@ -310,7 +407,7 @@ services:
     expose:
       - 3000
     networks:
-      - localhost
+      - arr_network
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://127.0.0.1:3000/health"]
@@ -347,7 +444,7 @@ services:
     expose:
       - 5002
     networks:
-      - localhost
+      - arr_network
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:5002/ || exit 1"]
@@ -362,7 +459,7 @@ services:
     image: crowdsecurity/crowdsec:v1.7.7@sha256:6ca53ad26196ca59ddd4fa692a586b73d8fcde085046163b9ca2f04887dca563
     container_name: crowdsec
     networks:
-      - localhost
+      - arr_network
     restart: unless-stopped
     env_file: /opt/docker/secrets.env
     environment:
@@ -387,6 +484,6 @@ volumes:
   tracearr_data:
   
 networks:
-  localhost:
-    name: localhost
+  arr_network:
+    name: arr_network
     external: false
