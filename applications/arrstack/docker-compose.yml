@@ -62,7 +62,7 @@ services:
       - /opt/docker/sabnzbd/config:/config
       - /opt/docker/sabnzbd/scripts:/scripts
       - /mnt/data/usenet:/data/usenet
-      - /mnt/download-temp:/incomplete
+      - /mnt/download-temp/usenet:/incomplete
     env_file: /opt/docker/secrets.env
     environment:
       - PUID=3006
@@ -288,6 +288,7 @@ services:
     volumes:
       - /opt/docker/qbit:/config
       - /mnt/data:/data
+      - /mnt/download-temp/torrent:/incomplete
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/api/v2/app/version"]
