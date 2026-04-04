@@ -261,12 +261,12 @@ services:
     volumes:
       - /opt/docker/gluetun-qbit:/tmp/gluetun:ro
       - /opt/docker/qbit/qbit-port-sync.sh:/sync.sh:ro
-    entrypoint: ["/bin/sh", "-c", "apk add --no-cache curl jq && sh /sync.sh"]
+    entrypoint: ["/bin/sh", "-c", "apk add --no-cache curl jq && sh /sync.sh && echo 'Port gesetzt, schlafe jetzt...' && sleep infinity"]
     healthcheck:
-      test: ["CMD-SHELL", "[ -f /tmp/gluetun/forwarded_port ] || exit 1"]
+      test: ["CMD-SHELL", "[ -f /tmp/gluetun/forwarded_port ] || exit 1"] 
       interval: 10s
       timeout: 10s
-      retries: 3"]
+      retries: 5
     restart: unless-stopped
     logging: *default-logging
 
