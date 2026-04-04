@@ -324,7 +324,7 @@ services:
     environment:
       - PUID=3006
       - PGID=3006
-    command: daemon
+    entrypoint: ["cross-seed", "daemon"]
     volumes:
       - /opt/docker/cross-seed:/config
       - /mnt/data:/data
