@@ -295,7 +295,7 @@ services:
     logging: *default-logging
     
   cross-seed:
-    image: ghcr.io/cross-seed/cross-seed:v6.0.0
+    image: gghcr.io/cross-seed/cross-seed:v6.13.6
     container_name: cross-seed
     env_file: /opt/docker/secrets.env
     environment:
