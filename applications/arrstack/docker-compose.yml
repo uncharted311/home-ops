@@ -251,8 +251,9 @@ services:
     image: ghcr.io/hotio/qbittorrent:release-5.1.4
     container_name: qbittorrent
     depends_on:
-      gluetun-qbit:
-        condition: service_healthy
+      - "gluetun-qbit"
+      #gluetun-qbit:
+      #  condition: service_healthy
     network_mode: "service:gluetun-qbit"
     env_file: /opt/docker/secrets.env
     environment:
