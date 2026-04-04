@@ -252,7 +252,7 @@ services:
   qbit-port-sync:
     image: alpine:3.19.1
     container_name: qbit-port-sync
-    network_mode: "service:gluetun-qbi"
+    network_mode: "service:gluetun-qbit"
     depends_on:
       gluetun-qbit:
         condition: service_healthy
