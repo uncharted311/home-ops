@@ -352,10 +352,10 @@ services:
     restart: unless-stopped
     networks:
       - arr_network
-    ports:
-      - 3000:3000
+    expose:
+      - 9999
     volumes:
-      - /opt/docker/uppollo:/config
+      - /opt/docker/uppollo:/home/uppollo/.config/upPollo
       - /data/content:/data/content:ro 
     environment:
       - PUID=3006
