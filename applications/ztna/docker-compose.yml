@@ -1,6 +1,6 @@
 services:
   pangolin:
-    image: fosrl/pangolin:ee-postgresql-1.16.2@sha256:2f5b971b2371d3403f0a8e7cd8728af19b8a994f02a333ad434887b5d21e0b85
+    image: fosrl/pangolin:ee-postgresql-1.17.0@sha256:ac4e5ffd7fc57cf63394dd32f99226821c8853b499aec24b57affb09c8bcbdcd
     container_name: pangolin
     depends_on:
       geoipupdate:
