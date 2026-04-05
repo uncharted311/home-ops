@@ -218,6 +218,7 @@ services:
       start_period: 30s
     logging: *default-logging
 
+  # VPN Container for qBittorrent with WireGuard and ProtonVPN
   gluetun-qbit:
     image: qmcgaw/gluetun:v3.41.1
     container_name: gluetun-qbit
@@ -248,7 +249,8 @@ services:
     #  timeout: 10s
     #  retries: 3
     logging: *default-logging
-  
+
+  # Sidecar Container to Sync qBittorrent Port Forwarding with Gluetun
   qbit-port-sync:
     image: alpine:3.19.1
     container_name: qbit-port-sync
@@ -270,6 +272,7 @@ services:
     restart: unless-stopped
     logging: *default-logging
 
+  # Torrent Downloader
   qbittorrent:
     image: ghcr.io/hotio/qbittorrent:release-5.1.4
     container_name: qbittorrent
@@ -296,7 +299,8 @@ services:
       timeout: 10s
       retries: 3
     logging: *default-logging
-  
+
+  # Torrent And RSS Automation
   autobrr:
     image: ghcr.io/autobrr/autobrr:v1.75.0
     container_name: autobrr
@@ -317,7 +321,8 @@ services:
       timeout: 5s
       retries: 3
     logging: *default-logging
-    
+
+  # Uploader for Torrent Trackers
   cross-seed:
     image: ghcr.io/cross-seed/cross-seed:6.13.6
     container_name: cross-seed
@@ -338,6 +343,29 @@ services:
     #  interval: 1m
     #  timeout: 10s
     #  retries: 3
+    logging: *default-logging
+
+  # Uploader for Private Torrent Trackers (RHD)
+  uppollo:
+    image: ghcr.io/uppollo/uppollo:0.2.1 
+    container_name: uppollo
+    restart: unless-stopped
+    networks:
+      - arr_network
+    ports:
+      - 3000:3000
+    volumes:
+      - /opt/docker/uppollo:/config
+      - /data/content:/data/content:ro 
+    environment:
+      - PUID=3006
+      - PGID=3006
+      - TZ=Europe/Berlin
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     logging: *default-logging
     
   # Notifiarr - https://github.com/Notifiarr/notifiarr
