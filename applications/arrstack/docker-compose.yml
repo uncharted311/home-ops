@@ -335,6 +335,8 @@ services:
     volumes:
       - /opt/docker/cross-seed:/config
       - /mnt/data:/data
+    expose:
+      - 2468
     networks:
       - arr_network
     restart: unless-stopped
