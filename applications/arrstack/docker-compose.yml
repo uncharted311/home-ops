@@ -347,7 +347,7 @@ services:
 
   # Uploader for Private Torrent Trackers (RHD)
   uppollo:
-    image: ghcr.io/uppollo/uppollo:0.2.1 
+    image: uppollo/uppollo:v1.12.1
     container_name: uppollo
     restart: unless-stopped
     networks:
