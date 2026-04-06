@@ -250,6 +250,7 @@ services:
     expose:
       - 8080 # qBittorrent WebUI
       - 9000 # TheLounge WebUI
+      - 80   # Speedtest-Tracker
     networks:
       - arr_network
     restart: unless-stopped
@@ -365,6 +366,40 @@ services:
       - TZ=Europe/Berlin
     volumes:
       - thelounge:/var/opt/thelounge
+    restart: unless-stopped
+    #healthcheck:
+    #  test: ["CMD", "curl", "-f", "http://localhost:7474/api/health"]
+    #  interval: 30s
+    #  timeout: 5s
+    #  retries: 3
+    logging: *default-logging
+
+  # IRC-Chat for Private Trackers
+  speedtest-tracker-qbit-vpn:
+    image: lscr.io/linuxserver/speedtest-tracker:1.13.12
+    container_name: speedtest-tracker-qbit-vpn
+    network_mode: "service:gluetun-qbit"
+    env_file: /opt/docker/secrets.env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - APP_KEY=V/6B2h+w+0q8p8fIZghKpYogEntRL5i4PdIdGsbszn0=
+      - APP_URL=https://speedtest-qbit.{SECRET_CERT_NAME}
+      - DB_CONNECTION=sqlite
+      - SPEEDTEST_SCHEDULE=0 */2 * * *
+      - #SPEEDTEST_SERVERS=
+      - ADMIN_EMAIL=admin@{SECRET_DOMAIN}
+      - ADMIN_PASSWORD=admin
+      - DB_HOST= #optional
+      - DB_PORT= #optional
+      - DB_DATABASE= #optional
+      - DB_USERNAME= #optional
+      - DB_PASSWORD= #optional
+      - DISPLAY_TIMEZONE=Europe/Berlin #optional
+      - PRUNE_RESULTS_OLDER_THAN=0 #optional
+    volumes:
+      - /opt/docker/speedtest-tracker:/config
     restart: unless-stopped
     #healthcheck:
     #  test: ["CMD", "curl", "-f", "http://localhost:7474/api/health"]
