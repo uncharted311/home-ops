@@ -249,6 +249,7 @@ services:
       - /opt/docker/gluetun-qbit:/tmp/gluetun
     expose:
       - 8080 # qBittorrent WebUI
+      - 9000 # TheLounge WebUI
     networks:
       - arr_network
     restart: unless-stopped
@@ -354,6 +355,25 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+    logging: *default-logging
+  
+  # IRC-Chat for Private Trackers
+  thelounge:
+    image: ghcr.io/thelounge/thelounge:v4.4.3
+    container_name: thelounge
+    network_mode: "service:gluetun-qbit"
+    environment:
+      - TZ=Europe/Berlin
+    volumes:
+      - thelounge:/var/opt/thelounge
+    networks:
+      - arr_network
+    restart: unless-stopped
+    #healthcheck:
+    #  test: ["CMD", "curl", "-f", "http://localhost:7474/api/health"]
+    #  interval: 30s
+    #  timeout: 5s
+    #  retries: 3
     logging: *default-logging
 
 #  # Uploader for Torrent Trackers
@@ -591,6 +611,7 @@ volumes:
   tracearr_postgres:
   tracearr_redis:
   tracearr_data:
+  thelounge:
   
 networks:
   arr_network:
