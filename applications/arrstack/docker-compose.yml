@@ -359,7 +359,7 @@ services:
   
   # IRC-Chat for Private Trackers
   thelounge:
-    image: ghcr.io/thelounge/thelounge:v4.4.3
+    image: ghcr.io/thelounge/thelounge:4.4.3
     container_name: thelounge
     network_mode: "service:gluetun-qbit"
     environment:
