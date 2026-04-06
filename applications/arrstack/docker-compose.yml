@@ -357,30 +357,30 @@ services:
     logging: *default-logging
 
   # Uploader for Torrent Trackers
-  cross-seed:
-    image: ghcr.io/cross-seed/cross-seed:6.13.6@sha256:e2bf5b593e4e7d699e6242423ad7966190cd52ba8eefafdfdbb0cb5b0b609b96
-    container_name: cross-seed
-    env_file: /opt/docker/secrets.env
-    command: daemon
-    user: "3006:3006"
-    environment:
-      - TZ=Europe/Berlin
-      - PUID=3006
-      - PGID=3006
-    volumes:
-      - /opt/docker/cross-seed:/config
-      - /mnt/data:/data
-    expose:
-      - 2468
-    networks:
-      - arr_network
-    restart: unless-stopped
+#  cross-seed:
+#    image: ghcr.io/cross-seed/cross-seed:6.13.6@sha256:e2bf5b593e4e7d699e6242423ad7966190cd52ba8eefafdfdbb0cb5b0b609b96
+#    container_name: cross-seed
+#    env_file: /opt/docker/secrets.env
+#    command: daemon
+#    user: "3006:3006"
+#    environment:
+#      - TZ=Europe/Berlin
+#      - PUID=3006
+#      - PGID=3006
+#    volumes:
+#      - /opt/docker/cross-seed:/config
+#      - /mnt/data:/data
+#    expose:
+#      - 2468
+#    networks:
+#      - arr_network
+#    restart: unless-stopped
 #    #healthcheck:
 #    #  test: ["CMD-SHELL", "ps aux | grep -v grep | grep -q 'cross-seed'"]
 #    #  interval: 1m
 #    #  timeout: 10s
 #    #  retries: 3
-    logging: *default-logging
+#    logging: *default-logging
 
   # Uploader for Private Torrent Trackers (RHD)
   uppollo:
