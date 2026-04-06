@@ -366,8 +366,6 @@ services:
       - TZ=Europe/Berlin
     volumes:
       - thelounge:/var/opt/thelounge
-    networks:
-      - arr_network
     restart: unless-stopped
     #healthcheck:
     #  test: ["CMD", "curl", "-f", "http://localhost:7474/api/health"]
