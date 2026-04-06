@@ -6,6 +6,7 @@ services:
     container_name: nginx
     env_file: /opt/docker/secrets.env
     environment:
+      - TZ=Europe/Berlin
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
     volumes:
@@ -38,6 +39,7 @@ services:
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
     env_file: /opt/docker/secrets.env
     environment:
+      - TZ=Europe/Berlin
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
       - SECRET_CERT_DOMAINS=srv.${SECRET_DOMAIN},*.srv.${SECRET_DOMAIN}
     volumes:
@@ -65,6 +67,7 @@ services:
       - /mnt/download-temp/usenet:/incomplete
     env_file: /opt/docker/secrets.env
     environment:
+      - TZ=Europe/Berlin
       - PUID=3006
       - PGID=3006
       - UMASK=002
@@ -91,6 +94,7 @@ services:
       - "sonarr"
     env_file: /opt/docker/secrets.env
     environment:
+      - TZ=Europe/Berlin
       - LOG_LEVEL=info
       - PORT=5055
     expose:
@@ -118,6 +122,7 @@ services:
       - "sabnzbd"
     env_file: /opt/docker/secrets.env
     environment:
+      - TZ=Europe/Berlin
       - PUID=3006
       - PGID=3006
       - UMASK=002
@@ -146,6 +151,7 @@ services:
       - "sabnzbd"
     env_file: /opt/docker/secrets.env
     environment:
+      - TZ=Europe/Berlin
       - PUID=3006
       - PGID=3006
       - UMASK=002
@@ -174,6 +180,7 @@ services:
       - "sabnzbd"
     env_file: /opt/docker/secrets.env
     environment:
+      - TZ=Europe/Berlin
       - PUID=3006
       - PGID=3006
       - UMASK=002
@@ -201,6 +208,7 @@ services:
       - "umlautadaptarr"
     env_file: /opt/docker/secrets.env
     environment:
+      - TZ=Europe/Berlin
       - PUID=3006
       - PGID=3006
     volumes:
@@ -228,6 +236,7 @@ services:
       - /dev/net/tun:/dev/net/tun
     env_file: /opt/docker/secrets.env
     environment:
+      - TZ=Europe/Berlin
       - VPN_SERVICE_PROVIDER=protonvpn
       - VPN_TYPE=wireguard
       - WIREGUARD_PRIVATE_KEY=${QBIT_PROTON_PRIVATE_KEY}
@@ -282,6 +291,7 @@ services:
     network_mode: "service:gluetun-qbit"
     env_file: /opt/docker/secrets.env
     environment:
+      - TZ=Europe/Berlin
       - PUID=3006
       - PGID=3006
       - UMASK=002
@@ -300,12 +310,36 @@ services:
       retries: 3
     logging: *default-logging
 
+  # Qbit Torrent WebUI - Automation
+  qui:
+    image: ghcr.io/autobrr/qui:v1.15.0
+    container_name: qui
+    volumes:
+      - /opt/docker/qui:/config
+      - /mnt/data:/data
+    environment:
+      - TZ=Europe/Berlin
+      - PUID=3006
+      - PGID=3006
+    expose:
+      - 3000
+    networks:
+      - arr_network
+    restart: unless-stopped
+    #healthcheck:
+    #  test: ["CMD", "curl", "-f", "http://localhost:8080/api/v2/app/version"]
+    #  interval: 30s
+    #  timeout: 10s
+    #  retries: 3
+    logging: *default-logging
+
   # Torrent And RSS Automation
   autobrr:
     image: ghcr.io/autobrr/autobrr:v1.75.0
     container_name: autobrr
     env_file: /opt/docker/secrets.env
     environment:
+      - TZ=Europe/Berlin
       - PUID=3006
       - PGID=3006
     volumes:
@@ -330,6 +364,7 @@ services:
     command: daemon
     user: "3006:3006"
     environment:
+      - TZ=Europe/Berlin
       - PUID=3006
       - PGID=3006
     volumes:
@@ -356,9 +391,9 @@ services:
       - /opt/docker/uppollo:/home/uppollo/.config/upPollo
       - /data/content:/data/content:ro 
     environment:
+      - TZ=Europe/Berlin
       - PUID=3006
       - PGID=3006
-      - TZ=Europe/Berlin
     networks:
       - arr_network
     expose:
@@ -398,6 +433,7 @@ services:
     container_name: mediathekarr
     env_file: /opt/docker/secrets.env
     environment:
+      - TZ=Europe/Berlin
       - PUID=3006
       - PGID=3006
       - DOWNLOAD_INCOMPLETE_PATH=/data/mediathek/incomplete # Path to incomplete downloads
@@ -424,6 +460,7 @@ services:
     container_name: umlautadaptarr
     env_file: /opt/docker/secrets.env
     environment:
+      - TZ=Europe/Berlin
       - SONARR__ENABLED=true
       - SONARR__HOST=http://sonarr:8989
       - SONARR__APIKEY=${SONARR_API_KEY}
@@ -455,6 +492,7 @@ services:
         hard: 65536 
     env_file: /opt/docker/secrets.env
     environment:
+      - TZ=Europe/Berlin
       - LOG_LEVEL=info
     volumes:
       - tracearr_postgres:/data/postgres
@@ -481,6 +519,7 @@ services:
       - "sonarr"
     env_file: /opt/docker/secrets.env
     environment:
+      - TZ=Europe/Berlin
       - SONARR_URL=http://sonarr:8989
       - SONARR_API_KEY=${SONARR_API_KEY}
       - TMDB_API_KEY=${TMDB_API_KEY}
@@ -514,6 +553,7 @@ services:
     image: ghcr.io/flaresolverr/flaresolverr:v3.4.6
     container_name: flaresolverr
     environment:
+      - TZ=Europe/Berlin
       - LOG_LEVEL=${LOG_LEVEL:-info}
       - TIMEZONE=Europe/Berlin
     networks:

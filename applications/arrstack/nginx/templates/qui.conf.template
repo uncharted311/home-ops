@@ -1,6 +1,6 @@
 server {
     listen 443 ssl;
-    server_name cross-seed.${SECRET_CERT_NAME};
+    server_name qui.${SECRET_CERT_NAME};
     
     ssl_certificate /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${SECRET_CERT_NAME}/privkey.pem;
@@ -14,7 +14,7 @@ server {
     error_log /dev/stderr;
 
     location / {
-        proxy_pass http://cross-seed:2468/;
+        proxy_pass http://qui:3000/;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
