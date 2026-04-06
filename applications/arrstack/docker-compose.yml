@@ -228,7 +228,7 @@ services:
 
   # VPN Container for qBittorrent with WireGuard and ProtonVPN
   gluetun-qbit:
-    image: qmcgaw/gluetun:v3.41.1
+    image: qmcgaw/gluetun:v3.41.1@sha256:1a5bf4b4820a879cdf8d93d7ef0d2d963af56670c9ebff8981860b6804ebc8ab
     container_name: gluetun-qbit
     cap_add:
       - NET_ADMIN
@@ -261,7 +261,7 @@ services:
 
   # Sidecar Container to Sync qBittorrent Port Forwarding with Gluetun
   qbit-port-sync:
-    image: alpine:3.19.1
+    image: alpine:3.23.3@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659
     container_name: qbit-port-sync
     network_mode: "service:gluetun-qbit"
     depends_on:
@@ -283,7 +283,7 @@ services:
 
   # Torrent Downloader
   qbittorrent:
-    image: ghcr.io/hotio/qbittorrent:release-5.1.4
+    image: ghcr.io/hotio/qbittorrent:release-5.1.4@sha256:d1c1ede6ca40b6ce79879ffa80d2c35e1eb71bc56b20f5336a1d80c46fc1cdb0
     container_name: qbittorrent
     depends_on:
       gluetun-qbit:
@@ -335,7 +335,7 @@ services:
 
   # Torrent And RSS Automation
   autobrr:
-    image: ghcr.io/autobrr/autobrr:v1.75.0
+    image: ghcr.io/autobrr/autobrr:v1.75.1@sha256:712cf8ffa11eba28e286d632dc8ad6b17fb6d754573848a07ec91043eb03d87e
     container_name: autobrr
     env_file: /opt/docker/secrets.env
     environment:
@@ -358,7 +358,7 @@ services:
 
   # Uploader for Torrent Trackers
   cross-seed:
-    image: ghcr.io/cross-seed/cross-seed:6.13.6
+    image: ghcr.io/cross-seed/cross-seed:6.13.6@sha256:e2bf5b593e4e7d699e6242423ad7966190cd52ba8eefafdfdbb0cb5b0b609b96
     container_name: cross-seed
     env_file: /opt/docker/secrets.env
     command: daemon
@@ -384,7 +384,7 @@ services:
 
   # Uploader for Private Torrent Trackers (RHD)
   uppollo:
-    image: uppollo/uppollo:v1.12.1
+    image: uppollo/uppollo:v1.12.1@sha256:2dc2a3e3ff80ed91f14b6c463b6bd39a41aa9238892f37671413f2541c11504e
     container_name: uppollo
     command: serve
     volumes:
@@ -550,7 +550,7 @@ services:
     logging: *default-logging
 
   flaresolverr:
-    image: ghcr.io/flaresolverr/flaresolverr:v3.4.6
+    image: ghcr.io/flaresolverr/flaresolverr:v3.4.6@sha256:7962759d99d7e125e108e0f5e7f3cdbcd36161776d058d1d9b7153b92ef1af9e
     container_name: flaresolverr
     environment:
       - TZ=Europe/Berlin
