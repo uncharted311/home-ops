@@ -64,7 +64,7 @@ services:
       - /opt/docker/sabnzbd/config:/config
       - /opt/docker/sabnzbd/scripts:/scripts
       - /mnt/data/usenet:/data/usenet
-      - /mnt/download-temp/usenet:/incomplete
+      - /mnt/download-temp:/incomplete
     env_file: /opt/docker/secrets.env
     environment:
       - TZ=Europe/Berlin
@@ -302,7 +302,6 @@ services:
     volumes:
       - /opt/docker/qbit:/config
       - /mnt/data:/data
-      - /mnt/download-temp/torrent:/incomplete
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/api/v2/app/version"]
@@ -483,7 +482,7 @@ services:
       - SONARR__HOST=http://sonarr:8989
       - SONARR__APIKEY=${SONARR_API_KEY}
       - RADARR__ENABLED=true
-      - RADARR__HOST=http://radarr:787
+      - RADARR__HOST=http://radarr:7878
       - RADARR__APIKEY=${RADARR_API_KEY}
     expose:
       - 5006
