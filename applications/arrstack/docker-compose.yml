@@ -322,7 +322,7 @@ services:
       - PUID=3006
       - PGID=3006
     expose:
-      - 3000
+      - 7476
     networks:
       - arr_network
     restart: unless-stopped
