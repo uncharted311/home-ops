@@ -250,7 +250,7 @@ services:
     expose:
       - 8000 # Gluetun Control Server for Port Forwarding
       - 8080 # qBittorrent WebUI
-      - 9000   # Speedtest-Tracker
+      - 80   # Speedtest-Tracker
     networks:
       - arr_network
     restart: unless-stopped
