@@ -225,11 +225,11 @@ services:
       retries: 5
       start_period: 30s
     logging: *default-logging
-
+ 
   # VPN Container for qBittorrent with WireGuard and ProtonVPN
-  gluetun-qbit:
+  qbittorrent-vpn:
     image: qmcgaw/gluetun:v3.41.1@sha256:1a5bf4b4820a879cdf8d93d7ef0d2d963af56670c9ebff8981860b6804ebc8ab
-    container_name: gluetun-qbit
+    container_name: qbittorrent-vpn
     cap_add:
       - NET_ADMIN
     devices:
@@ -239,47 +239,22 @@ services:
       - TZ=Europe/Berlin
       - VPN_SERVICE_PROVIDER=protonvpn
       - VPN_TYPE=wireguard
-      - WIREGUARD_PRIVATE_KEY=${QBIT_PROTON_PRIVATE_KEY}
-      - WIREGUARD_ADDRESSES=${QBIT_PROTON_ADDRESSES}
-      - SERVER_COUNTRIES=${QBIT_PROTON_COUNTRIES}
       - VPN_PORT_FORWARDING=on
-      - VPN_PORT_FORWARDING_PROVIDER=protonvpn
+      - WIREGUARD_PRIVATE_KEY=${QBIT_PROTON_PRIVATE_KEY}
+      - SERVER_COUNTRIES=${QBIT_PROTON_COUNTRIES}
+      - PORT_FORWARD_ONLY=on
+#      - VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c '/usr/bin/wget -O- --retry-connrefused --post-data "json={\"listen_port\":{{PORTS}}}" http://127.0.0.1:${QBITTORRENT_WEBUI_PORT}/api/v2/app/setPreferences 2>&1'
+      - VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c '/usr/bin/wget -O- --retry-connrefused --post-data "json={\"listen_port\":{{PORTS}}}" http://qbittorrent-vpn:8080/api/v2/app/setPreferences 2>&1'
       - HTTP_CONTROL_SERVER_ADDRESS=:8000
     volumes:
-      - /opt/docker/gluetun-qbit:/tmp/gluetun
+      - /opt/docker/qbittorrent-vpn:/gluetun
     expose:
+      - 8000 # Gluetun Control Server for Port Forwarding
       - 8080 # qBittorrent WebUI
       - 9000 # TheLounge WebUI
       - 80   # Speedtest-Tracker
     networks:
       - arr_network
-    restart: unless-stopped
-    #healthcheck:
-    #  test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8000/v1/vpn/status | grep -q 'up'"]
-    #  interval: 30s
-    #  timeout: 10s
-    #  retries: 3
-    logging: *default-logging
-
-  # Sidecar Container to Sync qBittorrent Port Forwarding with Gluetun
-  qbit-port-sync:
-    image: alpine:3.23.3@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659
-    container_name: qbit-port-sync
-    network_mode: "service:gluetun-qbit"
-    depends_on:
-      gluetun-qbit:
-        condition: service_healthy
-      qbittorrent:
-        condition: service_healthy
-    volumes:
-      - /opt/docker/gluetun-qbit:/tmp/gluetun:ro
-      - /opt/docker/qbit/qbit-port-sync.sh:/sync.sh:ro
-    entrypoint: ["/bin/sh", "-c", "apk add --no-cache curl jq && sh /sync.sh && echo 'Port gesetzt, schlafe jetzt...' && sleep infinity"]
-    healthcheck:
-      test: ["CMD-SHELL", "[ -f /tmp/gluetun/forwarded_port ] || exit 1"] 
-      interval: 10s
-      timeout: 10s
-      retries: 5
     restart: unless-stopped
     logging: *default-logging
 
@@ -287,16 +262,14 @@ services:
   qbittorrent:
     image: ghcr.io/hotio/qbittorrent:release-5.1.4@sha256:d1c1ede6ca40b6ce79879ffa80d2c35e1eb71bc56b20f5336a1d80c46fc1cdb0
     container_name: qbittorrent
-    depends_on:
-      gluetun-qbit:
-        condition: service_healthy
-    network_mode: "service:gluetun-qbit"
+    network_mode: "service:qbittorrent-vpn"
     env_file: /opt/docker/secrets.env
     environment:
       - TZ=Europe/Berlin
       - PUID=3006
       - PGID=3006
       - UMASK=002
+      - WEBUI_PORT=8080
       - VPN_ENABLED=false
       #- VPN_PORT_FORWARDING=true
       #- VPN_PORT_FORWARDING_PROVIDER=protonvpn
@@ -361,7 +334,7 @@ services:
   thelounge:
     image: ghcr.io/thelounge/thelounge:4.4.3@sha256:c2aa0916203b298ffaf3a36c4eb60ef73c1006448d430e218d37840472e84e50
     container_name: thelounge
-    network_mode: "service:gluetun-qbit"
+    network_mode: "service:qbittorrent-vpn"
     environment:
       - TZ=Europe/Berlin
     volumes:
@@ -374,39 +347,31 @@ services:
     #  retries: 3
     logging: *default-logging
 
-#  # IRC-Chat for Private Trackers
-#  speedtest-tracker-qbit-vpn:
-#    image: lscr.io/linuxserver/speedtest-tracker:1.13.12
-#    container_name: speedtest-tracker-qbit-vpn
-#    network_mode: "service:gluetun-qbit"
-#    env_file: /opt/docker/secrets.env
-#    environment:
-#      - PUID=1000
-#      - PGID=1000
-#      - TZ=Europe/Berlin
-#      - APP_KEY=V/6B2h+w+0q8p8fIZghKpYogEntRL5i4PdIdGsbszn0=
-#      - APP_URL=https://speedtest-qbit.{SECRET_CERT_NAME}
-#      - DB_CONNECTION=sqlite
-#      - SPEEDTEST_SCHEDULE=0 */2 * * *
-#      - #SPEEDTEST_SERVERS=
-#      - ADMIN_EMAIL=admin@{SECRET_DOMAIN}
-#      - ADMIN_PASSWORD=admin
-#      - DB_HOST= #optional
-#      - DB_PORT= #optional
-#      - DB_DATABASE= #optional
-#      - DB_USERNAME= #optional
-#      - DB_PASSWORD= #optional
-#      - DISPLAY_TIMEZONE=Europe/Berlin #optional
-#      - PRUNE_RESULTS_OLDER_THAN=0 #optional
-#    volumes:
-#      - /opt/docker/speedtest-tracker:/config
-#    restart: unless-stopped
-#    #healthcheck:
-#    #  test: ["CMD", "curl", "-f", "http://localhost:7474/api/health"]
-#    #  interval: 30s
-#    #  timeout: 5s
-#    #  retries: 3
-#    logging: *default-logging
+  # IRC-Chat for Private Trackers
+  speedtest-tracker-qbit-vpn:
+    image: lscr.io/linuxserver/speedtest-tracker:1.13.12
+    container_name: speedtest-tracker-qbit-vpn
+    network_mode: "service:qbittorrent-vpn"
+    env_file: /opt/docker/secrets.env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - APP_KEY=${SPEEDTEST_APP_KEY}
+      - APP_URL=https://speedtest-qbit.{SECRET_CERT_NAME}
+      - DB_CONNECTION=sqlite
+      - SPEEDTEST_SCHEDULE=0 */2 * * *
+      #- SPEEDTEST_SERVERS=
+      - DISPLAY_TIMEZONE=Europe/Berlin #optional
+    volumes:
+      - /opt/docker/speedtest-tracker:/config
+    restart: unless-stopped
+    #healthcheck:
+    #  test: ["CMD", "curl", "-f", "http://localhost:7474/api/health"]
+    #  interval: 30s
+    #  timeout: 5s
+    #  retries: 3
+    logging: *default-logging
 
   # Uploader for Torrent Trackers
 #  cross-seed:
