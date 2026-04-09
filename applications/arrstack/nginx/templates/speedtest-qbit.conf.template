@@ -14,7 +14,7 @@ server {
     error_log /dev/stderr;
     
     location / {
-        proxy_pass http://gluetun-qbit:80/;
+        proxy_pass http://qbittorrent-vpn:80/;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
