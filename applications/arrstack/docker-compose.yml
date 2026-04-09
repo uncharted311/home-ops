@@ -2,7 +2,7 @@ services:
 
   # Nginx Reverse Proxy - https://github.com/nginx/nginx
   nginx:
-    image: nginx:1.29.7-alpine@sha256:e7257f1ef28ba17cf7c248cb8ccf6f0c6e0228ab9c315c152f9c203cd34cf6d1
+    image: nginx:1.29.8-alpine@sha256:2c4de29ca0588f9b56ced6691e0c605c2fd00501478e2e12949ba062304bc1ca
     container_name: nginx
     env_file: /opt/docker/secrets.env
     environment:
@@ -34,7 +34,7 @@ services:
 
   # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
   certbot:
-    image: certbot/dns-cloudflare:v5.4.0@sha256:587d1d445ab308fb897af923f8ea570ba278445fd64a335303a65fe2a81d209c
+    image: certbot/dns-cloudflare:v5.5.0@sha256:f90db06a98b61bd221fe5a9688d0bb975b444760ef677cb4369ffc2a8a16e579
     container_name: certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
     env_file: /opt/docker/secrets.env
@@ -313,7 +313,7 @@ services:
 
   # Qbit Torrent WebUI - Automation
   qui:
-    image: ghcr.io/autobrr/qui:v1.15.0
+    image: ghcr.io/autobrr/qui:v1.16.1@sha256:07b6ea9572e52e8b5f70f8fb15a7c688d8d754a7616242d3ad0b21dbd5c05836
     container_name: qui
     volumes:
       - /opt/docker/qui:/config
@@ -336,7 +336,7 @@ services:
 
   # Torrent And RSS Automation
   autobrr:
-    image: ghcr.io/autobrr/autobrr:v1.75.1@sha256:712cf8ffa11eba28e286d632dc8ad6b17fb6d754573848a07ec91043eb03d87e
+    image: ghcr.io/autobrr/autobrr:v1.76.0@sha256:f0f4d73fcd77700b1c98233562cd94a78b9bf685a7594a0aac4f8a9436b5044d
     container_name: autobrr
     env_file: /opt/docker/secrets.env
     environment:
@@ -359,7 +359,7 @@ services:
   
   # IRC-Chat for Private Trackers
   thelounge:
-    image: ghcr.io/thelounge/thelounge:4.4.3
+    image: ghcr.io/thelounge/thelounge:4.4.3@sha256:c2aa0916203b298ffaf3a36c4eb60ef73c1006448d430e218d37840472e84e50
     container_name: thelounge
     network_mode: "service:gluetun-qbit"
     environment:
@@ -374,6 +374,7 @@ services:
     #  retries: 3
     logging: *default-logging
 
+<<<<<<< HEAD
 #  # IRC-Chat for Private Trackers
 #  speedtest-tracker-qbit-vpn:
 #    image: lscr.io/linuxserver/speedtest-tracker:1.13.12
@@ -407,6 +408,41 @@ services:
 #    #  timeout: 5s
 #    #  retries: 3
 #    logging: *default-logging
+=======
+  # IRC-Chat for Private Trackers
+  speedtest-tracker-qbit-vpn:
+    image: lscr.io/linuxserver/speedtest-tracker:1.13.12@sha256:2af8df42ae2e32d162ce9230002e726789700e38e527e9c74a746aa983b86888
+    container_name: speedtest-tracker-qbit-vpn
+    network_mode: "service:gluetun-qbit"
+    env_file: /opt/docker/secrets.env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - APP_KEY=V/6B2h+w+0q8p8fIZghKpYogEntRL5i4PdIdGsbszn0=
+      - APP_URL=https://speedtest-qbit.{SECRET_CERT_NAME}
+      - DB_CONNECTION=sqlite
+      - SPEEDTEST_SCHEDULE=0 */2 * * *
+      - #SPEEDTEST_SERVERS=
+      - ADMIN_EMAIL=admin@{SECRET_DOMAIN}
+      - ADMIN_PASSWORD=admin
+      - DB_HOST= #optional
+      - DB_PORT= #optional
+      - DB_DATABASE= #optional
+      - DB_USERNAME= #optional
+      - DB_PASSWORD= #optional
+      - DISPLAY_TIMEZONE=Europe/Berlin #optional
+      - PRUNE_RESULTS_OLDER_THAN=0 #optional
+    volumes:
+      - /opt/docker/speedtest-tracker:/config
+    restart: unless-stopped
+    #healthcheck:
+    #  test: ["CMD", "curl", "-f", "http://localhost:7474/api/health"]
+    #  interval: 30s
+    #  timeout: 5s
+    #  retries: 3
+    logging: *default-logging
+>>>>>>> 497760b486c81642ea66a565b3f15a17088074fd
 
   # Uploader for Torrent Trackers
 #  cross-seed:

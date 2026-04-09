@@ -1,6 +1,6 @@
 services:
   pangolin:
-    image: fosrl/pangolin:ee-postgresql-1.16.2@sha256:2f5b971b2371d3403f0a8e7cd8728af19b8a994f02a333ad434887b5d21e0b85
+    image: fosrl/pangolin:ee-postgresql-1.17.0@sha256:ac4e5ffd7fc57cf63394dd32f99226821c8853b499aec24b57affb09c8bcbdcd
     container_name: pangolin
     depends_on:
       geoipupdate:
@@ -28,7 +28,7 @@ services:
         max-file: "3"
 
   gerbil:
-    image: fosrl/gerbil:1.3.0@sha256:7d9732af74c5851dde4b39a69a0c5d25b2f86a44464ebe0a4f116280914a8b56
+    image: fosrl/gerbil:1.3.1@sha256:b16a722d5603fa74acd3e1deb86cea0b8330d015ab5325dc41e44108fe6f29c9
     container_name: gerbil
     restart: unless-stopped
     cap_add:
@@ -78,7 +78,7 @@ services:
       retries: 3
 
   traefik:
-    image: traefik:v3.6.12@sha256:171c9c3565b29f6c133f1c1b43c5d4e5853415198e9e1078c001f8702ff66aec
+    image: traefik:v3.6.13@sha256:abb4f51887319c9b9d9cfe1d3cdf9379a771138003bf683f10e97697e148f95f
     container_name: traefik
     restart: unless-stopped
     depends_on:
