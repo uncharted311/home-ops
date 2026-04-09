@@ -260,7 +260,7 @@ services:
 
   # Torrent Downloader
   qbittorrent:
-    image: ghcr.io/hotio/qbittorrent:release-5.1.4@sha256:d1c1ede6ca40b6ce79879ffa80d2c35e1eb71bc56b20f5336a1d80c46fc1cdb0
+    image: lscr.io/linuxserver/qbittorrent:5.1.4
     container_name: qbittorrent
     network_mode: "service:qbittorrent-vpn"
     env_file: /opt/docker/secrets.env
@@ -270,18 +270,18 @@ services:
       - PGID=3006
       - UMASK=002
       - WEBUI_PORT=8080
-      - VPN_ENABLED=false
+      #- VPN_ENABLED=false
       #- VPN_PORT_FORWARDING=true
       #- VPN_PORT_FORWARDING_PROVIDER=protonvpn
     volumes:
       - /opt/docker/qbit:/config
       - /mnt/data:/data
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/api/v2/app/version"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    #healthcheck:
+    #  test: ["CMD", "curl", "-f", "http://localhost:8080/api/v2/app/version"]
+    #  interval: 30s
+    #  timeout: 10s
+    #  retries: 3
     logging: *default-logging
 
   # Qbit Torrent WebUI - Automation
