@@ -326,9 +326,9 @@ services:
     logging: *default-logging
 
   # IRC-Chat for Private Trackers
-  speedtest-tracker-qbit-vpn:
+  speedtest-tracker-qbit:
     image: lscr.io/linuxserver/speedtest-tracker:1.13.12
-    container_name: speedtest-tracker-qbit-vpn
+    container_name: speedtest-tracker-qbit
     network_mode: "service:qbittorrent-vpn"
     env_file: /opt/docker/secrets.env
     environment:
