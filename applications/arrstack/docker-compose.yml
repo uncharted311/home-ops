@@ -285,7 +285,7 @@ services:
 
   # Torrent Downloader
   qbittorrent:
-    image: ghcr.io/hotio/qbittorrent:release-5.1.4@sha256:d1c1ede6ca40b6ce79879ffa80d2c35e1eb71bc56b20f5336a1d80c46fc1cdb0
+    image: ghcr.io/hotio/qbittorrent:release-5.1.4@sha256:39e30bd8e664adafdcab0a054173e08da3bfd7561b7a629cf2d4271afbfca563
     container_name: qbittorrent
     depends_on:
       gluetun-qbit:
