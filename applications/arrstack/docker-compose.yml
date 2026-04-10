@@ -5,6 +5,8 @@ services:
     image: nginx:1.29.8-alpine@sha256:2c4de29ca0588f9b56ced6691e0c605c2fd00501478e2e12949ba062304bc1ca
     container_name: nginx
     env_file: /opt/docker/secrets.env
+    labels:
+      - "autoheal=true"
     environment:
       - TZ=Europe/Berlin
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
@@ -60,6 +62,8 @@ services:
   sabnzbd:
     image: linuxserver/sabnzbd:version-4.5.5@sha256:f0abed8e9450d5b71631a89b663fbfbfbb6909b254f94911c7e77162a3827854
     container_name: sabnzbd
+    labels:
+      - "autoheal=true"
     volumes:
       - /opt/docker/sabnzbd/config:/config
       - /opt/docker/sabnzbd/scripts:/scripts
@@ -77,10 +81,10 @@ services:
       - 8080
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
-      interval: 30s
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 1m
       timeout: 10s
-      retries: 5
+      retries: 3
       start_period: 30s
     logging: *default-logging
 
@@ -89,9 +93,8 @@ services:
     image: ghcr.io/seerr-team/seerr:v3.1.0@sha256:b35ba0461c4a1033d117ac1e5968fd4cbe777899e4cbfbdeaf3d10a42a0eb7e9
     container_name: seerr
     init: true
-    depends_on:
-      - "radarr"
-      - "sonarr"
+    labels:
+      - "autoheal=true"
     env_file: /opt/docker/secrets.env
     environment:
       - TZ=Europe/Berlin
@@ -105,11 +108,11 @@ services:
       - /opt/docker/seerr/config:/app/config
     restart: unless-stopped
     healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
-      start_period: 20s
-      timeout: 3s
-      interval: 15s
-      retries: 5
+      test: ["CMD", "wget", "-qO-", "http://localhost:5055/health"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     logging: *default-logging
     
 
@@ -117,9 +120,8 @@ services:
   radarr:
     image: linuxserver/radarr:version-6.1.1.10360@sha256:581f159c2b67436863cb4da30e158ef6f6b8878472abbba79ee5d5f7e6b7d28d
     container_name: radarr
-    depends_on:
-      - "prowlarr"
-      - "sabnzbd"
+    labels:
+      - "autoheal=true"
     env_file: /opt/docker/secrets.env
     environment:
       - TZ=Europe/Berlin
@@ -135,10 +137,10 @@ services:
       - arr_network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:7878/ || exit 1"]
-      interval: 30s
+      test: ["CMD", "curl", "-f", "http://localhost:7878/health"]
+      interval: 1m
       timeout: 10s
-      retries: 5
+      retries: 3
       start_period: 30s
     logging: *default-logging
 
@@ -146,9 +148,8 @@ services:
   radarr-list:
     image: linuxserver/radarr:version-6.1.1.10360@sha256:581f159c2b67436863cb4da30e158ef6f6b8878472abbba79ee5d5f7e6b7d28d
     container_name: radarr-list
-    depends_on:
-      - "prowlarr"
-      - "sabnzbd"
+    labels:
+      - "autoheal=true"
     env_file: /opt/docker/secrets.env
     environment:
       - TZ=Europe/Berlin
@@ -164,10 +165,10 @@ services:
       - arr_network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:7878/ || exit 1"]
-      interval: 30s
+      test: ["CMD", "curl", "-f", "http://localhost:7878/health"]
+      interval: 1m
       timeout: 10s
-      retries: 5
+      retries: 3
       start_period: 30s
     logging: *default-logging
 
@@ -175,9 +176,8 @@ services:
   sonarr:
     image: linuxserver/sonarr:version-4.0.16.2944@sha256:21c1c3d52248589bb064f5adafec18cad45812d7a01d317472955eef051e619b
     container_name: sonarr
-    depends_on:
-      - "prowlarr"
-      - "sabnzbd"
+    labels:
+      - "autoheal=true"
     env_file: /opt/docker/secrets.env
     environment:
       - TZ=Europe/Berlin
@@ -193,10 +193,10 @@ services:
       - arr_network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8989/ || exit 1"]
-      interval: 30s
+      test: ["CMD", "curl", "-f", "http://localhost:8989/health"]
+      interval: 1m
       timeout: 10s
-      retries: 5
+      retries: 3
       start_period: 30s
     logging: *default-logging
 
@@ -204,6 +204,8 @@ services:
   prowlarr:
     image: linuxserver/prowlarr:version-2.3.0.5236@sha256:e50f3b188a7d1771b61f395c4203e35476bd3047683508740305e830e15bacf7
     container_name: prowlarr
+    labels:
+      - "autoheal=true"
     depends_on:
       - "umlautadaptarr"
     env_file: /opt/docker/secrets.env
@@ -219,10 +221,10 @@ services:
       - arr_network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9696/ || exit 1"]
-      interval: 30s
+      test: ["CMD", "curl", "-f", "http://localhost:9696/health"]
+      interval: 1m
       timeout: 10s
-      retries: 5
+      retries: 3
       start_period: 30s
     logging: *default-logging
  
@@ -230,6 +232,8 @@ services:
   qbittorrent-vpn:
     image: qmcgaw/gluetun:v3.41.1@sha256:1a5bf4b4820a879cdf8d93d7ef0d2d963af56670c9ebff8981860b6804ebc8ab
     container_name: qbittorrent-vpn
+    labels:
+      - "autoheal=true"
     cap_add:
       - NET_ADMIN
     devices:
@@ -241,10 +245,14 @@ services:
       - VPN_TYPE=wireguard
       - VPN_PORT_FORWARDING=on
       - WIREGUARD_PRIVATE_KEY=${QBIT_PROTON_PRIVATE_KEY}
+      - WIREGUARD_PERSISTENT_KEEPALIVE_INTERVAL=25s
       - SERVER_COUNTRIES=${QBIT_PROTON_COUNTRIES}
       - PORT_FORWARD_ONLY=on
+      - UPDATER_PERIOD=24h
+      - DNS=1.1.1.1,8.8.8.8
       - VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c '/usr/bin/wget -O- --retry-connrefused --post-data "json={\"listen_port\":{{PORTS}}}" http://127.0.0.1:8080/api/v2/app/setPreferences 2>&1'
       - HTTP_CONTROL_SERVER_ADDRESS=:8000
+      - HEALTH_SERVER_ADDRESS=0.0.0.0:9999
     volumes:
       - /opt/docker/qbittorrent-vpn:/gluetun
     expose:
@@ -254,12 +262,23 @@ services:
     networks:
       - arr_network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9999/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     logging: *default-logging
 
   # Torrent Downloader
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:5.1.4
     container_name: qbittorrent
+    labels:
+      - "autoheal=true"
+    depends_on:
+      qbittorrent-vpn:
+        condition: service_healthy
     network_mode: "service:qbittorrent-vpn"
     env_file: /opt/docker/secrets.env
     environment:
@@ -272,17 +291,20 @@ services:
       - /opt/docker/qbit:/config
       - /mnt/data:/data
     restart: unless-stopped
-    #healthcheck:
-    #  test: ["CMD", "curl", "-f", "http://localhost:8080/api/v2/app/version"]
-    #  interval: 30s
-    #  timeout: 10s
-    #  retries: 3
+    healthcheck:
+      test: ["CMD", "bash", "-c", "curl -f http://localhost:8080/api/v2/app/version && ping -c1 1.1.1.1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     logging: *default-logging
 
   # Qbit Torrent WebUI - Automation
   qui:
     image: ghcr.io/autobrr/qui:v1.16.1@sha256:07b6ea9572e52e8b5f70f8fb15a7c688d8d754a7616242d3ad0b21dbd5c05836
     container_name: qui
+    labels:
+      - "autoheal=true"
     volumes:
       - /opt/docker/qui:/config
       - /mnt/data:/data
@@ -295,17 +317,19 @@ services:
     networks:
       - arr_network
     restart: unless-stopped
-    #healthcheck:
-    #  test: ["CMD", "curl", "-f", "http://localhost:8080/api/v2/app/version"]
-    #  interval: 30s
-    #  timeout: 10s
-    #  retries: 3
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7476/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     logging: *default-logging
 
   # Torrent And RSS Automation
   autobrr:
     image: ghcr.io/autobrr/autobrr:v1.76.0@sha256:f0f4d73fcd77700b1c98233562cd94a78b9bf685a7594a0aac4f8a9436b5044d
     container_name: autobrr
+    labels:
+      - "autoheal=true"
     env_file: /opt/docker/secrets.env
     environment:
       - TZ=Europe/Berlin
@@ -319,13 +343,14 @@ services:
       - arr_network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:7474/api/health"]
-      interval: 30s
-      timeout: 5s
+      test: ["CMD", "curl", "-f", "http://localhost:7474/api/healthz/liveness"]
+      interval: 1m
+      timeout: 10s
       retries: 3
+      start_period: 30s
     logging: *default-logging
 
-  # IRC-Chat for Private Trackers
+  # Speedtest-Tracker for Qbit VPN
   speedtest-tracker-qbit:
     image: lscr.io/linuxserver/speedtest-tracker:1.13.12
     container_name: speedtest-tracker-qbit
@@ -444,37 +469,6 @@ services:
       start_period: 30s
     logging: *default-logging
 
-#  # tracearr - https://github.com/connorgallopo/Tracearr/
-#  tracearr:
-#    image: ghcr.io/connorgallopo/tracearr:supervised-1.4.17@sha256:32ad3865de40380aa48390e30d8834795c18f78e3e4b3357a13c7f7e8d4b7527
-#    container_name: tracearr
-#    shm_size: 512mb  # Required for PostgreSQL shared memory (increase for large imports)
-#    mem_limit: 3g    # Minimum 3GB required (PostgreSQL + Redis + Node.js)
-#    ulimits:
-#      nofile:
-#        soft: 65536
-#        hard: 65536 
-#    env_file: /opt/docker/secrets.env
-#    environment:
-#      - TZ=Europe/Berlin
-#      - LOG_LEVEL=info
-#    volumes:
-#      - tracearr_postgres:/data/postgres
-#      - tracearr_redis:/data/redis
-#      - tracearr_data:/data/tracearr
-#    expose:
-#      - 3000
-#    networks:
-#      - arr_network
-#    restart: unless-stopped
-#    healthcheck:
-#      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000/health"]
-#      interval: 30s
-#      timeout: 10s
-#      start_period: 60s
-#      retries: 3
-#    logging: *default-logging
-
   # Episeerr - https://github.com/vansmak/episeerr
   episeerr:
     image: vansmak/episeerr:3.6.1@sha256:6553dbb6dad911013ae4c4f7de27b760a6af9b706f964a7fa03cfe93d10ad92b
@@ -549,6 +543,21 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /opt/docker/crowdsec/acquis.d:/etc/crowdsec/acquis.d
       - /opt/docker/crowdsec/data:/var/lib/crowdsec/data
+    logging: *default-logging
+  
+  auto-heal:
+    image: willfarrell/autoheal:1.2.0
+    container_name: auto-heal
+    restart: unless-stopped
+    environment:
+      AUTOHEAL_CONTAINER_LABEL: autoheal
+      AUTOHEAL_INTERVAL: 60
+      AUTOHEAL_START_PERIOD: 300
+      AUTOHEAL_DEFAULT_STOP_TIMEOUT: 30
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - arr_network
     logging: *default-logging
 
 volumes:
