@@ -274,7 +274,7 @@ services:
 
   # Torrent Downloader
   qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:5.1.4
+    image: lscr.io/linuxserver/qbittorrent:5.1.4@sha256:1fc78c81850d658f17701bfa9d8de58ccc12ff27d36a9a176c6299e55aaf4b4e
     container_name: qbittorrent
     labels:
       - "autoheal=true"
@@ -354,7 +354,7 @@ services:
 
   # Speedtest-Tracker for Qbit VPN
   speedtest-tracker-qbit:
-    image: lscr.io/linuxserver/speedtest-tracker:1.13.12
+    image: lscr.io/linuxserver/speedtest-tracker:1.13.12@sha256:eb3d249f16177964daa4fff7f6a90bbf6645f4e23158d92f5cddb133728d0804
     container_name: speedtest-tracker-qbit
     network_mode: "service:qbittorrent-vpn"
     env_file: /opt/docker/secrets.env
@@ -548,7 +548,7 @@ services:
     logging: *default-logging
   
   auto-heal:
-    image: willfarrell/autoheal:1.2.0
+    image: willfarrell/autoheal:1.2.0@sha256:31f580ef0279eaced5b38d631b08c474d70d8403c1c2fdd6ddcf2e879d5f3f7c
     container_name: auto-heal
     restart: unless-stopped
     environment:
