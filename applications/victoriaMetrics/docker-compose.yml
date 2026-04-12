@@ -14,6 +14,7 @@ services:
       - /opt/docker/certbot/certs:/etc/letsencrypt:ro
     ports:
       - "80:80"
+      - "8088:8088" # ISG-Exporter
       - "443:443"
     networks:
       - localhost
@@ -234,7 +235,7 @@ services:
     logging: *default-logging
 
   # source: https://github.com/akpw/mktxp
-  mikortik-mktxp:
+  mikrotik-mktxp:
     image: ghcr.io/akpw/mktxp:1.2.17@sha256:bd6f22f7db0a79557c4af8a73aa22517f4c32d54fafa19fb0de29e7332440613
     container_name: mikrotik-mktxp
     volumes:
