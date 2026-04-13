@@ -422,26 +422,22 @@ services:
     #  retries: 3
     logging: *default-logging
     
-#  # Notifiarr - https://github.com/Notifiarr/notifiarr
-#  notifiarr:
-#    image: golift/notifiarr:v0.9.5@sha256:a9a1f37f924d740107874675df6b6a5edd87e5f66ca72ad27481a4bdfd42d162
-#    container_name: notifiarr
-#    volumes:
-#      - /opt/docker/notifiarr/conf:/config
-#      - /var/run/utmp:/var/run/utmp
-#      - /etc/machine-id:/etc/machine-id:ro
-#    expose:
-#      - 5454
-#    networks:
-#      - arr_network
-#    restart: unless-stopped
-#    healthcheck:
-#      test: ["CMD-SHELL", "curl -f http://localhost:5454/ || exit 1"]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 5
-#      start_period: 30s
-#    logging: *default-logging
+  configarr:
+    container_name: configarr
+    hostname: configarr
+    image: ghcr.io/raydak-labs/configarr:1.26.0
+    environment:
+      - TZ=Europe/Berlin
+      #- LOG_STACKTRACE=true
+    volumes:
+      - /opt/docker/configarr/config:/app/config
+      - /opt/docker/configarr/repos:/app/repos
+      - /opt/docker/configarr/cfs:/app/cfs
+      - /opt/docker/configarr/templates:/app/templates
+    networks:
+      - arr_network
+    restart: unless-stopped
+    logging: *default-logging
 
   # MediathekArr - Indexer & Downloader for Mediathek Content - https://github.com/PCJones/MediathekArr
   mediathekarr:

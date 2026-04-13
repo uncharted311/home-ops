@@ -58,12 +58,6 @@
     },
 
     {
-      "description": "Pin docker image digests",
-      "matchDatasources": ["docker"],
-      "pinDigests": true
-    },
-
-    {
       "description": "Automerge GitHub Actions digest/patch",
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["digest", "patch"],
