@@ -17,7 +17,6 @@
   ],
 
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
-  "pinDigests": false,
 
   "assignees": ["uncharted311"],
 
@@ -55,7 +54,8 @@
     {
       "description": "Docker uses docker versioning",
       "matchDatasources": ["docker"],
-      "versioning": "docker"
+      "versioning": "docker",
+      "pinDigests": false
     },
 
     {
@@ -68,7 +68,8 @@
     {
       "description": "Separate major container upgrades",
       "matchDatasources": ["docker"],
-      "separateMajorMinor": true
+      "separateMajorMinor": true,
+      "pinDigests": false
     },
 
     {
@@ -80,7 +81,8 @@
     {
       "description": "Pangolin weird versioning",
       "matchPackageNames": ["fosrl/pangolin"],
-      "versioning": "regex:^(?<compatibility>.*-)?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
+      "versioning": "regex:^(?<compatibility>.*-)?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
+      "pinDigests": false
     }
   ]
 }
