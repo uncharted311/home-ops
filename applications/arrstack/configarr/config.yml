@@ -16,8 +16,8 @@ radarr:
         source: TRASH
       - template: bf3cc2e99ad9a804a9b0d0e538e1fbba # [German] Anime HD Bluray + WEB https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/quality-profiles/german-anime-hd-bluray-web.json
         source: TRASH
-    custom_format_groups:
-      - trash_guide:
+    custom_formats:
+      - trash_ids:
           - id: e9a1944a254e6f8a9da63083f7ae15cb # [Audio] Audio Formats https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/audio-formats.json
           - id: 7e1724c5da59e7474803ad25be98f6a3 # [HDR Formats] HDR https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-hdr.json
           - id: 7d366c213e5c23a052b157356fac1921 # [HDR Formats] HDR10+ Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-hdr10-boost.json
@@ -39,8 +39,8 @@ radarr:
         source: TRASH
       - template: bf3cc2e99ad9a804a9b0d0e538e1fbba # [German] Anime HD Bluray + WEB https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/quality-profiles/german-anime-hd-bluray-web.json
         source: TRASH
-    custom_format_groups:
-      - trash_guide:
+    custom_formats:
+      - trash_ids:
           - id: e9a1944a254e6f8a9da63083f7ae15cb # [Audio] Audio Formats https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/audio-formats.json
           - id: 7e1724c5da59e7474803ad25be98f6a3 # [HDR Formats] HDR https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-hdr.json
           - id: 7d366c213e5c23a052b157356fac1921 # [HDR Formats] HDR10+ Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-hdr10-boost.json
