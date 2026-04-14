@@ -60,13 +60,13 @@ radarr:
     #     - name: "[German] UHD Bluray + WEB (Alternative)"
     #     - name: "[German] Remux + WEB 2160p"
     #     - name: "[German] Anime HD Bluray + WEB"
-    # # [Required] Golden Rule UHD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/required-golden-rule-uhd.json
-    # - trash_guide:
-    #     - id: ff204bbcecdd487d1cefcefdbf0c278d
-    #   assign_scores_to:
-    #     - name: "[German] UHD Bluray + WEB (Alternative)"
-    #     - name: "[German] Remux + WEB 2160p"
-    #     - name: "[German] Anime HD Bluray + WEB"
+     # [Required] Golden Rule UHD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/required-golden-rule-uhd.json
+      - trash_guide:
+         - id: ff204bbcecdd487d1cefcefdbf0c278d
+        assign_scores_to:
+         - name: "[German] UHD Bluray + WEB (Alternative)"
+         - name: "[German] Remux + WEB 2160p"
+         - name: "[German] Anime HD Bluray + WEB"
     custom_formats:
       # Movie Versions (optional)
       - trash_ids:
@@ -92,7 +92,7 @@ radarr:
           - name: "[German] Anime HD Bluray + WEB"
             score: 125
       - trash_ids:
-          - a3d82cbef5039f8d295478d28a887159 # IMAX
+          - eecf3a857724171f968a66cb5719e152 # IMAX
           - 9f6cbff8cfe4ebbc1bde14c7b7bec0de # IMAX Enhanced
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
