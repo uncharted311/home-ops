@@ -18,12 +18,26 @@ radarr:
         source: TRASH
     custom_formats:
       - trash_ids:
-          - id: e9a1944a254e6f8a9da63083f7ae15cb # [Audio] Audio Formats https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/audio-formats.json
-          - id: 7e1724c5da59e7474803ad25be98f6a3 # [HDR Formats] HDR https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-hdr.json
-          - id: 7d366c213e5c23a052b157356fac1921 # [HDR Formats] HDR10+ Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-hdr10-boost.json
-          - id: e0b2774083df4265f25c9e5bc6c80940 # [HDR Formats] DV Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-dv-boost.json
-          - id: d776a1ea912a117d66d83b880ff2055d # [HDR Formats] DV (w/o HDR fallback) https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-dv-webdl.json
-          - id: 158188097a58d7687dee647e04af0da3 # [Required] Golden Rule HD https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/required-golden-rule-hd.json
+          # Video Formats
+          - id: 493b6d1dbec3c3364c59d7607f7e3405 # Custom Format HDR https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/hdr.json
+          - id: b337d6812e06c200ec9a2d3cfa9d20a7 # Custom Format DV Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dv-boost.json
+          - id: caa37d0df9c348912df1fb1d88f9273a # Custom Format HDR10+ Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/hdr10plus-boost.json
+          - id: 923b6abef9b17f937fab56cfcf89e1f1 # Custom Format DV (w/o HDR fallback) https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dv-wo-hdr-fallback.json
+          # Audio Formats
+          - id: 496f355514737f7d83bf7aa4d24f8169 # Custom Format TrueHD ATMOS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/truehd-atmos.json
+          - id: 2f22d89048b01681dde8afe203bf2e95 # Custom Format DTS:X - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-x.json
+          - id: 417804f7f2c4308c1f4c5d380d4c4475 # Custom Format ATMOS (undefined) - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/atmos-undefined.json
+          - id: 1af239278386be2919e1bcee0bde047e # Custom Format DD+ ATMOS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/ddplus-atmos.json
+          - id: 3cafb66171b47f226146a0770576870f # Custom Format TrueHD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/truehd.json
+          - id: dcf3ec6938fa32445f590a4da84256cd # Custom Format DTS-HD MA - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-hd-ma.json
+          - id: a570d4a0e56a2874b64e5bfa55202a1b # Custom Format FLAC - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/flac.json
+          - id: e7c2fcae07cbada050a0af3357491d7b # Custom Format PCM - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/pcm.json
+          - id: 8e109e50e0a0b83a5098b056e13bf6db # Custom Format DTS-HD HRA - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-hd-hra.json
+          - id: 185f1dd7264c4562b9022d963ac37424 # Custom Format DD+ - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/ddplus.json
+          - id: f9f847ac70a0af62ea4a08280b859636 # Custom Format DTS-ES - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-es.json
+          - id: 1c1a4c5e823891c75bc50380a6866f73 # Custom Format DTS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts.json
+          - id: 240770601cc226190c367ef59aba7463 # Custom Format AAC - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/aac.json
+          - id: c2998bd0d90ed5621d8df281e839436e # Custom Format DD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dd.json
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
           - name: "[German] Remux + WEB 2160p"
@@ -41,16 +55,30 @@ radarr:
         source: TRASH
     custom_formats:
       - trash_ids:
-          - id: e9a1944a254e6f8a9da63083f7ae15cb # [Audio] Audio Formats https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/audio-formats.json
-          - id: 7e1724c5da59e7474803ad25be98f6a3 # [HDR Formats] HDR https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-hdr.json
-          - id: 7d366c213e5c23a052b157356fac1921 # [HDR Formats] HDR10+ Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-hdr10-boost.json
-          - id: e0b2774083df4265f25c9e5bc6c80940 # [HDR Formats] DV Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-dv-boost.json
-          - id: d776a1ea912a117d66d83b880ff2055d # [HDR Formats] DV (w/o HDR fallback) https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-dv-webdl.json
-          - id: 158188097a58d7687dee647e04af0da3 # [Required] Golden Rule HD https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/required-golden-rule-hd.json
+          # Video Formats
+          - id: 493b6d1dbec3c3364c59d7607f7e3405 # Custom Format HDR https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/hdr.json
+          - id: b337d6812e06c200ec9a2d3cfa9d20a7 # Custom Format DV Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dv-boost.json
+          - id: caa37d0df9c348912df1fb1d88f9273a # Custom Format HDR10+ Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/hdr10plus-boost.json
+          - id: 923b6abef9b17f937fab56cfcf89e1f1 # Custom Format DV (w/o HDR fallback) https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dv-wo-hdr-fallback.json
+          # Audio Formats
+          - id: 496f355514737f7d83bf7aa4d24f8169 # Custom Format TrueHD ATMOS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/truehd-atmos.json
+          - id: 2f22d89048b01681dde8afe203bf2e95 # Custom Format DTS:X - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-x.json
+          - id: 417804f7f2c4308c1f4c5d380d4c4475 # Custom Format ATMOS (undefined) - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/atmos-undefined.json
+          - id: 1af239278386be2919e1bcee0bde047e # Custom Format DD+ ATMOS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/ddplus-atmos.json
+          - id: 3cafb66171b47f226146a0770576870f # Custom Format TrueHD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/truehd.json
+          - id: dcf3ec6938fa32445f590a4da84256cd # Custom Format DTS-HD MA - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-hd-ma.json
+          - id: a570d4a0e56a2874b64e5bfa55202a1b # Custom Format FLAC - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/flac.json
+          - id: e7c2fcae07cbada050a0af3357491d7b # Custom Format PCM - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/pcm.json
+          - id: 8e109e50e0a0b83a5098b056e13bf6db # Custom Format DTS-HD HRA - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-hd-hra.json
+          - id: 185f1dd7264c4562b9022d963ac37424 # Custom Format DD+ - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/ddplus.json
+          - id: f9f847ac70a0af62ea4a08280b859636 # Custom Format DTS-ES - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-es.json
+          - id: 1c1a4c5e823891c75bc50380a6866f73 # Custom Format DTS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts.json
+          - id: 240770601cc226190c367ef59aba7463 # Custom Format AAC - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/aac.json
+          - id: c2998bd0d90ed5621d8df281e839436e # Custom Format DD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dd.json
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
           - name: "[German] Remux + WEB 2160p"
-          - name: "[German] Anime HD Bluray + WEB"
+          - name: "[German] Anime HD Bluray + WEB"  
 
 sonarr:
   Sonarr:
@@ -63,14 +91,28 @@ sonarr:
         source: TRASH
       - template: 6fe5937e1dcc2269e23b49eb46dfe6d6 # [German] Anime HD Bluray + WEB https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/quality-profiles/german-anime-hd-bluray-web.json
         source: TRASH
-    custom_format_groups:
-      - trash_guide:
-          - id: e9a1944a254e6f8a9da63083f7ae15cb # [Audio] Audio Formats https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/audio-formats.json
-          - id: 7e1724c5da59e7474803ad25be98f6a3 # [HDR Formats] HDR https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-hdr.json
-          - id: 7d366c213e5c23a052b157356fac1921 # [HDR Formats] HDR10+ Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-hdr10-boost.json
-          - id: e0b2774083df4265f25c9e5bc6c80940 # [HDR Formats] DV Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-dv-boost.json
-          - id: d776a1ea912a117d66d83b880ff2055d # [HDR Formats] DV (w/o HDR fallback) https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-dv-webdl.json
-          - id: 158188097a58d7687dee647e04af0da3 # [Required] Golden Rule HD https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/required-golden-rule-hd.json
+    custom_formats:
+      - trash_ids:
+          # Video Formats
+          - id: 493b6d1dbec3c3364c59d7607f7e3405 # Custom Format HDR https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/hdr.json
+          - id: b337d6812e06c200ec9a2d3cfa9d20a7 # Custom Format DV Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dv-boost.json
+          - id: caa37d0df9c348912df1fb1d88f9273a # Custom Format HDR10+ Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/hdr10plus-boost.json
+          - id: 923b6abef9b17f937fab56cfcf89e1f1 # Custom Format DV (w/o HDR fallback) https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dv-wo-hdr-fallback.json
+          # Audio Formats
+          - id: 496f355514737f7d83bf7aa4d24f8169 # Custom Format TrueHD ATMOS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/truehd-atmos.json
+          - id: 2f22d89048b01681dde8afe203bf2e95 # Custom Format DTS:X - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-x.json
+          - id: 417804f7f2c4308c1f4c5d380d4c4475 # Custom Format ATMOS (undefined) - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/atmos-undefined.json
+          - id: 1af239278386be2919e1bcee0bde047e # Custom Format DD+ ATMOS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/ddplus-atmos.json
+          - id: 3cafb66171b47f226146a0770576870f # Custom Format TrueHD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/truehd.json
+          - id: dcf3ec6938fa32445f590a4da84256cd # Custom Format DTS-HD MA - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-hd-ma.json
+          - id: a570d4a0e56a2874b64e5bfa55202a1b # Custom Format FLAC - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/flac.json
+          - id: e7c2fcae07cbada050a0af3357491d7b # Custom Format PCM - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/pcm.json
+          - id: 8e109e50e0a0b83a5098b056e13bf6db # Custom Format DTS-HD HRA - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-hd-hra.json
+          - id: 185f1dd7264c4562b9022d963ac37424 # Custom Format DD+ - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/ddplus.json
+          - id: f9f847ac70a0af62ea4a08280b859636 # Custom Format DTS-ES - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-es.json
+          - id: 1c1a4c5e823891c75bc50380a6866f73 # Custom Format DTS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts.json
+          - id: 240770601cc226190c367ef59aba7463 # Custom Format AAC - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/aac.json
+          - id: c2998bd0d90ed5621d8df281e839436e # Custom Format DD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dd.json
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
           - name: "[German] Remux + WEB 2160p"
