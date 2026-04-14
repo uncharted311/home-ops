@@ -421,13 +421,18 @@ services:
     #  timeout: 10s
     #  retries: 3
     logging: *default-logging
-    
+
+  ofelia:
+    image: mcuadros/ofelia:latest
+    container_name: ofelia
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+
   configarr:
     container_name: configarr
     hostname: configarr
     image: ghcr.io/raydak-labs/configarr:1.26.0
-    command: >
-      sh -c "while true; do \"$0\"; sleep 6h; done"
     environment:
       - TZ=Europe/Berlin
       #- LOG_STACKTRACE=true
@@ -436,11 +441,13 @@ services:
       - /opt/docker/configarr/repos:/app/repos
       - /opt/docker/configarr/cfs:/app/cfs
       - /opt/docker/configarr/templates:/app/templates
+    labels:
+      - "ofelia.enabled=true"
+      - "ofelia.job-run.configarr-cron.schedule=@every 24h"
+      - "ofelia.job-run.configarr-cron.container=configarr"
     networks:
       - arr_network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "true"]
+    restart: no
     logging: *default-logging
 
   # MediathekArr - Indexer & Downloader for Mediathek Content - https://github.com/PCJones/MediathekArr
