@@ -4,6 +4,7 @@ localConfigTemplatesPath: /app/templates
 whisparrEnabled: false
 readarrEnabled: false
 lidarrEnabled: false
+silenceTrashConflictWarnings: true
 
 radarr:
   Radarr:
