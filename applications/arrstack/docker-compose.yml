@@ -80,12 +80,12 @@ services:
     expose:
       - 8080
     restart: unless-stopped
-    #healthcheck:
-    #  test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-    #  interval: 1m
-    #  timeout: 10s
-    #  retries: 3
-    #  start_period: 30s
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/login/"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     logging: *default-logging
 
   # Seerr - https://github.com/seerr-team/seerr
