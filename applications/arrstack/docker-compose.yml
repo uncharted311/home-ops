@@ -425,7 +425,7 @@ services:
   configarr:
     container_name: configarr
     hostname: configarr
-    image: ghcr.io/raydak-labs/configarr:1.26.0
+    image: ghcr.io/raydak-labs/configarr:1.27.0
     environment:
       - TZ=Europe/Berlin
     volumes:
