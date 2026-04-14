@@ -53,20 +53,20 @@ radarr:
           - name: "[German] UHD Bluray + WEB (Alternative)"
           - name: "[German] Remux + WEB 2160p"
           - name: "[German] Anime HD Bluray + WEB"
-      # [Release Groups] German - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/release-groups-german.json
-      - trash_guide:
-          - id: bc85e56ee3bd0f01467866d5f1261543
-        assign_scores_to:
-          - name: "[German] UHD Bluray + WEB (Alternative)"
-          - name: "[German] Remux + WEB 2160p"
-          - name: "[German] Anime HD Bluray + WEB"
-      # [Required] Golden Rule UHD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/required-golden-rule-uhd.json
-      - trash_guide:
-          - id: ff204bbcecdd487d1cefcefdbf0c278d
-        assign_scores_to:
-          - name: "[German] UHD Bluray + WEB (Alternative)"
-          - name: "[German] Remux + WEB 2160p"
-          - name: "[German] Anime HD Bluray + WEB"
+    # # [Release Groups] German - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/release-groups-german.json
+    # - trash_guide:
+    #     - id: bc85e56ee3bd0f01467866d5f1261543
+    #   assign_scores_to:
+    #     - name: "[German] UHD Bluray + WEB (Alternative)"
+    #     - name: "[German] Remux + WEB 2160p"
+    #     - name: "[German] Anime HD Bluray + WEB"
+    # # [Required] Golden Rule UHD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/required-golden-rule-uhd.json
+    # - trash_guide:
+    #     - id: ff204bbcecdd487d1cefcefdbf0c278d
+    #   assign_scores_to:
+    #     - name: "[German] UHD Bluray + WEB (Alternative)"
+    #     - name: "[German] Remux + WEB 2160p"
+    #     - name: "[German] Anime HD Bluray + WEB"
     custom_formats:
       # Movie Versions (optional)
       - trash_ids:
