@@ -428,7 +428,6 @@ services:
     image: ghcr.io/raydak-labs/configarr:1.26.0
     environment:
       - TZ=Europe/Berlin
-      - LOG_STACKTRACE=true
     volumes:
       - /opt/docker/configarr/config:/app/config
       - /opt/docker/configarr/repos:/app/repos
