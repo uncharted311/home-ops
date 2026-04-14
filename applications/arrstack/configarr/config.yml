@@ -24,6 +24,13 @@ radarr:
           - name: "[German] UHD Bluray + WEB (Alternative)"
           - name: "[German] Remux + WEB 2160p"
           - name: "[German] Anime HD Bluray + WEB"
+      # [HDR Formats] DV Boost - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/hdr-formats-dv-boost.json
+      - trash_guide:
+          - id: 1616617ab3a14397a2b2321bcbda44d1
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
 
   Radarr-List:
     base_url: http://radarr-list:7878
