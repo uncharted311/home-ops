@@ -427,7 +427,7 @@ services:
     hostname: configarr
     image: ghcr.io/raydak-labs/configarr:1.26.0
     command: >
-      sh -c "while true; do /usr/bin/node /app/index.js; sleep 24h; done"
+      sh -c "while true; do \"$0\"; sleep 6h; done"
     environment:
       - TZ=Europe/Berlin
       #- LOG_STACKTRACE=true
