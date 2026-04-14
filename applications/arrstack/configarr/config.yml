@@ -10,13 +10,51 @@ radarr:
     base_url: http://radarr:7878
     api_key: !secret RADARR_API_KEY
     include:
-
       - template: 425da1ba30711b55d2eb371437ec98d7 # [German] UHD Bluray + WEB (Alternative) https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/quality-profiles/german-uhd-bluray-web-alternative.json
         source: TRASH
       - template: 79faa9943cef2f510b997b1f2a9f3ea6 # [German] Remux + WEB 2160p https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/quality-profiles/german-uhd-remux-web.json
         source: TRASH
       - template: bf3cc2e99ad9a804a9b0d0e538e1fbba # [German] Anime HD Bluray + WEB https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/quality-profiles/german-anime-hd-bluray-web.json
         source: TRASH
+      # Custom Formats Video
+      - template: 493b6d1dbec3c3364c59d7607f7e3405 # Custom Format HDR https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/hdr.json
+        source: TRASH
+      - template: b337d6812e06c200ec9a2d3cfa9d20a7 # Custom Format DV Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dv-boost.json
+        source: TRASH
+      - template: caa37d0df9c348912df1fb1d88f9273a # Custom Format HDR10+ Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/hdr10plus-boost.json
+        source: TRASH
+      - template: 923b6abef9b17f937fab56cfcf89e1f1 # Custom Format DV (w/o HDR fallback) https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dv-wo-hdr-fallback.json
+        source: TRASH
+      # Custom Formats Audio
+      - template: 496f355514737f7d83bf7aa4d24f8169 # Custom Format TrueHD ATMOS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/truehd-atmos.json
+        source: TRASH 
+      - template: 2f22d89048b01681dde8afe203bf2e95 # Custom Format DTS:X - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-x.json
+        source: TRASH 
+      - template: 417804f7f2c4308c1f4c5d380d4c4475 # Custom Format ATMOS (undefined) - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/atmos-undefined.json
+        source: TRASH
+      - template: 1af239278386be2919e1bcee0bde047e # Custom Format DD+ ATMOS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/ddplus-atmos.json
+        source: TRASH
+      - template: 3cafb66171b47f226146a0770576870f # Custom Format TrueHD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/truehd.json
+        source: TRASH
+      - template: dcf3ec6938fa32445f590a4da84256cd # Custom Format DTS-HD MA - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-hd-ma.json
+        source: TRASH
+      - template: a570d4a0e56a2874b64e5bfa55202a1b # Custom Format FLAC - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/flac.json
+        source: TRASH
+      - template: e7c2fcae07cbada050a0af3357491d7b # Custom Format PCM - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/pcm.json
+        source: TRASH
+      - template: 8e109e50e0a0b83a5098b056e13bf6db # Custom Format DTS-HD HRA - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-hd-hra.json
+        source: TRASH
+      - template: 185f1dd7264c4562b9022d963ac37424 # Custom Format DD+ - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/ddplus.json
+        source: TRASH
+      - template: f9f847ac70a0af62ea4a08280b859636 # Custom Format DTS-ES - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-es.json
+        source: TRASH
+      - template: 1c1a4c5e823891c75bc50380a6866f73 # Custom Format DTS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts.json
+        source: TRASH
+      - template: 240770601cc226190c367ef59aba7463 # Custom Format AAC - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/aac.json
+        source: TRASH
+      - template: c2998bd0d90ed5621d8df281e839436e # Custom Format DD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dd.json
+        source: TRASH
+
 
   Radarr-List:
     base_url: http://radarr-list:7878
@@ -27,6 +65,44 @@ radarr:
       - template: 79faa9943cef2f510b997b1f2a9f3ea6 # [German] Remux + WEB 2160p https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/quality-profiles/german-uhd-remux-web.json
         source: TRASH
       - template: bf3cc2e99ad9a804a9b0d0e538e1fbba # [German] Anime HD Bluray + WEB https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/quality-profiles/german-anime-hd-bluray-web.json
+        source: TRASH
+      # Custom Formats Video
+      - template: 493b6d1dbec3c3364c59d7607f7e3405 # Custom Format HDR https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/hdr.json
+        source: TRASH
+      - template: b337d6812e06c200ec9a2d3cfa9d20a7 # Custom Format DV Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dv-boost.json
+        source: TRASH
+      - template: caa37d0df9c348912df1fb1d88f9273a # Custom Format HDR10+ Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/hdr10plus-boost.json
+        source: TRASH
+      - template: 923b6abef9b17f937fab56cfcf89e1f1 # Custom Format DV (w/o HDR fallback) https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dv-wo-hdr-fallback.json
+        source: TRASH
+      # Custom Formats Audio
+      - template: 496f355514737f7d83bf7aa4d24f8169 # Custom Format TrueHD ATMOS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/truehd-atmos.json
+        source: TRASH 
+      - template: 2f22d89048b01681dde8afe203bf2e95 # Custom Format DTS:X - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-x.json
+        source: TRASH 
+      - template: 417804f7f2c4308c1f4c5d380d4c4475 # Custom Format ATMOS (undefined) - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/atmos-undefined.json
+        source: TRASH
+      - template: 1af239278386be2919e1bcee0bde047e # Custom Format DD+ ATMOS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/ddplus-atmos.json
+        source: TRASH
+      - template: 3cafb66171b47f226146a0770576870f # Custom Format TrueHD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/truehd.json
+        source: TRASH
+      - template: dcf3ec6938fa32445f590a4da84256cd # Custom Format DTS-HD MA - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-hd-ma.json
+        source: TRASH
+      - template: a570d4a0e56a2874b64e5bfa55202a1b # Custom Format FLAC - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/flac.json
+        source: TRASH
+      - template: e7c2fcae07cbada050a0af3357491d7b # Custom Format PCM - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/pcm.json
+        source: TRASH
+      - template: 8e109e50e0a0b83a5098b056e13bf6db # Custom Format DTS-HD HRA - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-hd-hra.json
+        source: TRASH
+      - template: 185f1dd7264c4562b9022d963ac37424 # Custom Format DD+ - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/ddplus.json
+        source: TRASH
+      - template: f9f847ac70a0af62ea4a08280b859636 # Custom Format DTS-ES - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-es.json
+        source: TRASH
+      - template: 1c1a4c5e823891c75bc50380a6866f73 # Custom Format DTS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts.json
+        source: TRASH
+      - template: 240770601cc226190c367ef59aba7463 # Custom Format AAC - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/aac.json
+        source: TRASH
+      - template: c2998bd0d90ed5621d8df281e839436e # Custom Format DD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dd.json
         source: TRASH
 
 sonarr:
@@ -39,4 +115,42 @@ sonarr:
       - template: 08cececf1840290f6fd490b7d79e8642 # [German] UHD Remux + WEB https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/quality-profiles/german-uhd-remux-web.json
         source: TRASH
       - template: 6fe5937e1dcc2269e23b49eb46dfe6d6 # [German] Anime HD Bluray + WEB https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/quality-profiles/german-anime-hd-bluray-web.json
+        source: TRASH
+      # Custom Formats Video
+      - template: 493b6d1dbec3c3364c59d7607f7e3405 # Custom Format HDR https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/hdr.json
+        source: TRASH
+      - template: b337d6812e06c200ec9a2d3cfa9d20a7 # Custom Format DV Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dv-boost.json
+        source: TRASH
+      - template: caa37d0df9c348912df1fb1d88f9273a # Custom Format HDR10+ Boost https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/hdr10plus-boost.json
+        source: TRASH
+      - template: 923b6abef9b17f937fab56cfcf89e1f1 # Custom Format DV (w/o HDR fallback) https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dv-wo-hdr-fallback.json
+        source: TRASH
+      # Custom Formats Audio
+      - template: 496f355514737f7d83bf7aa4d24f8169 # Custom Format TrueHD ATMOS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/truehd-atmos.json
+        source: TRASH 
+      - template: 2f22d89048b01681dde8afe203bf2e95 # Custom Format DTS:X - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-x.json
+        source: TRASH 
+      - template: 417804f7f2c4308c1f4c5d380d4c4475 # Custom Format ATMOS (undefined) - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/atmos-undefined.json
+        source: TRASH
+      - template: 1af239278386be2919e1bcee0bde047e # Custom Format DD+ ATMOS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/ddplus-atmos.json
+        source: TRASH
+      - template: 3cafb66171b47f226146a0770576870f # Custom Format TrueHD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/truehd.json
+        source: TRASH
+      - template: dcf3ec6938fa32445f590a4da84256cd # Custom Format DTS-HD MA - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-hd-ma.json
+        source: TRASH
+      - template: a570d4a0e56a2874b64e5bfa55202a1b # Custom Format FLAC - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/flac.json
+        source: TRASH
+      - template: e7c2fcae07cbada050a0af3357491d7b # Custom Format PCM - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/pcm.json
+        source: TRASH
+      - template: 8e109e50e0a0b83a5098b056e13bf6db # Custom Format DTS-HD HRA - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-hd-hra.json
+        source: TRASH
+      - template: 185f1dd7264c4562b9022d963ac37424 # Custom Format DD+ - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/ddplus.json
+        source: TRASH
+      - template: f9f847ac70a0af62ea4a08280b859636 # Custom Format DTS-ES - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts-es.json
+        source: TRASH
+      - template: 1c1a4c5e823891c75bc50380a6866f73 # Custom Format DTS - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dts.json
+        source: TRASH
+      - template: 240770601cc226190c367ef59aba7463 # Custom Format AAC - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/aac.json
+        source: TRASH
+      - template: c2998bd0d90ed5621d8df281e839436e # Custom Format DD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf/dd.json
         source: TRASH
