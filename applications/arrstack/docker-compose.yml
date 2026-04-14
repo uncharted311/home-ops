@@ -429,6 +429,7 @@ services:
     environment:
       - TZ=Europe/Berlin
       #- LOG_STACKTRACE=true
+    restart: "no"
     volumes:
       - /opt/docker/configarr/config:/app/config
       - /opt/docker/configarr/repos:/app/repos
@@ -436,7 +437,6 @@ services:
       - /opt/docker/configarr/templates:/app/templates
     networks:
       - arr_network
-    restart: unless-stopped
     logging: *default-logging
 
   # MediathekArr - Indexer & Downloader for Mediathek Content - https://github.com/PCJones/MediathekArr
