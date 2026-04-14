@@ -394,28 +394,28 @@ sonarr:
           - id: 7e1724c5da59e7474803ad25be98f6a3
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
-          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] UHD Remux + WEB"
           - name: "[German] Anime HD Bluray + WEB"
       # [HDR Formats] HDR10+ Boost - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-hdr10-boost.json
       - trash_guide:
           - id: 7d366c213e5c23a052b157356fac1921
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
-          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] UHD Remux + WEB"
           - name: "[German] Anime HD Bluray + WEB"
       # [HDR Formats] DV Boost - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-dv-boost.json
       - trash_guide:
           - id: e0b2774083df4265f25c9e5bc6c80940
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
-          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] UHD Remux + WEB"
           - name: "[German] Anime HD Bluray + WEB"
       # [HDR Formats] DV (w/o HDR fallback) - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-dv-webdl.json
       - trash_guide:
           - id: d776a1ea912a117d66d83b880ff2055d
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
-          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] UHD Remux + WEB"
           - name: "[German] Anime HD Bluray + WEB"
     custom_formats:
     # Audio Formats
@@ -424,7 +424,7 @@ sonarr:
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
             score: 5000
-          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] UHD Remux + WEB"
             score: 5000
           - name: "[German] Anime HD Bluray + WEB"
             score: 5000
@@ -433,7 +433,7 @@ sonarr:
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
             score: 4500
-          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] UHD Remux + WEB"
             score: 4500
           - name: "[German] Anime HD Bluray + WEB"
             score: 4500
@@ -443,7 +443,7 @@ sonarr:
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
             score: 3000
-          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] UHD Remux + WEB"
             score: 3000
           - name: "[German] Anime HD Bluray + WEB"
             score: 3000
@@ -452,7 +452,7 @@ sonarr:
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
             score: 2750
-          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] UHD Remux + WEB"
             score: 2750
           - name: "[German] Anime HD Bluray + WEB"
             score: 2750
@@ -461,7 +461,7 @@ sonarr:
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
             score: 2500
-          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] UHD Remux + WEB"
             score: 2500
           - name: "[German] Anime HD Bluray + WEB"
             score: 2500
@@ -471,7 +471,7 @@ sonarr:
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
             score: 2250
-          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] UHD Remux + WEB"
             score: 2250
           - name: "[German] Anime HD Bluray + WEB"
             score: 2250
@@ -480,7 +480,7 @@ sonarr:
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
             score: 2000
-          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] UHD Remux + WEB"
             score: 2000
           - name: "[German] Anime HD Bluray + WEB"
             score: 2000
@@ -489,7 +489,7 @@ sonarr:
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
             score: 1750
-          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] UHD Remux + WEB"
             score: 1750
           - name: "[German] Anime HD Bluray + WEB"
             score: 1750
@@ -498,7 +498,7 @@ sonarr:
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
             score: 1500
-          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] UHD Remux + WEB"
             score: 1500
           - name: "[German] Anime HD Bluray + WEB"
             score: 1500
@@ -507,7 +507,7 @@ sonarr:
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
             score: 1250
-          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] UHD Remux + WEB"
             score: 1250
           - name: "[German] Anime HD Bluray + WEB"
             score: 1250
@@ -516,7 +516,7 @@ sonarr:
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
             score: 1000
-          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] UHD Remux + WEB"
             score: 1000
           - name: "[German] Anime HD Bluray + WEB"
             score: 1000
@@ -525,7 +525,7 @@ sonarr:
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
             score: 750
-          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] UHD Remux + WEB"
             score: 750
           - name: "[German] Anime HD Bluray + WEB"
             score: 750
