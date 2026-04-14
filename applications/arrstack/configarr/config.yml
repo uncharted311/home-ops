@@ -99,6 +99,76 @@ radarr:
         source: TRASH
       - template: bf3cc2e99ad9a804a9b0d0e538e1fbba # [German] Anime HD Bluray + WEB https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/quality-profiles/german-anime-hd-bluray-web.json
         source: TRASH
+    custom_format_groups:
+      # [Audio] Audio Formats - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/audio-formats.json
+      - trash_guide:
+          - id: 9d5acd8f1da78dfbae788182f7605200
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
+      # [HDR Formats] HDR - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/hdr-formats-hdr.json
+      - trash_guide:
+          - id: ef20e67b95a381fb3bc6d1f06ea24f46
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
+      # [HDR Formats] HDR10+ Boost - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/hdr-formats-hdr10-boost.json
+      - trash_guide:
+          - id: b29413a7487478fe98228ce79e5689e4
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
+      # [HDR Formats] DV Boost - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/hdr-formats-dv-boost.json
+      - trash_guide:
+          - id: 1616617ab3a14397a2b2321bcbda44d1
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
+      # [HDR Formats] DV (w/o HDR fallback) - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/hdr-formats-dv-webdl.json
+      - trash_guide:
+          - id: 7fc2751eef7e6bdc70b74136e5e35c76
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
+    custom_formats:
+      # Movie Versions (optional)
+      - trash_ids:
+          - 570bc9ebecd92723d2d21500f4be314c # Remaster
+          - eca37840c13c6ef2dd0262b141a5482f # 4K Remaster
+          - e0c07d59beb37348e975a930d5e50319 # Crierion Collection
+          - 9d27d9d2181838f76dee150882bdc58c # Masters of Cinema
+          - db9b4c4b53d312a3ca5f1378f6440fc9 # Vinegar Syndrome
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+            score: 25
+          - name: "[German] Remux + WEB 2160p"
+            score: 25
+          - name: "[German] Anime HD Bluray + WEB"
+            score: 25
+      - trash_ids:
+          - 957d0f44b592285f26449575e8b1167e # Special Edition
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+            score: 125
+          - name: "[German] Remux + WEB 2160p"
+            score: 125
+          - name: "[German] Anime HD Bluray + WEB"
+            score: 125
+      - trash_ids:
+          - eecf3a857724171f968a66cb5719e152 # IMAX
+          - 9f6cbff8cfe4ebbc1bde14c7b7bec0de # IMAX Enhanced
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+            score: 800
+          - name: "[German] Remux + WEB 2160p"
+            score: 800
+          - name: "[German] Anime HD Bluray + WEB"
+            score: 800
 
 sonarr:
   Sonarr:
@@ -111,3 +181,40 @@ sonarr:
         source: TRASH
       - template: 6fe5937e1dcc2269e23b49eb46dfe6d6 # [German] Anime HD Bluray + WEB https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/quality-profiles/german-anime-hd-bluray-web.json
         source: TRASH
+    custom_format_groups:
+      # [Audio] Audio Formats - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/audio-formats.json
+      - trash_guide:
+          - id: e9a1944a254e6f8a9da63083f7ae15cb
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
+      # [HDR Formats] HDR - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-hdr.json
+      - trash_guide:
+          - id: 7e1724c5da59e7474803ad25be98f6a3
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
+      # [HDR Formats] HDR10+ Boost - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-hdr10-boost.json
+      - trash_guide:
+          - id: 7d366c213e5c23a052b157356fac1921
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
+      # [HDR Formats] DV Boost - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-dv-boost.json
+      - trash_guide:
+          - id: e0b2774083df4265f25c9e5bc6c80940
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
+      # [HDR Formats] DV (w/o HDR fallback) - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-dv-webdl.json
+      - trash_guide:
+          - id: d776a1ea912a117d66d83b880ff2055d
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
+    
