@@ -17,6 +17,7 @@
   ],
 
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  "pinDigests": false,
 
   "assignees": ["uncharted311"],
 
