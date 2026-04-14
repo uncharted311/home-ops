@@ -426,10 +426,11 @@ services:
     container_name: configarr
     hostname: configarr
     image: ghcr.io/raydak-labs/configarr:1.26.0
+    command: >
+      sh -c "while true; do configarr; sleep 6h; done"
     environment:
       - TZ=Europe/Berlin
       #- LOG_STACKTRACE=true
-    restart: "no"
     volumes:
       - /opt/docker/configarr/config:/app/config
       - /opt/docker/configarr/repos:/app/repos
@@ -437,6 +438,9 @@ services:
       - /opt/docker/configarr/templates:/app/templates
     networks:
       - arr_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "true"]
     logging: *default-logging
 
   # MediathekArr - Indexer & Downloader for Mediathek Content - https://github.com/PCJones/MediathekArr

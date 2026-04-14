@@ -25,9 +25,9 @@ radarr:
           - id: d776a1ea912a117d66d83b880ff2055d # [HDR Formats] DV (w/o HDR fallback) https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-dv-webdl.json
           - id: 158188097a58d7687dee647e04af0da3 # [Required] Golden Rule HD https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/required-golden-rule-hd.json
         assign_scores_to:
-          - name: [German] UHD Bluray + WEB (Alternative)
-          - name: [German] Remux + WEB 2160p
-          - name: [German] Anime HD Bluray + WEB
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
 
   Radarr-List:
     base_url: http://radarr-list:7878
@@ -48,9 +48,9 @@ radarr:
           - id: d776a1ea912a117d66d83b880ff2055d # [HDR Formats] DV (w/o HDR fallback) https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-dv-webdl.json
           - id: 158188097a58d7687dee647e04af0da3 # [Required] Golden Rule HD https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/required-golden-rule-hd.json
         assign_scores_to:
-          - name: [German] UHD Bluray + WEB (Alternative)
-          - name: [German] Remux + WEB 2160p
-          - name: [German] Anime HD Bluray + WEB
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
 
 sonarr:
   Sonarr:
@@ -72,6 +72,6 @@ sonarr:
           - id: d776a1ea912a117d66d83b880ff2055d # [HDR Formats] DV (w/o HDR fallback) https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/hdr-formats-dv-webdl.json
           - id: 158188097a58d7687dee647e04af0da3 # [Required] Golden Rule HD https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/sonarr/cf-groups/required-golden-rule-hd.json
         assign_scores_to:
-          - name: [German] UHD Bluray + WEB (Alternative)
-          - name: [German] Remux + WEB 2160p
-          - name: [German] Anime HD Bluray + WEB
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
