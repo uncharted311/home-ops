@@ -400,7 +400,7 @@ services:
 
   # Uploader for Private Torrent Trackers (RHD)
   uppollo:
-    image: uppollo/uppollo:v1.13.0@sha256:354ff8717b3536333a903939ccde75032d353bda1e9896f8fe1af32733f7fbe2
+    image: uppollo/uppollo:1.13.2@sha256:b07e5e86673eaf315139477aaa603a9e015c35e6c0d1e1508c2579847596b40a
     container_name: uppollo
     command: serve
     volumes:
