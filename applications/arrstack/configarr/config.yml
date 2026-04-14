@@ -24,9 +24,44 @@ radarr:
           - name: "[German] UHD Bluray + WEB (Alternative)"
           - name: "[German] Remux + WEB 2160p"
           - name: "[German] Anime HD Bluray + WEB"
+      # [HDR Formats] HDR - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/hdr-formats-hdr.json
+      - trash_guide:
+          - id: ef20e67b95a381fb3bc6d1f06ea24f46
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
+      # [HDR Formats] HDR10+ Boost - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/hdr-formats-hdr10-boost.json
+      - trash_guide:
+          - id: b29413a7487478fe98228ce79e5689e4
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
       # [HDR Formats] DV Boost - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/hdr-formats-dv-boost.json
       - trash_guide:
           - id: 1616617ab3a14397a2b2321bcbda44d1
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
+      # [HDR Formats] DV (w/o HDR fallback) - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/hdr-formats-dv-webdl.json
+      - trash_guide:
+          - id: 7fc2751eef7e6bdc70b74136e5e35c76
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
+      # [Release Groups] German - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/release-groups-german.json
+      - trash_guide:
+          - id: bc85e56ee3bd0f01467866d5f1261543
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
+      # [Required] Golden Rule UHD - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/required-golden-rule-uhd.json
+      - trash_guide:
+          - id: ff204bbcecdd487d1cefcefdbf0c278d
         assign_scores_to:
           - name: "[German] UHD Bluray + WEB (Alternative)"
           - name: "[German] Remux + WEB 2160p"
