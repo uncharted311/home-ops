@@ -6,6 +6,28 @@ readarrEnabled: false
 lidarrEnabled: false
 silenceTrashConflictWarnings: true
 
+customFormatDefinitions:
+  - trash_id: germany-only
+    trash_scores:
+      default: -10000
+    trash_description: "Language: German Only"
+    name: "Language: Not German"
+    includeCustomFormatWhenRenaming: false
+    specifications:
+      - name: Not German Language
+        implementation: LanguageSpecification
+        negate: true
+        required: false
+        fields:
+          value: 4
+      
+      - name: "Not German in Title"
+        implementation: ReleaseTitleSpecification
+        negate: true
+        required: true
+        fields:
+          value: "(?i)\\bgerman\\b"
+
 radarr:
   Radarr:
     base_url: http://radarr:7878
@@ -47,6 +69,16 @@ radarr:
           - name: "[German] Remux + WEB 2160p"
           - name: "[German] Anime HD Bluray + WEB"
     custom_formats:
+      # Own Custom Formats
+      - trash_ids:
+          - germany-only # Germany Only
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+            score: -10000
+          - name: "[German] Remux + WEB 2160p"
+            score: -10000
+          - name: "[German] Anime HD Bluray + WEB"
+            score: -10000
       # Movie Versions
       - trash_ids:
           - 570bc9ebecd92723d2d21500f4be314c # Remaster
@@ -232,6 +264,16 @@ radarr:
           - name: "[German] Remux + WEB 2160p"
           - name: "[German] Anime HD Bluray + WEB"
     custom_formats:
+      # Own Custom Formats
+      - trash_ids:
+          - germany-only # Germany Only
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+            score: -10000
+          - name: "[German] Remux + WEB 2160p"
+            score: -10000
+          - name: "[German] Anime HD Bluray + WEB"
+            score: -10000
       # Movie Versions
       - trash_ids:
           - 570bc9ebecd92723d2d21500f4be314c # Remaster
@@ -418,7 +460,17 @@ sonarr:
           - name: "[German] UHD Remux + WEB"
           - name: "[German] Anime HD Bluray + WEB"
     custom_formats:
-    # Audio Formats
+      # Own Custom Formats
+      - trash_ids:
+          - germany-only # Germany Only
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+            score: -10000
+          - name: "[German] UHD Remux + WEB"
+            score: -10000
+          - name: "[German] Anime HD Bluray + WEB"
+            score: -10000
+      # Audio Formats
       - trash_ids:
           - 0d7824bb924701997f874e7ff7d4844a # TrueHD ATMOS
         assign_scores_to:
