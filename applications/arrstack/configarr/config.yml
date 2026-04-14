@@ -52,6 +52,13 @@ radarr:
           - name: "[German] UHD Bluray + WEB (Alternative)"
           - name: "[German] Remux + WEB 2160p"
           - name: "[German] Anime HD Bluray + WEB"
+      # [Optional] Movie Versions - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/optional-movie-versions.json
+      - trash_guide:
+          - id: f4f1474b963b24cf983455743aa9906c
+        assign_scores_to:
+          - name: "[German] UHD Bluray + WEB (Alternative)"
+          - name: "[German] Remux + WEB 2160p"
+          - name: "[German] Anime HD Bluray + WEB"
       # [Release Groups] German - https://github.com/TRaSH-Guides/Guides/blob/master/docs/json/radarr/cf-groups/release-groups-german.json
       - trash_guide:
           - id: bc85e56ee3bd0f01467866d5f1261543
