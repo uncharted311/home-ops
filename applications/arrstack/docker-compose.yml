@@ -422,13 +422,6 @@ services:
     #  retries: 3
     logging: *default-logging
 
-  ofelia:
-    image: mcuadros/ofelia:latest
-    container_name: ofelia
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    restart: unless-stopped
-
   configarr:
     container_name: configarr
     hostname: configarr
@@ -441,10 +434,6 @@ services:
       - /opt/docker/configarr/repos:/app/repos
       - /opt/docker/configarr/cfs:/app/cfs
       - /opt/docker/configarr/templates:/app/templates
-    labels:
-      - "ofelia.enabled=true"
-      - "ofelia.job-run.configarr-cron.schedule=@every 24h"
-      - "ofelia.job-run.configarr-cron.container=configarr"
     networks:
       - arr_network
     restart: no
