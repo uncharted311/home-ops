@@ -344,11 +344,11 @@ services:
     networks:
       - arr_network
     restart: unless-stopped
-    #healthcheck:
-    #  test: ["CMD-SHELL", "ps aux | grep -v grep | grep -q 'cross-seed'"]
-    #  interval: 1m
-    #  timeout: 10s
-    #  retries: 3
+    healthcheck:
+      test: ["CMD-SHELL", "ps aux | grep -v grep | grep 'cross-seed' | grep 'node'"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
     logging: *default-logging
 
   # Torrent And RSS Automation
@@ -483,12 +483,6 @@ services:
     networks:
       - arr_network
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:5006/ || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
     logging: *default-logging
 
   # Episeerr - https://github.com/vansmak/episeerr
