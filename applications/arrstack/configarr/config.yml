@@ -168,9 +168,6 @@ sonarr:
           - 0c4b99df9206d2cfac3c05ab897dd62a # HDR Formats - HDR10+ Boost
           - 7c3a61a9c6cb04f52f1544be6d44a026 # HDR Formats - DV Boost
           - 9b27ab6498ec0f31a3353992e19434ca # HDR Formats - DV (w/o HDR fallback)
-          - eecf3a857724171f968a66cb5719e152 # IMAX
-          - 9f6cbff8cfe4ebbc1bde14c7b7bec0de # IMAX Enhanced
-          - 957d0f44b592285f26449575e8b1167e # Special Edition
           - 570bc9ebecd92723d2d21500f4be314c # Remaster
           - eca37840c13c6ef2dd0262b141a5482f # 4K Remaster
           - e0c07d59beb37348e975a930d5e50319 # Crierion Collection
@@ -191,6 +188,9 @@ sonarr:
           - 5964f2a8b3be407d083498e4459d05d0 # DTS
           - a50b8a0c62274a7c38b09a9619ba9d86 # AAC
           - dbe00161b08a25ac6154c55f95e6318d # DD
+          # Streaming Boost
+          - 43b3cf48cb385cd3eac608ee6bca7f09 # UHD Streaming Boost
+          - 218e93e5702f44a68ad9e3c6ba87d2f0 # HD Streaming Boost
           # Custom Formats
           - custom-size-more-50gb
         assign_scores_to:
