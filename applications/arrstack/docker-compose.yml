@@ -436,6 +436,12 @@ services:
     networks:
       - arr_network
     restart: no
+    healthcheck:
+      test: ["CMD-SHELL", "ps aux | grep node | grep -v grep || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     logging: *default-logging
 
   # MediathekArr - Indexer & Downloader for Mediathek Content - https://github.com/PCJones/MediathekArr
