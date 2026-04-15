@@ -426,8 +426,6 @@ services:
     container_name: configarr
     hostname: configarr
     image: ghcr.io/raydak-labs/configarr:1.27.0
-    entrypoint: ["/usr/bin/tini", "--", "sh", "-c"]
-    command: "node dist/index.js sync && echo 'Sync beendet, halte Logs offen...' && tail -f /dev/null"
     environment:
       - TZ=Europe/Berlin
     volumes:
@@ -438,12 +436,6 @@ services:
     networks:
       - arr_network
     restart: no
-    healthcheck:
-      test: ["CMD", "pgrep", "-f", "tail -f /dev/null"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-      start_period: 30s
     logging: *default-logging
 
   # MediathekArr - Indexer & Downloader for Mediathek Content - https://github.com/PCJones/MediathekArr
