@@ -426,6 +426,8 @@ services:
     container_name: configarr
     hostname: configarr
     image: ghcr.io/raydak-labs/configarr:1.27.0
+    entrypoint: ["/usr/bin/tini", "--", "sh", "-c"]
+    command: "node dist/index.js sync && echo 'Sync beendet, halte Logs offen...' && tail -f /dev/null"
     environment:
       - TZ=Europe/Berlin
     volumes:
@@ -437,7 +439,7 @@ services:
       - arr_network
     restart: no
     healthcheck:
-      test: ["CMD-SHELL", "ps aux | grep node | grep -v grep || exit 1"]
+      test: ["CMD", "pgrep", "-f", "tail -f /dev/null"]
       interval: 1m
       timeout: 10s
       retries: 3
