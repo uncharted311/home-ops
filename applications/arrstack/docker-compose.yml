@@ -62,8 +62,8 @@ services:
   sabnzbd:
     image: linuxserver/sabnzbd:version-4.5.5@sha256:f0abed8e9450d5b71631a89b663fbfbfbb6909b254f94911c7e77162a3827854
     container_name: sabnzbd
-    labels:
-      - "autoheal=true"
+#    labels:
+#      - "autoheal=true"
     volumes:
       - /opt/docker/sabnzbd/config:/config
       - /opt/docker/sabnzbd/scripts:/scripts
