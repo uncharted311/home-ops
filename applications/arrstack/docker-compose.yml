@@ -260,8 +260,6 @@ services:
     expose:
       - 8000 # Gluetun Control Server for Port Forwarding
       - 8080 # qBittorrent WebUI
-      - 6881 # qBittorrent TCP
-      - 6881/udp # qBittorrent UDP
       - 80   # Speedtest-Tracker
     networks:
       - arr_network
@@ -289,7 +287,6 @@ services:
       - PGID=3006
       - UMASK=002
       - WEBUI_PORT=8080
-      - TORRENTING_PORT=6881
     volumes:
       - /opt/docker/qbit:/config
       - /mnt/data:/data
