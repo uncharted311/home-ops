@@ -118,7 +118,7 @@ services:
 
   # Radarr - https://hub.docker.com/r/linuxserver/radarr
   radarr:
-    image: linuxserver/radarr:version-6.1.1.10360@sha256:581f159c2b67436863cb4da30e158ef6f6b8878472abbba79ee5d5f7e6b7d28d
+    image: linuxserver/radarr:version-6.1.1.10360@sha256:6f1dda18354ea7f28cead8f6d099fc8222498c3ae165f567d504ed04d70980d7
     container_name: radarr
     labels:
       - "autoheal=true"
@@ -146,7 +146,7 @@ services:
 
   # Radarr - https://hub.docker.com/r/linuxserver/radarr
   radarr-list:
-    image: linuxserver/radarr:version-6.1.1.10360@sha256:581f159c2b67436863cb4da30e158ef6f6b8878472abbba79ee5d5f7e6b7d28d
+    image: linuxserver/radarr:version-6.1.1.10360@sha256:6f1dda18354ea7f28cead8f6d099fc8222498c3ae165f567d504ed04d70980d7
     container_name: radarr-list
     labels:
       - "autoheal=true"
