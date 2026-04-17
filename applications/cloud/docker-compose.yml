@@ -53,7 +53,7 @@ services:
     logging: *default-logging
 
   nextcloud:
-    image: nextcloud:33.0-apache@sha256:0b14848e05d19aa25e8a189eb9cfef4215489e0cbf5eb999e8784bf03027c226
+    image: nextcloud:33.0-apache@sha256:3e676af625884f4e228ac6655f51a4ea65f3a1e68f320ad23d17fccfa00d5b54
     container_name: nextcloud
     depends_on:
       - postgres
@@ -97,7 +97,7 @@ services:
     logging: *default-logging
 
   nextcloud-cron:
-    image: nextcloud:33.0-apache@sha256:0b14848e05d19aa25e8a189eb9cfef4215489e0cbf5eb999e8784bf03027c226
+    image: nextcloud:33.0-apache@sha256:3e676af625884f4e228ac6655f51a4ea65f3a1e68f320ad23d17fccfa00d5b54
     container_name: nextcloud-cron
     restart: unless-stopped
     entrypoint: /cron.sh
