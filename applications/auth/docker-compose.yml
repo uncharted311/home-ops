@@ -2,7 +2,7 @@ services:
 
   # Nginx Reverse Proxy - https://github.com/nginx/nginx
   nginx:
-    image: nginx:1.30.0-alpine@sha256:f60d139a69209d4340f6621fc6a50c9843702214231522a3390432f8db0ed870
+    image: nginx:1.30.0-alpine@sha256:0272e4604ed93c1792f03695a033a6e8546840f86e0de20a884bb17d2c924883
     container_name: nginx
     # ToDo: Fixen der DependsOn
     #depends_on:
