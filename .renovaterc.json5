@@ -19,6 +19,7 @@
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
 
   "assignees": ["uncharted311"],
+  "pinDigests": false,
 
   "ignorePaths": [
     "**/*.sops.*",
@@ -50,6 +51,11 @@
   ],
 
   "packageRules": [
+    {
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["digest"],
+      "enabled": false // Deaktiviert reine Digest-Updates komplett
+    }
 
     {
       "description": "Docker uses docker versioning",
