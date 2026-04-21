@@ -70,6 +70,7 @@ services:
     volumes:
       - /opt/docker/plex/config:/config    # Configuration directory
       - /mnt/data:/data/content            # Media Content
+      - /tmp/transcode:/transcode         # Transcoding directory
     ports:
       - 32400:32400 # HTTP Port
       - 1900:1900/udp # DLNA port
