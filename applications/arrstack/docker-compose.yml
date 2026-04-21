@@ -2,7 +2,7 @@ services:
 
   # Nginx Reverse Proxy - https://github.com/nginx/nginx
   nginx:
-    image: nginx:1.30.0-alpine@sha256:f60d139a69209d4340f6621fc6a50c9843702214231522a3390432f8db0ed870
+    image: nginx:1.30.0-alpine
     container_name: nginx
     env_file: /opt/docker/secrets.env
     labels:
@@ -36,7 +36,7 @@ services:
 
   # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
   certbot:
-    image: certbot/dns-cloudflare:v5.5.0@sha256:f90db06a98b61bd221fe5a9688d0bb975b444760ef677cb4369ffc2a8a16e579
+    image: certbot/dns-cloudflare:v5.5.0
     container_name: certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
     env_file: /opt/docker/secrets.env
@@ -60,7 +60,7 @@ services:
 
   # SABnzbd - https://hub.docker.com/r/linuxserver/sabnzbd
   sabnzbd:
-    image: linuxserver/sabnzbd:version-4.5.5@sha256:f0abed8e9450d5b71631a89b663fbfbfbb6909b254f94911c7e77162a3827854
+    image: linuxserver/sabnzbd:version-4.5.5
     container_name: sabnzbd
 #    labels:
 #      - "autoheal=true"
@@ -90,7 +90,7 @@ services:
 
   # Seerr - https://github.com/seerr-team/seerr
   seerr:
-    image: ghcr.io/seerr-team/seerr:v3.2.0@sha256:c4cbd5121236ac2f70a843a0b920b68a27976be57917555f1c45b08a1e6b2aad
+    image: ghcr.io/seerr-team/seerr:v3.2.0
     container_name: seerr
     init: true
     labels:
@@ -118,7 +118,7 @@ services:
 
   # Radarr - https://hub.docker.com/r/linuxserver/radarr
   radarr:
-    image: linuxserver/radarr:version-6.1.1.10360@sha256:581f159c2b67436863cb4da30e158ef6f6b8878472abbba79ee5d5f7e6b7d28d
+    image: linuxserver/radarr:version-6.1.1.10360
     container_name: radarr
     labels:
       - "autoheal=true"
@@ -146,7 +146,7 @@ services:
 
   # Radarr - https://hub.docker.com/r/linuxserver/radarr
   radarr-list:
-    image: linuxserver/radarr:version-6.1.1.10360@sha256:581f159c2b67436863cb4da30e158ef6f6b8878472abbba79ee5d5f7e6b7d28d
+    image: linuxserver/radarr:version-6.1.1.10360
     container_name: radarr-list
     labels:
       - "autoheal=true"
@@ -174,7 +174,7 @@ services:
 
   # Sonarr - https://hub.docker.com/r/linuxserver/sonarr
   sonarr:
-    image: linuxserver/sonarr:version-4.0.16.2944@sha256:21c1c3d52248589bb064f5adafec18cad45812d7a01d317472955eef051e619b
+    image: linuxserver/sonarr:version-4.0.17.2952
     container_name: sonarr
     labels:
       - "autoheal=true"
@@ -230,7 +230,7 @@ services:
  
   # VPN Container for qBittorrent with WireGuard and ProtonVPN
   qbittorrent-vpn:
-    image: qmcgaw/gluetun:v3.41.1@sha256:1a5bf4b4820a879cdf8d93d7ef0d2d963af56670c9ebff8981860b6804ebc8ab
+    image: qmcgaw/gluetun:v3.41.1
     container_name: qbittorrent-vpn
     cap_add:
       - NET_ADMIN
@@ -274,7 +274,7 @@ services:
 
   # Torrent Downloader
   qbittorrent:
-    image: linuxserver/qbittorrent:5.1.4@sha256:1fc78c81850d658f17701bfa9d8de58ccc12ff27d36a9a176c6299e55aaf4b4e
+    image: linuxserver/qbittorrent:5.1.4
     container_name: qbittorrent
     depends_on:
       qbittorrent-vpn:
@@ -325,7 +325,7 @@ services:
 
   # Qbit Torrent WebUI - Automation
   qui:
-    image: ghcr.io/autobrr/qui:v1.17.0@sha256:fb3832e68f66b056e1b049d16c40732661e7b73999bc642d4b11469a3ebbabd3
+    image: ghcr.io/autobrr/qui:v1.17.0
     container_name: qui
     labels:
       - "autoheal=true"
@@ -349,7 +349,7 @@ services:
     logging: *default-logging
   
   cross-seed:
-    image: ghcr.io/cross-seed/cross-seed:6.13.6@sha256:e2bf5b593e4e7d699e6242423ad7966190cd52ba8eefafdfdbb0cb5b0b609b96
+    image: ghcr.io/cross-seed/cross-seed:6.13.6
     container_name: cross-seed
     env_file: /opt/docker/secrets.env
     command: daemon
@@ -375,7 +375,7 @@ services:
 
   # Torrent And RSS Automation
   autobrr:
-    image: ghcr.io/autobrr/autobrr:v1.76.0@sha256:f0f4d73fcd77700b1c98233562cd94a78b9bf685a7594a0aac4f8a9436b5044d
+    image: ghcr.io/autobrr/autobrr:v1.76.0
     container_name: autobrr
     labels:
       - "autoheal=true"
@@ -401,7 +401,7 @@ services:
 
   # Speedtest-Tracker for Qbit VPN
   speedtest-tracker-qbit:
-    image: linuxserver/speedtest-tracker:1.13.12@sha256:eb3d249f16177964daa4fff7f6a90bbf6645f4e23158d92f5cddb133728d0804
+    image: linuxserver/speedtest-tracker:1.13.12
     container_name: speedtest-tracker-qbit
     network_mode: "service:qbittorrent-vpn"
     env_file: /opt/docker/secrets.env
@@ -462,7 +462,7 @@ services:
 
   # MediathekArr - Indexer & Downloader for Mediathek Content - https://github.com/PCJones/MediathekArr
   mediathekarr:
-    image: pcjones/mediathekarr:beta@sha256:333f2adbd3d93d196a8a548d2b9b5e70e9172407afc418afcfa5d49ca8c250c9
+    image: pcjones/mediathekarr:beta
     container_name: mediathekarr
     env_file: /opt/docker/secrets.env
     environment:
@@ -489,7 +489,7 @@ services:
 
   # Umlautadaptarr - https://github.com/PCJones/UmlautAdaptarr
   umlautadaptarr:
-    image: pcjones/umlautadaptarr:0.7.5@sha256:2c6689d49afe51fcaa5e8a27e139855e0c8782e1e42ec595d8694b74094f991f
+    image: pcjones/umlautadaptarr:0.7.5
     container_name: umlautadaptarr
     env_file: /opt/docker/secrets.env
     environment:
@@ -509,7 +509,7 @@ services:
 
   # Episeerr - https://github.com/vansmak/episeerr
   episeerr:
-    image: vansmak/episeerr:3.6.1@sha256:6553dbb6dad911013ae4c4f7de27b760a6af9b706f964a7fa03cfe93d10ad92b
+    image: vansmak/episeerr:3.6.1
     container_name: episeerr
     depends_on:
       - "sonarr"
@@ -546,7 +546,7 @@ services:
     logging: *default-logging
 
   flaresolverr:
-    image: ghcr.io/flaresolverr/flaresolverr:v3.4.6@sha256:7962759d99d7e125e108e0f5e7f3cdbcd36161776d058d1d9b7153b92ef1af9e
+    image: ghcr.io/flaresolverr/flaresolverr:v3.4.6
     container_name: flaresolverr
     environment:
       - TZ=Europe/Berlin
@@ -561,7 +561,7 @@ services:
 
   # Crowdsec AppSec for Arrstack
   crowdsec:
-    image: crowdsecurity/crowdsec:v1.7.7@sha256:6ca53ad26196ca59ddd4fa692a586b73d8fcde085046163b9ca2f04887dca563
+    image: crowdsecurity/crowdsec:v1.7.7
     container_name: crowdsec
     networks:
       - arr_network
@@ -584,7 +584,7 @@ services:
     logging: *default-logging
   
   auto-heal:
-    image: willfarrell/autoheal:1.2.0@sha256:31f580ef0279eaced5b38d631b08c474d70d8403c1c2fdd6ddcf2e879d5f3f7c
+    image: willfarrell/autoheal:1.2.0
     container_name: auto-heal
     restart: unless-stopped
     environment:
