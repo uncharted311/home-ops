@@ -82,8 +82,8 @@ services:
       - 32414:32414/udp # Netzwerkerkennung
     expose:
       - 32400
-    devices:
-      - /dev/dri:/dev/dri # VAAPI/NVDEC/NVENC render nodes
+    #devices:
+    #  - /dev/dri:/dev/dri # VAAPI/NVDEC/NVENC render nodes
     restart: unless-stopped
     networks:
       - plex-net
