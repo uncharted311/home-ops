@@ -57,10 +57,16 @@
     },
     {
       description: 'Special versioning for Linuxserver.io images',
-      versioning: 'regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)(?:-ls(?<revision>\\d+))?$',
+      versioning: 'regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:\\.(?<build>\\d+))?(?:-ls(?<revision>\\d+))?$', 
       matchPackageNames: [
         '/^linuxserver//',
       ],
+    },
+    {
+    "description": "Specific fix for qBittorrent legacy tags",
+    "matchPackageNames": ["linuxserver/qbittorrent"],
+    // Ignoriere alles, was wie ein Datum oder eine OS-Version (20.04) aussieht
+    "allowedVersions": "/^([5-9])\\.\\d+\\.\\d+$/" 
     },
     {
       description: 'Docker uses docker versioning',
