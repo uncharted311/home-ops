@@ -401,7 +401,7 @@ services:
 
   # Speedtest-Tracker for Qbit VPN
   speedtest-tracker-qbit:
-    image: linuxserver/speedtest-tracker:1.13.12
+    image: linuxserver/speedtest-tracker:1.14.0
     container_name: speedtest-tracker-qbit
     network_mode: "service:qbittorrent-vpn"
     env_file: /opt/docker/secrets.env
