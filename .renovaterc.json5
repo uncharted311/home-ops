@@ -55,7 +55,7 @@
       "matchDatasources": ["docker"],
       "matchUpdateTypes": ["digest"],
       "enabled": false // Deaktiviert reine Digest-Updates komplett
-    }
+    },
 
     {
       "description": "Docker uses docker versioning",
