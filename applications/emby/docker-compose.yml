@@ -59,7 +59,7 @@ services:
 
   # Emby Medienserver
   emby:
-    image: emby/embyserver:4.10.0.10@sha256:5bbf517b0ffe5197f64f49c6206aa6bdb2473e882dbb38ffd9ed3435e1c7c081
+    image: linuxserver/emby:4.9.3
     container_name: emby
     env_file: /opt/docker/secrets.env
     environment:
