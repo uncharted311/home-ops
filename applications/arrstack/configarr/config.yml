@@ -44,6 +44,16 @@ radarr:
     quality_profiles:
       - name: "[German] UHD Bluray + WEB (Alternative)"
         min_format_score: 10000
+        quality_sort: top
+        qualities:
+          - name: Merged QPs
+            qualities:
+              - Bluray-2160p
+              - WEBDL-2160p
+              - WEBRip-2160p
+              - Bluray-1080p
+              - WEBRip-1080p
+              - WEBDL-1080p
       - name: "[German] Remux + WEB 2160p"
         min_format_score: 10000
       - name: "[German] Anime HD Bluray + WEB"
@@ -101,6 +111,16 @@ radarr:
     quality_profiles:
       - name: "[German] UHD Bluray + WEB (Alternative)"
         min_format_score: 10000
+        quality_sort: top
+        qualities:
+          - name: Merged QPs
+            qualities:
+              - Bluray-2160p
+              - WEBDL-2160p
+              - WEBRip-2160p
+              - Bluray-1080p
+              - WEBRip-1080p
+              - WEBDL-1080p
       - name: "[German] Remux + WEB 2160p"
         min_format_score: 10000
       - name: "[German] Anime HD Bluray + WEB"
@@ -159,6 +179,16 @@ sonarr:
     quality_profiles:
       - name: "[German] UHD Bluray + WEB (Alternative)"
         min_format_score: 10000
+        quality_sort: top
+        qualities:
+          - name: Merged QPs
+            qualities:
+              - Bluray-2160p
+              - WEBDL-2160p
+              - WEBRip-2160p
+              - Bluray-1080p
+              - WEBRip-1080p
+              - WEBDL-1080p
       - name: "[German] UHD Remux + WEB"
         min_format_score: 10000
       - name: "[German] HD Bluray + WEB"
