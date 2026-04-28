@@ -298,6 +298,10 @@ services:
       retries: 3
       start_period: 30s
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 4000M
   
   gluetun-qbt-watchdog:
     build: ./gluetun-qbt-watchdog
