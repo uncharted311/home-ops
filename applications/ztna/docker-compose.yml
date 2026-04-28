@@ -234,8 +234,6 @@ services:
       AUTOHEAL_DEFAULT_STOP_TIMEOUT: 30
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - arr_network
     logging: *default-logging
     deploy:
       resources:
