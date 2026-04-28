@@ -33,6 +33,10 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
   certbot:
@@ -57,6 +61,10 @@ services:
       timeout: 10s
       retries: 10
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   # SABnzbd - https://hub.docker.com/r/linuxserver/sabnzbd
   sabnzbd:
@@ -87,6 +95,10 @@ services:
       retries: 3
       start_period: 30s
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   # Seerr - https://github.com/seerr-team/seerr
   seerr:
@@ -114,7 +126,10 @@ services:
       retries: 3
       start_period: 30s
     logging: *default-logging
-    
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   # Radarr - https://hub.docker.com/r/linuxserver/radarr
   radarr:
@@ -143,6 +158,10 @@ services:
       retries: 3
       start_period: 30s
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   # Radarr - https://hub.docker.com/r/linuxserver/radarr
   radarr-list:
@@ -171,6 +190,10 @@ services:
       retries: 3
       start_period: 30s
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   # Sonarr - https://hub.docker.com/r/linuxserver/sonarr
   sonarr:
@@ -199,6 +222,10 @@ services:
       retries: 3
       start_period: 30s
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   # Prowlarr - Indexer Management - https://github.com/Prowlarr/Prowlarr
   prowlarr:
@@ -227,6 +254,10 @@ services:
       retries: 3
       start_period: 30s
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
  
   # VPN Container for qBittorrent with WireGuard and ProtonVPN
   qbittorrent-vpn:
@@ -271,6 +302,10 @@ services:
       retries: 3
       start_period: 30s
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   # Torrent Downloader
   qbittorrent:
@@ -326,6 +361,10 @@ services:
       - HEARTBEAT_CYCLE_FREQUENCY=10
       - TZ=Europe/Berlin
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   # Qbit Torrent WebUI - Automation
   qui:
@@ -351,6 +390,10 @@ services:
       timeout: 5s
       retries: 3
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
   
   cross-seed:
     image: ghcr.io/cross-seed/cross-seed:6.13.6
@@ -376,6 +419,10 @@ services:
       timeout: 10s
       retries: 3
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   # Torrent And RSS Automation
   autobrr:
@@ -402,6 +449,10 @@ services:
       retries: 3
       start_period: 30s
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   # Speedtest-Tracker for Qbit VPN
   speedtest-tracker-qbit:
@@ -423,6 +474,10 @@ services:
       - /opt/docker/speedtest-tracker:/config
     restart: unless-stopped
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   # Uploader for Private Torrent Trackers (RHD)
   uppollo:
@@ -447,6 +502,10 @@ services:
     #  timeout: 10s
     #  retries: 3
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   configarr:
     container_name: configarr
@@ -463,6 +522,10 @@ services:
       - arr_network
     restart: no
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   # MediathekArr - Indexer & Downloader for Mediathek Content - https://github.com/PCJones/MediathekArr
   mediathekarr:
@@ -490,6 +553,10 @@ services:
       retries: 5
       start_period: 30s
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   # Umlautadaptarr - https://github.com/PCJones/UmlautAdaptarr
   umlautadaptarr:
@@ -510,6 +577,10 @@ services:
       - arr_network
     restart: unless-stopped
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   # Episeerr - https://github.com/vansmak/episeerr
   episeerr:
@@ -548,6 +619,10 @@ services:
       retries: 5
       start_period: 30s
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:v3.4.6
@@ -562,6 +637,10 @@ services:
       - 8191
     restart: unless-stopped
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   # Crowdsec AppSec for Arrstack
   crowdsec:
@@ -586,6 +665,10 @@ services:
       - /opt/docker/crowdsec/acquis.d:/etc/crowdsec/acquis.d
       - /opt/docker/crowdsec/data:/var/lib/crowdsec/data
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
   
   auto-heal:
     image: willfarrell/autoheal:1.2.0
@@ -601,6 +684,10 @@ services:
     networks:
       - arr_network
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
 volumes:
   tracearr_postgres:
