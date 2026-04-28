@@ -98,7 +98,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1000M
+          memory: 4000M
 
   # Seerr - https://github.com/seerr-team/seerr
   seerr:
