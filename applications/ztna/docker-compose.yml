@@ -2,6 +2,8 @@ services:
   pangolin:
     image: fosrl/pangolin:ee-postgresql-1.17.1@sha256:67628f0cb66165ebac4634d88577559810d1310bdd5d390e2da2bc5731555ae1
     container_name: pangolin
+    labels:
+      - "autoheal=true"
     depends_on:
       geoipupdate:
         condition: service_healthy
@@ -31,6 +33,8 @@ services:
     image: fosrl/gerbil:1.3.1@sha256:b16a722d5603fa74acd3e1deb86cea0b8330d015ab5325dc41e44108fe6f29c9
     container_name: gerbil
     restart: unless-stopped
+    labels:
+      - "autoheal=true"
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
@@ -81,6 +85,8 @@ services:
     image: traefik:v3.6.14@sha256:4cda3393930dceff030e144b46260e96e1337c9cfaa4fed81c90cb8f4d498f57
     container_name: traefik
     restart: unless-stopped
+    labels:
+      - "autoheal=true"
     depends_on:
       crowdsec:
         condition: service_healthy
@@ -117,6 +123,8 @@ services:
     image: redis:8.6.2-alpine@sha256:81b6f81d6a6c5b9019231a2e8eb10085e3a139a34f833dcc965a8a959b040b72
     container_name: redis
     restart: unless-stopped
+    labels:
+      - "autoheal=true"
     command: redis-server --requirepass ${REDIS_PASSWORD} --save 60 1 --loglevel warning --maxmemory 256mb --maxmemory-policy allkeys-lru
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
@@ -130,6 +138,8 @@ services:
     image: postgres:18.3-alpine@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
     container_name: pangolin-db
     restart: unless-stopped
+    labels:
+      - "autoheal=true"
     shm_size: '1gb'
     env_file: /opt/docker/secrets.env
     environment:
@@ -166,6 +176,8 @@ services:
     image: ghcr.io/maxmind/geoipupdate:v7.1.1@sha256:faecdca22579730ab0b7dea5aa9af350bb3c93cb9d39845c173639ead30346d2
     container_name: geoipupdate
     restart: unless-stopped
+    labels:
+      - "autoheal=true"
     env_file: /opt/docker/secrets.env
     environment:
       GEOIPUPDATE_ACCOUNT_ID: ${GEOIPUPDATE_ACCOUNT_ID}         # Account ID
@@ -186,6 +198,8 @@ services:
     image: crowdsecurity/crowdsec:v1.7.7@sha256:6ca53ad26196ca59ddd4fa692a586b73d8fcde085046163b9ca2f04887dca563
     container_name: crowdsec
     restart: unless-stopped
+    labels:
+      - "autoheal=true"
     env_file: /opt/docker/secrets.env
     environment:
       DISABLE_LOCAL_API: true
@@ -206,6 +220,25 @@ services:
       retries: 3
       start_period: 20s
     logging: *default-logging
+
+  auto-heal:
+    image: willfarrell/autoheal:1.2.0
+    container_name: auto-heal
+    restart: unless-stopped
+    environment:
+      AUTOHEAL_CONTAINER_LABEL: autoheal
+      AUTOHEAL_INTERVAL: 60
+      AUTOHEAL_START_PERIOD: 300
+      AUTOHEAL_DEFAULT_STOP_TIMEOUT: 30
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - arr_network
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
 volumes:
   pangolin-pgdata:
