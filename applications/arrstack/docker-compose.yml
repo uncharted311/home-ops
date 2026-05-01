@@ -426,7 +426,7 @@ services:
 
   # Torrent And RSS Automation
   autobrr:
-    image: ghcr.io/autobrr/autobrr:v1.76.0
+    image: ghcr.io/autobrr/autobrr:v1.77.0
     container_name: autobrr
     labels:
       - "autoheal=true"
