@@ -78,7 +78,10 @@ services:
       SEMAPHORE_ADMIN_EMAIL: admin@seifert.dev
       SEMAPHORE_ADMIN: admin
       SEMAPHORE_ACCESS_KEY_ENCRYPTION: ${SEMAPHORE_ACCESS_KEY_ENCRYPTION}
+      SEMAPHORE_WEB_ROOT: https://${SECRET_CERT_NAME}
       SEMAPHORE_LDAP_ACTIVATED: 'no'
+      SEMAPHORE_SCHEDULE_TIMEZONE: Europe/Berlin
+      SEMAPHORE_MAX_TASKS_PER_TEMPLATE: 2
       # Wichtig für SOPS Integration
       SEMAPHORE_TMP_PATH: /tmp/semaphore
     expose:
