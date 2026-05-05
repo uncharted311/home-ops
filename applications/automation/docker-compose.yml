@@ -1,0 +1,123 @@
+services:
+
+  # Nginx Reverse Proxy - https://github.com/nginx/nginx
+  nginx:
+    image: nginx:1.30.0-alpine@sha256:f60d139a69209d4340f6621fc6a50c9843702214231522a3390432f8db0ed870
+    container_name: nginx
+    # ToDo: Fixen der DependsOn
+    #depends_on:
+    #  semaphore:
+    #    condition: service_healthy
+    env_file: /opt/docker/secrets.env
+    environment:
+      - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
+      - SECRET_CERT_NAME=${SECRET_CERT_NAME}
+    volumes:
+      - /opt/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/docker/nginx/templates:/etc/nginx/templates:ro
+      - /opt/docker/nginx/includes:/etc/nginx/includes:ro
+      - /opt/docker/certbot/certs:/etc/letsencrypt:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - automation-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -so /dev/null http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: &default-logging # default logging
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
+  certbot:
+    image: certbot/dns-cloudflare:v5.5.0@sha256:f90db06a98b61bd221fe5a9688d0bb975b444760ef677cb4369ffc2a8a16e579
+    container_name: certbot
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    env_file: /opt/docker/secrets.env
+    environment:
+      - SECRET_CERT_NAME=${SECRET_CERT_NAME}
+    volumes:
+      - /opt/docker/certbot/certs:/etc/letsencrypt
+      - /opt/docker/certbot/cloudflare.ini:/cloudflare.ini:ro
+      - /opt/docker/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
+    networks:
+      - automation-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "openssl x509 -checkend 86400 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    logging: *default-logging
+
+  # Semaphore
+  semaphore:
+    container_name: semaphore
+    image: semaphoreui/semaphore:v2.10.35
+    depends_on:
+      - semaphore-db
+    volumes:
+      - /opt/docker/semaphore/data:/var/lib/semaphore
+      - /opt/docker/semaphore/config:/etc/semaphore
+    env_file: /opt/docker/secrets.env
+    environment:
+      SEMAPHORE_DB_USER: semaphore
+      SEMAPHORE_DB_PASS: ${SEMAPHORE_DB_PASSWORD}
+      SEMAPHORE_DB_HOST: semaphore-db
+      SEMAPHORE_DB_PORT: 5432
+      SEMAPHORE_DB_DIALECT: postgres
+      SEMAPHORE_ADMIN_PASSWORD: ${SEMAPHORE_ADMIN_PASSWORD}
+      SEMAPHORE_ADMIN_NAME: admin
+      SEMAPHORE_ADMIN_EMAIL: admin@seifert.dev
+      SEMAPHORE_ADMIN: admin
+      # Wichtig für SOPS Integration
+      SEMAPHORE_TMP_PATH: /tmp/semaphore
+    expose:
+      - 3000
+    networks:
+      - automation-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "-S", "--max-time", "2", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging: *default-logging
+
+  # Postgres-DB for semaphore
+  semaphore-db:
+    container_name: semaphore-db
+    image: postgres:18.3-alpine@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
+    volumes:
+      - semaphore-dg-data:/var/lib/postgresql
+    env_file: /opt/docker/secrets.env
+    environment:
+      POSTGRES_DB: semaphore
+      POSTGRES_USER: semaphore
+      POSTGRES_PASSWORD: ${SEMAPHORE_DB_PASSWORD}
+      POSTGRES_BACKUP_SCHEDULE: "0 3 * * *"
+    networks:
+      - automation-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U semaphore -d semaphore"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+    logging: *default-logging
+
+volumes:
+  semaphore-dg-data:
+
+networks:
+    automation-net:
+        name: automation-net
+        external: true
