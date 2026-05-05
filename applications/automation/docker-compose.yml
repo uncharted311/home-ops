@@ -77,6 +77,8 @@ services:
       SEMAPHORE_ADMIN_NAME: admin
       SEMAPHORE_ADMIN_EMAIL: admin@seifert.dev
       SEMAPHORE_ADMIN: admin
+      SEMAPHORE_ACCESS_KEY_ENCRYPTION: ${SEMAPHORE_ACCESS_KEY_ENCRYPTION}
+      SEMAPHORE_LDAP_ACTIVATED: 'no'
       # Wichtig für SOPS Integration
       SEMAPHORE_TMP_PATH: /tmp/semaphore
     expose:
