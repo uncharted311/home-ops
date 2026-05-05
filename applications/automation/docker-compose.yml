@@ -60,7 +60,7 @@ services:
   # Semaphore
   semaphore:
     container_name: semaphore
-    image: semaphoreui/semaphore:v2.18.1
+    image: semaphoreui/semaphore:v2.17.26
     depends_on:
       - semaphore-db
     volumes:
