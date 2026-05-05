@@ -368,7 +368,7 @@ services:
 
   # Qbit Torrent WebUI - Automation
   qui:
-    image: ghcr.io/autobrr/qui:v1.17.0
+    image: ghcr.io/autobrr/qui:v1.18.0
     container_name: qui
     labels:
       - "autoheal=true"
@@ -396,7 +396,7 @@ services:
           memory: 1000M
   
   cross-seed:
-    image: ghcr.io/cross-seed/cross-seed:6.13.6
+    image: ghcr.io/cross-seed/cross-seed:6.13.7
     container_name: cross-seed
     env_file: /opt/docker/secrets.env
     command: daemon
@@ -426,7 +426,7 @@ services:
 
   # Torrent And RSS Automation
   autobrr:
-    image: ghcr.io/autobrr/autobrr:v1.76.0
+    image: ghcr.io/autobrr/autobrr:v1.77.1
     container_name: autobrr
     labels:
       - "autoheal=true"
@@ -510,7 +510,7 @@ services:
   configarr:
     container_name: configarr
     hostname: configarr
-    image: ghcr.io/raydak-labs/configarr:1.27.0
+    image: ghcr.io/raydak-labs/configarr:1.28.0
     environment:
       - TZ=Europe/Berlin
     volumes:
