@@ -16,8 +16,8 @@ services:
       - /opt/docker/geoip:/app/geoip
       - /opt/docker/traefik/letsencrypt:/letsencrypt
     healthcheck:
-      interval: 10s
-      retries: 15
+      interval: 20s
+      retries: 20
       test:
         - CMD
         - curl
