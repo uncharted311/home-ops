@@ -349,6 +349,7 @@ services:
       - qbittorrent
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    env_file: /opt/docker/secrets.env
     environment:
       - GLUETUN_API=http://qbittorrent-vpn:8000
       - GLUETUN_API_KEY=${GLUETUN_API_KEY}
