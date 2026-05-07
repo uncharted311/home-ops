@@ -73,7 +73,7 @@ certificatesResolvers:
       caServer: "https://acme-v02.api.letsencrypt.org/directory"
 entryPoints:
   ping:
-    address: ":8082"
+    address: ":8080"
   web:
     address: ":80"
   websecure:
