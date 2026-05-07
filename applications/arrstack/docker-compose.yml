@@ -264,6 +264,8 @@ services:
     image: qmcgaw/gluetun:latest
     #image: qmcgaw/gluetun:v3.41.1
     container_name: qbittorrent-vpn
+    labels:
+      - "autoheal=true"
     cap_add:
       - NET_ADMIN
     devices:
@@ -316,6 +318,8 @@ services:
     depends_on:
       qbittorrent-vpn:
         condition: service_healthy
+    labels:
+      - "autoheal=true"
     network_mode: "service:qbittorrent-vpn"
     env_file: /opt/docker/secrets.env
     environment:
