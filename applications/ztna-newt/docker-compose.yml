@@ -1,6 +1,6 @@
 services:
   newt:
-    image: fosrl/newt:1.12.3@sha256:414e1a7618cadba03aace19abe2fd5feaa1d7922b95d359d6c1e8329d3fa964c
+    image: fosrl/newt:1.12.4@sha256:6369c0e0872d0634461ed477dea684431f4ddb92a9c30e485c07d1904623582d
     container_name: newt
     restart: unless-stopped
     env_file: /opt/docker/secrets.env
