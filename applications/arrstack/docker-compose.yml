@@ -40,7 +40,7 @@ services:
 
   # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
   certbot:
-    image: certbot/dns-cloudflare:v5.5.0
+    image: certbot/dns-cloudflare:v5.6.0
     container_name: certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
     env_file: /opt/docker/secrets.env
