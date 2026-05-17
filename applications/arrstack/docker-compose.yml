@@ -535,6 +535,26 @@ services:
 #        limits:
 #          memory: 1000M
 
+    # Clonarr - Sync, build and manage quality profiles and custom formats for Radarr and Sonarr - https://github.com/ProphetSe7en/clonarr
+  clonarr :
+    container_name: clonarr 
+    image: ghcr.io/prophetse7en/clonarr:v2.5.9
+    environment:
+      - TZ=Europe/Berlin
+      - PORT=6060
+    volumes:
+      - /opt/docker/clonarr/config:/config
+    expose:
+      - 6060
+    networks:
+      - arr_network
+    restart: no
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
+
   # MediathekArr - Indexer & Downloader for Mediathek Content - https://github.com/PCJones/MediathekArr
   mediathekarr:
     image: pcjones/mediathekarr:beta
