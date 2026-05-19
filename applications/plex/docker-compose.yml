@@ -77,10 +77,6 @@ services:
       - 32469:32469 # DLNA port
       - 8324:8324 # Roku Port
       - 5353:5353/udp # Bonjour port
-      - 32410:32410/udp # Netzwerkerkennung
-      - 32412:32412/udp # Netzwerkerkennung
-      - 32413:32413/udp # Netzwerkerkennung
-      - 32414:32414/udp # Netzwerkerkennung
     expose:
       - 32400
     devices:
