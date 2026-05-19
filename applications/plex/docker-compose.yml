@@ -67,6 +67,7 @@ services:
       - GID=100
       - GIDLIST=100,3006,44,992
       - VERSION=docker
+      - PLEX_CLAIM=${PLEX_CLAIM} # Optional: Claim token for automatic server claim https://www.plex.tv/claim/
     volumes:
       - /opt/docker/plex/config:/config    # Configuration directory
       - /mnt/data:/data/content            # Media Content
