@@ -59,7 +59,7 @@ services:
 
   # Plex Medienserver
   plex:
-    image: linuxserver/plex:1.43.1
+    image: linuxserver/plex:version-1.43.1.10611-1e34174b1
     container_name: plex
     env_file: /opt/docker/secrets.env
     environment:
