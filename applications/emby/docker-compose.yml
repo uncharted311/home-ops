@@ -76,8 +76,8 @@ services:
       - 1900:1900/udp # DLNA
     expose:
       - 8920
-    #devices:
-    #  - /dev/dri:/dev/dri # VAAPI/NVDEC/NVENC render nodes
+    devices:
+      - /dev/dri:/dev/dri # VAAPI/NVDEC/NVENC render nodes
     restart: unless-stopped
     networks:
       - localhost
