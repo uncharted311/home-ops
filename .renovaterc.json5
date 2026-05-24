@@ -46,7 +46,17 @@
     },
   ],
   packageRules: [
+    // 1. GLOBALE DOCKER REGELN
     {
+      description: 'Docker uses docker versioning by default',
+      matchDatasources: [
+        'docker',
+      ],
+      versioning: 'docker',
+      pinDigests: false,
+    },
+    {
+      description: 'Disable digest updates for Docker registries',
       matchDatasources: [
         'docker',
       ],
@@ -56,21 +66,14 @@
       enabled: false,
     },
     {
-      description: 'Special versioning for Linuxserver.io images',
-      matchCurrentValue: '/^version-/',
-      versioning: 'regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:\\.(?<build>\\d+))?(?:-ls(?<revision>\\d+))?$', 
-      matchPackageNames: [
-        '/^linuxserver/',
-      ],
-    },
-    {
-      description: 'Docker uses docker versioning',
+      description: 'Separate major container upgrades and prioritize them',
       matchDatasources: [
         'docker',
       ],
-      versioning: 'docker',
-      pinDigests: false,
+      separateMajorMinor: true,
+      prPriority: 10,
     },
+    // 2. SPEZIFISCHE MANAGER REGELN
     {
       description: 'Automerge GitHub Actions digest/patch',
       matchManagers: [
@@ -82,20 +85,17 @@
       ],
       automerge: true,
     },
+    // 3. SPEZIFISCHE VERSIONIERUNGEN
     {
-      description: 'Separate major container upgrades',
+      description: 'Special versioning for Linuxserver.io images',
       matchDatasources: [
         'docker',
       ],
-      separateMajorMinor: true,
-      pinDigests: false,
-    },
-    {
-      description: 'Prioritize container updates',
-      matchDatasources: [
-        'docker',
+      matchPackageNames: [
+        '/^linuxserver\\//',
       ],
-      prPriority: 10,
+      matchCurrentValue: '/^version-/',
+      versioning: 'regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:\\.(?<build>\\d+))?(?:-ls(?<revision>\\d+))?$',
     },
     {
       description: 'Pangolin weird versioning',
