@@ -67,7 +67,7 @@ services:
     env_file: /opt/crowdsec-central/secrets.env
     environment:
       - GID=1000
-      - COLLECTIONS=crowdsecurity/linux crowdsecurity/sshd crowdsecurity/nginx crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/whitelist-good-actors crowdsecurity/iptables crowdsecurity/teamspeak3 crowdsecurity/postfix crowdsecurity/dovecot crowdsecurity/proftpd crowdsecurity/nextcloud LePresidente/emby andreasbrett/paperless-ngx Dominic-Wagner/vaultwarden corvese/apache-guacamole
+      - COLLECTIONS=crowdsecurity/linux crowdsecurity/sshd crowdsecurity/nginx crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/whitelist-good-actors crowdsecurity/iptables crowdsecurity/teamspeak3 crowdsecurity/postfix crowdsecurity/dovecot crowdsecurity/proftpd crowdsecurity/nextcloud LePresidente/emby andreasbrett/paperless-ngx corvese/apache-guacamole
       - DB_ENGINE=postgres
       - DB_USER=crowdsec
       - DB_PASSWORD=${CROWDSEC_DB_PASSWORD}
