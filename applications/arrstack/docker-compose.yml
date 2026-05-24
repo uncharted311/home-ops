@@ -68,7 +68,7 @@ services:
 
   # SABnzbd - https://hub.docker.com/r/linuxserver/sabnzbd
   sabnzbd:
-    image: linuxserver/sabnzbd:version-4.5.5
+    image: linuxserver/sabnzbd:version-5.0.3
     container_name: sabnzbd
 #    labels:
 #      - "autoheal=true"
