@@ -261,11 +261,10 @@ services:
  
   # VPN Container for qBittorrent with WireGuard and ProtonVPN
   qbittorrent-vpn:
-    image: qmcgaw/gluetun:latest
-    #image: qmcgaw/gluetun:v3.41.1
+    image: qmcgaw/gluetun:v3.41.1
     container_name: qbittorrent-vpn
-    labels:
-      - "autoheal=true"
+    #labels:
+    #  - "autoheal=true"
     cap_add:
       - NET_ADMIN
     devices:
@@ -286,7 +285,7 @@ services:
       - DNS=1.1.1.1,8.8.8.8
       - VPN_PORT_FORWARDING=on
       - VPN_PORT_FORWARDING_PROVIDER=protonvpn
-      - VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c '/usr/bin/wget -O- --retry-connrefused --post-data "json={\"listen_port\":{{PORTS}}}" http://127.0.0.1:8080/api/v2/app/setPreferences 2>&1'
+      #- VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c '/usr/bin/wget -O- --retry-connrefused --post-data "json={\"listen_port\":{{PORTS}}}" http://127.0.0.1:8080/api/v2/app/setPreferences 2>&1'
       - HTTP_CONTROL_SERVER_ADDRESS=:8000
       - HEALTH_SERVER_ADDRESS=0.0.0.0:9999
       - HTTP_CONTROL_SERVER_AUTH_DEFAULT_ROLE={"auth":"apikey","apikey":"${GLUETUN_API_KEY}"} # https://github.com/brunoorsolon/gluetun-qbt-watchdog
@@ -318,8 +317,8 @@ services:
     depends_on:
       qbittorrent-vpn:
         condition: service_healthy
-    labels:
-      - "autoheal=true"
+    #labels:
+    #  - "autoheal=true"
     network_mode: "service:qbittorrent-vpn"
     env_file: /opt/docker/secrets.env
     environment:
@@ -344,34 +343,38 @@ services:
         limits:
           memory: 4000M
   
-#  gluetun-qbt-watchdog:
-#    build: ./gluetun-qbt-watchdog
-#    container_name: gluetun-qbt-watchdog
-#    restart: unless-stopped
-#    networks:
-#      - arr_network
-#    depends_on:
-#      - qbittorrent-vpn
-#      - qbittorrent
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#    env_file: /opt/docker/secrets.env
-#    environment:
-#      - GLUETUN_API=http://qbittorrent-vpn:8000
-#      - GLUETUN_API_KEY=${GLUETUN_API_KEY}
-#      - GLUETUN_CONTAINER_NAME=qbittorrent-vpn
-#      - QBT_API=http://qbittorrent-vpn:8080
-#      - QBT_USER=${QBIT_USER}
-#      - QBT_PASS=${QBIT_PASSWORD}
-#      - QBT_CONTAINER_NAME=qbittorrent
-#      - CHECK_INTERVAL=60
-#      - HEARTBEAT_CYCLE_FREQUENCY=10
-#      - TZ=Europe/Berlin
-#    logging: *default-logging
-#    deploy:
-#      resources:
-#        limits:
-#          memory: 1000M
+  gluetun-qbt-watchdog:
+    image: ghcr.io/brunoorsolon/gluetun-qbt-watchdog:v1.0.0
+    container_name: gluetun-qbt-watchdog
+    restart: unless-stopped
+    networks:
+      - arr_network
+    depends_on:
+      - qbittorrent-vpn
+      - qbittorrent
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file: /opt/docker/secrets.env
+    environment:
+      - GLUETUN_API=http://qbittorrent-vpn:8000
+      - GLUETUN_API_KEY=${GLUETUN_API_KEY}
+      - GLUETUN_CONTAINER_NAME=qbittorrent-vpn
+      - QBT_API=http://qbittorrent-vpn:8080
+      - QBT_API_KEY=${QBT_API_KEY:-}
+      - QBT_AUTH_MODE=${QBT_AUTH_MODE:-auto}
+      - QBT_USER=${QBIT_USER}
+      - QBT_PASS=${QBIT_PASSWORD}
+      - QBT_CONTAINER_NAME=qbittorrent
+      - CHECK_INTERVAL=60
+      - HEARTBEAT_CYCLE_FREQUENCY=10
+      - MAX_RESTART_WAIT=${MAX_RESTART_WAIT:-120}
+      - ADDITIONAL_RESTART=${ADDITIONAL_RESTART:-}
+      - TZ=Europe/Berlin
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   # Qbit Torrent WebUI - Automation
   qui:
