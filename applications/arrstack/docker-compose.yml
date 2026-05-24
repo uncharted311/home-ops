@@ -346,6 +346,8 @@ services:
   gluetun-qbt-watchdog:
     image: ghcr.io/brunoorsolon/gluetun-qbt-watchdog:1.0.0
     container_name: gluetun-qbt-watchdog
+    #labels:
+    #  - "autoheal=true"
     restart: unless-stopped
     networks:
       - arr_network
@@ -518,26 +520,6 @@ services:
         limits:
           memory: 1000M
 
-#  configarr:
-#    container_name: configarr
-#    hostname: configarr
-#    image: ghcr.io/raydak-labs/configarr:1.28.0
-#    environment:
-#      - TZ=Europe/Berlin
-#    volumes:
-#      - /opt/docker/configarr/config:/app/config
-#      - /opt/docker/configarr/repos:/app/repos
-#      - /opt/docker/configarr/cfs:/app/cfs
-#      - /opt/docker/configarr/templates:/app/templates
-#    networks:
-#      - arr_network
-#    restart: no
-#    logging: *default-logging
-#    deploy:
-#      resources:
-#        limits:
-#          memory: 1000M
-
     # Clonarr - Sync, build and manage quality profiles and custom formats for Radarr and Sonarr - https://github.com/ProphetSe7en/clonarr
   clonarr :
     container_name: clonarr 
@@ -577,12 +559,12 @@ services:
     networks:
       - arr_network
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:5007/ || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
+    #healthcheck:
+    #  test: ["CMD-SHELL", "curl -f http://localhost:5007/ || exit 1"]
+    #  interval: 30s
+    #  timeout: 10s
+    #  retries: 5
+    #  start_period: 30s
     logging: *default-logging
     deploy:
       resources:
