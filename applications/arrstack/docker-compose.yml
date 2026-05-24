@@ -360,7 +360,7 @@ services:
       - GLUETUN_API_KEY=${GLUETUN_API_KEY}
       - GLUETUN_CONTAINER_NAME=qbittorrent-vpn
       - QBT_API=http://qbittorrent-vpn:8080
-      - QBT_API_KEY=${QBT_API_KEY:-}
+      #- QBT_API_KEY=${QBT_API_KEY:-}
       - QBT_AUTH_MODE=${QBT_AUTH_MODE:-auto}
       - QBT_USER=${QBIT_USER}
       - QBT_PASS=${QBIT_PASSWORD}
