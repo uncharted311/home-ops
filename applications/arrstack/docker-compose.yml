@@ -596,7 +596,7 @@ services:
 
   # Episeerr - https://github.com/vansmak/episeerr
   episeerr:
-    image: vansmak/episeerr:3.7.1
+    image: vansmak/episeerr:3.7.6
     container_name: episeerr
     depends_on:
       - "sonarr"
