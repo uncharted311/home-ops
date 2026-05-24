@@ -276,13 +276,12 @@ services:
       - VPN_TYPE=wireguard
       - WIREGUARD_PRIVATE_KEY=${QBIT_PROTON_PRIVATE_KEY}
       - WIREGUARD_PERSISTENT_KEEPALIVE_INTERVAL=25s
-      - SERVER_COUNTRIES=Netherlands
+      - SERVER_COUNTRIES=Netherlands,Germany
       - UPDATER_PROTONVPN_EMAIL=${PROTON_VPN_EMAIL}
       - UPDATER_PROTONVPN_PASSWORD=${PROTON_VPN_PASSWORD} 
       - GLUETUN_API_KEY=${GLUETUN_API_KEY} 
       - PORT_FORWARD_ONLY=on
       - UPDATER_PERIOD=24h
-      #- DNS=1.1.1.1,8.8.8.8
       - VPN_PORT_FORWARDING=on
       - VPN_PORT_FORWARDING_PROVIDER=protonvpn
       #- VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c '/usr/bin/wget -O- --retry-connrefused --post-data "json={\"listen_port\":{{PORTS}}}" http://127.0.0.1:8080/api/v2/app/setPreferences 2>&1'
