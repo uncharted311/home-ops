@@ -344,7 +344,7 @@ services:
           memory: 4000M
   
   gluetun-qbt-watchdog:
-    image: ghcr.io/brunoorsolon/gluetun-qbt-watchdog:v1.0.0
+    image: ghcr.io/brunoorsolon/gluetun-qbt-watchdog:1.0.0
     container_name: gluetun-qbt-watchdog
     restart: unless-stopped
     networks:
