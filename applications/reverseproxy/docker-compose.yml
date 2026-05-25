@@ -10,6 +10,11 @@ services:
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
+    entrypoint: >
+      /bin/sh -c "
+      FORMATTED_VARS=$$(echo $$NGINX_ENVSUBST_FILTERED_VAR_NAMES | awk '{for(i=1;i<=NF;i++) printf \"$$%s,\", $$i}') &&
+      envsubst \"$$FORMATTED_VARS\" < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf &&
+      exec /bin/sh /docker_start.sh"
     volumes:
       - /opt/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - /opt/docker/nginx/templates:/etc/nginx/templates:ro
