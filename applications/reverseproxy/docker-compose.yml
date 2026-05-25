@@ -17,7 +17,7 @@ services:
         if [ -f \"$$file\" ]; then
           filename=\$$(basename \"$$file\" .template) &&
           envsubst \"$$FORMATTED_VARS\" < \"$$file\" > \"/etc/nginx/vhosts/$$filename\" &&
-          echo \"Template $$filename generiert.\";
+          echo \"Template /etc/nginx/vhosts/$$filename generiert.\";
         fi
       done &&
       exec /bin/sh /docker_start.sh"
@@ -25,9 +25,9 @@ services:
       - /opt/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - /opt/docker/nginx/templates:/etc/nginx/templates:ro
       - /opt/docker/nginx/includes:/etc/nginx/includes:ro
+      - /opt/docker/nginx/vhosts:/etc/nginx/vhosts
       - /opt/docker/nginx/bouncers:/etc/crowdsec/bouncers:ro
       - /opt/docker/certbot/certs:/etc/letsencrypt:ro
-      - /opt/docker/nginx/vhosts:/etc/nginx/vhosts
     ports:
       - "80:80"
       - "443:443"
