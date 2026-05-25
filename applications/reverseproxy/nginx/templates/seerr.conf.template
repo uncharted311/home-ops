@@ -1,7 +1,6 @@
 server {
     listen 443 ssl;
-    server_name plex.srv.${SECRET_DOMAIN};
-    access_log  off;
+    server_name seerr.${SECRET_DOMAIN};
     
     ssl_certificate /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${SECRET_CERT_NAME}/privkey.pem;
@@ -10,24 +9,16 @@ server {
     include /etc/nginx/includes/default_proxy_params.conf;
     include /etc/nginx/includes/default_header_params.conf;
 
+    access_log /dev/stdout;
     error_log /dev/stderr;
     
     location / {
-        proxy_pass http://plex:32400/;
+        proxy_pass https://seerr.srv.seifert.dev/;
         proxy_http_version 1.1;
-        
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-
-        proxy_read_timeout 3600;
-        proxy_send_timeout 3600;
-        proxy_connect_timeout 3600;
-
         proxy_buffering off;
     }
 }
