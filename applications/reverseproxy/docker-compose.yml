@@ -13,7 +13,13 @@ services:
     entrypoint: >
       /bin/sh -c "
       FORMATTED_VARS=$$(echo $$NGINX_ENVSUBST_FILTERED_VAR_NAMES | awk '{for(i=1;i<=NF;i++) printf \"$$%s,\", $$i}') &&
-      envsubst \"$$FORMATTED_VARS\" < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf &&
+      for file in /etc/nginx/templates/*.template; do
+        if [ -f \"$$file\" ]; then
+          filename=\$$(basename \"$$file\" .template) &&
+          envsubst \"$$FORMATTED_VARS\" < \"$$file\" > \"/etc/nginx/conf.d/$$filename\" &&
+          echo \"Template $$filename generiert.\";
+        fi
+      done &&
       exec /bin/sh /docker_start.sh"
     volumes:
       - /opt/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -21,6 +27,7 @@ services:
       - /opt/docker/nginx/includes:/etc/nginx/includes:ro
       - /opt/docker/nginx/bouncers:/etc/crowdsec/bouncers:ro
       - /opt/docker/certbot/certs:/etc/letsencrypt:ro
+      - /opt/docker/nginx/conf.d:/etc/nginx/conf.d
     ports:
       - "80:80"
       - "443:443"
