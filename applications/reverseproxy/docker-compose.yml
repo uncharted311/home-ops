@@ -4,6 +4,8 @@ services:
   nginx:
     image: nginx:1.31.1-alpine
     container_name: nginx
+    labels:
+      - "autoheal=true"
     env_file: /opt/docker/secrets.env
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
@@ -35,6 +37,8 @@ services:
   certbot:
     image: certbot/dns-cloudflare:v5.6.0@sha256:4231f04709b3ed4f457c939bdf2942bd9be603e28fe0eeb9c2c223a313302869
     container_name: certbot
+    labels:
+      - "autoheal=true"
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
     env_file: /opt/docker/secrets.env
     environment:
@@ -97,7 +101,7 @@ services:
       resources:
         limits:
           memory: 1000M
-  
+
 networks:
   proxy-net:
     name: proxy-net
