@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sicherheitsüberprüfung - Seifert ZTNA</title>
+    <script src="{{ .FrontendJS }}" async defer></script>
+    <style>
+        body { font-family: -apple-system, system-ui, sans-serif; background-color: #0f172a; color: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .container { text-align: center; max-width: 450px; padding: 2.5rem; background: #1e293b; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
+        .icon { font-size: 3.5rem; color: #38bdf8; margin-bottom: 1.5rem; }
+        h1 { font-size: 1.75rem; margin-bottom: 0.5rem; color: #fff; }
+        p { color: #94a3b8; line-height: 1.6; margin-bottom: 2rem; }
+        .captcha-box { background: #0f172a; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #38bdf8; display: flex; justify-content: center; margin-bottom: 1.5rem; min-height: 80px; }
+        .details-box { background: #0f172a; padding: 1rem; border-radius: 8px; text-align: left; border-left: 4px solid #38bdf8; margin-bottom: 1.5rem; }
+        .detail-row { display: flex; justify-content: space-between; font-size: 0.85rem; }
+        .label { color: #64748b; }
+        .value { color: #38bdf8; font-weight: bold; font-family: monospace; }
+        .footer-note { font-size: 0.75rem; color: #475569; border-top: 1px solid #334155; padding-top: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🛡</div>
+        <h1>Sicherheitsprüfung</h1>
+        <p>Bitte bestätigen Sie Ihre Verbindung zum <strong>Seifert ZTNA</strong>.</p>
+
+        <form action="" method="POST" id="captcha-form">
+            <div class="captcha-box">
+                <div id="captcha" class="{{ .FrontendKey }}" data-sitekey="{{ .SiteKey }}" data-callback="captchaCallback" data-theme="dark"></div>
+            </div>
+            <input type="hidden" name="crowdsec_redirect" value="{{ .RedirectURL }}">
+        </form>
+
+        <div class="details-box">
+            <div class="detail-row">
+                <span class="label">Ihre IP:</span>
+                <span id="display-ip" class="value">{{ .ClientIP }}</span>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            Protected by <strong>CrowdSec</strong> & <strong>Cloudflare Turnstile</strong>
+        </div>
+    </div>
+
+    <script>
+        async function checkIP() {
+            const el = document.getElementById('display-ip');
+            if (!el.textContent || el.textContent.includes('{') || el.textContent.trim() === "") {
+                try {
+                    const r = await fetch('https://api64.ipify.org?format=json');
+                    const d = await r.json();
+                    el.textContent = d.ip;
+                } catch (e) { el.textContent = 'IP unbekannt'; }
+            }
+        }
+        checkIP();
+
+        function captchaCallback(token) {
+            if (token) { document.getElementById('captcha-form').submit(); }
+        }
+    </script>
+</body>
+</html>
