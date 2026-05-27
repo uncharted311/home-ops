@@ -637,7 +637,7 @@ services:
           memory: 1000M
 
   flaresolverr:
-    image: ghcr.io/flaresolverr/flaresolverr:v3.4.6
+    image: ghcr.io/flaresolverr/flaresolverr:v3.5.0
     container_name: flaresolverr
     environment:
       - TZ=Europe/Berlin
