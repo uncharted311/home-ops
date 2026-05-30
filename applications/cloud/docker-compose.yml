@@ -53,7 +53,7 @@ services:
     logging: *default-logging
 
   nextcloud:
-    image: nextcloud:33.0.3-apache
+    image: nextcloud:33.0.4-apache
     container_name: nextcloud
     depends_on:
       - postgres
