@@ -653,6 +653,31 @@ services:
       resources:
         limits:
           memory: 1000M
+    
+  # MediathekArr - Indexer & Downloader for Mediathek Content - https://github.com/PCJones/MediathekArr
+  repollo:
+    image: uppollo/repollo:v0.2.3
+    container_name: repollo
+    env_file: /opt/docker/secrets.env
+    environment:
+      - TZ=Europe/Berlin
+    volumes:
+      - /opt/docker/repollo/config:/home/repollo/.config/rePollo
+      - /opt/docker/repollo/data:home/repollo/.config/rePollo/state
+    networks:
+      - arr_network
+    restart: unless-stopped
+    #healthcheck:
+    #  test: ["CMD-SHELL", "curl -f http://localhost:5007/ || exit 1"]
+    #  interval: 30s
+    #  timeout: 10s
+    #  retries: 5
+    #  start_period: 30s
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
   # Crowdsec AppSec for Arrstack
   crowdsec:
