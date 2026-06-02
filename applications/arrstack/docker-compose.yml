@@ -663,7 +663,7 @@ services:
       - TZ=Europe/Berlin
     volumes:
       - /opt/docker/repollo/config:/home/repollo/.config/rePollo
-      - /opt/docker/repollo/data:home/repollo/.config/rePollo/state
+      - /opt/docker/repollo/data:/home/repollo/.config/rePollo/state
     networks:
       - arr_network
     restart: unless-stopped
