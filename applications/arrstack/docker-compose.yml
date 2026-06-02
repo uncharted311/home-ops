@@ -654,7 +654,7 @@ services:
         limits:
           memory: 1000M
     
-  # MediathekArr - Indexer & Downloader for Mediathek Content - https://github.com/PCJones/MediathekArr
+  # Repollo - https://codeberg.org/upPollo/rePollo
   repollo:
     image: uppollo/repollo:v0.2.3
     container_name: repollo
