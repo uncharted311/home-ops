@@ -491,33 +491,58 @@ services:
         limits:
           memory: 1000M
 
-  # Uploader for Private Torrent Trackers (RHD)
-  uppollo:
-    image: uppollo/uppollo:1.13.2@sha256:b07e5e86673eaf315139477aaa603a9e015c35e6c0d1e1508c2579847596b40a
-    container_name: uppollo
-    command: serve
-    volumes:
-      - /opt/docker/uppollo:/home/uppollo/.config/upPollo
-      - /data/content:/data/content:ro 
-    environment:
-      - TZ=Europe/Berlin
-      - PUID=3006
-      - PGID=3006
-    networks:
-      - arr_network
-    expose:
-      - 9999
-    restart: unless-stopped
+  ## Uploader for Private Torrent Trackers (RHD)
+  #uppollo:
+  #  image: uppollo/uppollo:1.13.2@sha256:b07e5e86673eaf315139477aaa603a9e015c35e6c0d1e1508c2579847596b40a
+  #  container_name: uppollo
+  #  command: serve
+  #  volumes:
+  #    - /opt/docker/uppollo:/home/uppollo/.config/upPollo
+  #    - /data/content:/data/content:ro 
+  #  environment:
+  #    - TZ=Europe/Berlin
+  #    - PUID=3006
+  #    - PGID=3006
+  #  networks:
+  #    - arr_network
+  #  expose:
+  #    - 9999
+  #  restart: unless-stopped
+  #  #healthcheck:
+  #  #  test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+  #  #  interval: 30s
+  #  #  timeout: 10s
+  #  #  retries: 3
+  #  logging: *default-logging
+  #  deploy:
+  #    resources:
+  #      limits:
+  #        memory: 1000M
+
+  # Repollo - https://codeberg.org/upPollo/rePollo
+  #repollo:
+  #  image: uppollo/repollo:v0.2.3
+  #  container_name: repollo
+  #  env_file: /opt/docker/secrets.env
+  #  environment:
+  #    - TZ=Europe/Berlin
+  #  volumes:
+  #    - /opt/docker/repollo/config:/home/repollo/.config/rePollo
+  #    - /opt/docker/repollo/data:/home/repollo/.config/rePollo/state
+  #  networks:
+  #    - arr_network
+  #  restart: unless-stopped
     #healthcheck:
-    #  test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+    #  test: ["CMD-SHELL", "curl -f http://localhost:5007/ || exit 1"]
     #  interval: 30s
     #  timeout: 10s
-    #  retries: 3
-    logging: *default-logging
-    deploy:
-      resources:
-        limits:
-          memory: 1000M
+    #  retries: 5
+    #  start_period: 30s
+  #  logging: *default-logging
+  #  deploy:
+  #    resources:
+  #      limits:
+  #        memory: 1000M
 
     # Clonarr - Sync, build and manage quality profiles and custom formats for Radarr and Sonarr - https://github.com/ProphetSe7en/clonarr
   clonarr :
@@ -648,31 +673,6 @@ services:
     expose:
       - 8191
     restart: unless-stopped
-    logging: *default-logging
-    deploy:
-      resources:
-        limits:
-          memory: 1000M
-    
-  # Repollo - https://codeberg.org/upPollo/rePollo
-  repollo:
-    image: uppollo/repollo:v0.2.3
-    container_name: repollo
-    env_file: /opt/docker/secrets.env
-    environment:
-      - TZ=Europe/Berlin
-    volumes:
-      - /opt/docker/repollo/config:/home/repollo/.config/rePollo
-      - /opt/docker/repollo/data:/home/repollo/.config/rePollo/state
-    networks:
-      - arr_network
-    restart: unless-stopped
-    #healthcheck:
-    #  test: ["CMD-SHELL", "curl -f http://localhost:5007/ || exit 1"]
-    #  interval: 30s
-    #  timeout: 10s
-    #  retries: 5
-    #  start_period: 30s
     logging: *default-logging
     deploy:
       resources:
