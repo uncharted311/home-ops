@@ -102,7 +102,7 @@ services:
 
   # Seerr - https://github.com/seerr-team/seerr
   seerr:
-    image: ghcr.io/seerr-team/seerr:v3.2.0
+    image: ghcr.io/seerr-team/seerr:v3.3.0
     container_name: seerr
     init: true
     labels:
@@ -438,7 +438,7 @@ services:
 
   # Torrent And RSS Automation
   autobrr:
-    image: ghcr.io/autobrr/autobrr:v1.79.0
+    image: ghcr.io/autobrr/autobrr:v1.80.0
     container_name: autobrr
     labels:
       - "autoheal=true"
