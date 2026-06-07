@@ -1,0 +1,18 @@
+http:
+  routers:
+    emby-router:
+      rule: "Host(`emby.${SECRET_DOMAIN}`)"
+      entryPoints:
+        - "websecure"
+      middlewares:
+        - "secured-stack"
+      service: "emby-backend"
+      tls: {}
+
+  services:
+    emby-backend:
+      loadBalancer:
+        servers:
+          - url: "https://emby.srv.${SECRET_DOMAIN}"
+        responseForwarding:
+          flushInterval: "100ms"
