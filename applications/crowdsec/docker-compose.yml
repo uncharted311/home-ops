@@ -172,22 +172,22 @@ services:
       - crowdsec-net
     logging: *default-logging
   
-#  # Crowdsec Cloudflare Worker Bouncer - https://github.com/crowdsecurity/cs-cloudflare-worker-bouncer
-#  crowdsec-cloudflare-worker:
-#    image: ghcr.io/crowdsecurity/cloudflare-worker-bouncer:v0.0.18
-#    container_name: crowdsec-cloudflare-worker
-#    restart: unless-stopped
-#    depends_on:
-#      - crowdsec
-#    env_file: /opt/crowdsec-central/secrets.env
-#    environment:
-#      - CROWDSEC_LAPI_URL=http://crowdsec:8080
-#      - API_KEY=${CROWDSEC_CLOUDFLARE_WORKER_API_KEY}
-#    volumes:
-#      - /opt/crowdsec-central/cloudflare-worker/config:/etc/crowdsec/bouncers/
-#    networks:
-#      - crowdsec-net
-#    logging: *default-logging
+  # Crowdsec Cloudflare Worker Bouncer - https://github.com/crowdsecurity/cs-cloudflare-worker-bouncer
+  crowdsec-cloudflare-worker:
+    image: ghcr.io/crowdsecurity/cloudflare-worker-bouncer:v0.0.18
+    container_name: crowdsec-cloudflare-worker
+    restart: unless-stopped
+    depends_on:
+      - crowdsec
+    env_file: /opt/crowdsec-central/secrets.env
+    environment:
+      - CROWDSEC_LAPI_URL=http://crowdsec:8080
+      - API_KEY=${CROWDSEC_CLOUDFLARE_WORKER_API_KEY}
+    volumes:
+      - /opt/crowdsec-central/cloudflare-worker/config:/etc/crowdsec/bouncers/
+    networks:
+      - crowdsec-net
+    logging: *default-logging
 
 #   ToDo: Blocklist-Mirror offen
 #  # Crowdsec Blocklist-Mirror
