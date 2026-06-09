@@ -92,6 +92,8 @@ services:
       MAXMIND_LICENSE_KEY: ${MAXMIND_LICENSE_KEY}
       PUID: 1000
       PGID: 1000
+      ANALYTICS_DISABLED: true
+      VERSION_CHECK_DISABLED: true
     networks:
       - auth-net
     volumes:
