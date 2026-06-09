@@ -127,9 +127,8 @@ services:
       PARSERS: crowdsecurity/whitelists
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /opt/docker/crowdsec/acquis.d:/etc/crowdsec/acquis.d
       - /opt/docker/crowdsec/data:/var/lib/crowdsec/data
-      - /opt/docker/crowdsec/config:/var/lib/crowdsec/config
+      - /opt/docker/crowdsec/config:/etc/crowdsec
     logging: *default-logging
 
 networks:
