@@ -1,0 +1,6 @@
+source: docker
+container_name:
+  - pocket-id
+labels:
+  type: pocket-id
+---
