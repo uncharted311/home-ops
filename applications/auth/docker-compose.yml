@@ -106,7 +106,10 @@ services:
       timeout: 5s
       retries: 2
       start_period: 10s
-    logging: *default-logging
+    logging:
+      driver: "journald"
+      options:
+        tag: "pocket-id"
 
   # Crowdsec - Engine & AppSec Only - https://github.com/crowdsecurity/crowdsec
   crowdsec:
