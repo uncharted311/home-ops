@@ -88,7 +88,7 @@ services:
     environment:
       ENCRYPTION_KEY_FILE: /app/encryption.key
       APP_URL: https://auth.${SECRET_DOMAIN}
-      TRUST_PROXY: false
+      TRUST_PROXY: true
       MAXMIND_LICENSE_KEY: ${MAXMIND_LICENSE_KEY}
       PUID: 1000
       PGID: 1000
