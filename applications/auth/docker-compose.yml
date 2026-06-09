@@ -67,6 +67,15 @@ services:
       - LLDAP_JWT_SECRET=${LLDAP_JWT_SECRET}
       - LLDAP_LDAP_USER_PASS=${LLDAP_LDAP_USER_PASS}
       - LLDAP_LDAP_BASE_DN=dc=seifert,dc=dev
+      - LLDAP_SMTP_OPTIONS__ENABLE_PASSWORD_RESET=true
+      - LLDAP_SMTP_OPTIONS__SERVER=${SMTP_SERVER} # The SMTP server address, e.g. smtp.example.com
+      - LLDAP_SMTP_OPTIONS__PORT=465 # Check your smtp provider's documentation for this setting
+      - LLDAP_SMTP_OPTIONS__SMTP_ENCRYPTION=TLS # How the connection is encrypted, either "NONE" (no encryption, port 25), "TLS" (sometimes called SSL, port 465) or "STARTTLS" (sometimes called TLS, port 587).
+      - LLDAP_SMTP_OPTIONS__USER=${SMTP_USER} # The SMTP user, usually your email address
+      - LLDAP_SMTP_OPTIONS__PASSWORD=${SMTP_PASSWORD} # The SMTP password
+      - LLDAP_SMTP_OPTIONS__FROM=${SMTP_FROM} # The header field, optional: how the sender appears in the email. The first is a free-form name, followed by an email between <>.
+      - LLDAP_SMTP_OPTIONS__TO=${SMTP_TO} # Same for reply-to, optional.
+      - LLDAP_HTTP_URL=${LLDAP_HTTP_URL} # URL used in the email template to compose the reset link
     volumes:
       - /opt/docker/lldap:/data
     networks:
