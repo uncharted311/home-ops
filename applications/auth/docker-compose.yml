@@ -74,10 +74,11 @@ services:
     expose:
       - 17170
     healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "3890"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD", "/app/lldap", "healthcheck", "--config-file", "/data/lldap_config.toml"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     logging: *default-logging
   
   pocket-id:
