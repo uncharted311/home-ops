@@ -2,7 +2,7 @@ services:
 
  # Config Generator for Traefik
   traefik-config-generator:
-    image: alpine:3.23
+    image: alpine:3.24
     container_name: traefik-config-generator
     restart: always
     labels:
