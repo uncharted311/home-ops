@@ -479,7 +479,7 @@ services:
       - APP_KEY=${SPEEDTEST_APP_KEY}
       - APP_URL=${SPEEDTEST_APP_URL}
       - DB_CONNECTION=sqlite
-      - SPEEDTEST_SCHEDULE=0 */1 * * *
+      - SPEEDTEST_SCHEDULE=0 */2 * * *
       #- SPEEDTEST_SERVERS=
       - DISPLAY_TIMEZONE=Europe/Berlin #optional
     volumes:
