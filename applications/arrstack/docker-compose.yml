@@ -229,7 +229,7 @@ services:
 
   # Prowlarr - Indexer Management - https://github.com/Prowlarr/Prowlarr
   prowlarr:
-    image: linuxserver/prowlarr:version-2.3.5.5327
+    image: linuxserver/prowlarr:version-2.4.0.5397
     container_name: prowlarr
     labels:
       - "autoheal=true"
