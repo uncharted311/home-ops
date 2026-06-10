@@ -133,7 +133,7 @@ services:
 
   # Radarr - https://hub.docker.com/r/linuxserver/radarr
   radarr:
-    image: linuxserver/radarr:version-6.1.1.10360
+    image: linuxserver/radarr:version-6.2.1.10461
     container_name: radarr
     labels:
       - "autoheal=true"
@@ -165,7 +165,7 @@ services:
 
   # Radarr - https://hub.docker.com/r/linuxserver/radarr
   radarr-list:
-    image: linuxserver/radarr:version-6.1.1.10360
+    image: linuxserver/radarr:version-6.2.1.10461
     container_name: radarr-list
     labels:
       - "autoheal=true"
