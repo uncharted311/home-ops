@@ -1,0 +1,6 @@
+source: docker
+container_name:
+  - nginx
+labels:
+  type: nginx
+---

@@ -1,0 +1,6 @@
+source: journalctl
+journalctl_filter:
+  - "_SYSTEMD_UNIT=pocketid.service"
+labels:
+  type: syslog
+---
