@@ -58,7 +58,7 @@ services:
     logging: *default-logging
 
   server:
-    image: ghcr.io/patchmon/patchmon-server:v2.0.2
+    image: ghcr.io/patchmon/patchmon-server:2.0.2
     restart: unless-stopped
     env_file: .env
     networks:
