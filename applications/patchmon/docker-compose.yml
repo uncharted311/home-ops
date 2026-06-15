@@ -3,7 +3,9 @@ services:
   nginx:
     image: nginx:1.31.1-alpine
     container_name: nginx
-    env_file: /opt/docker/secrets.env
+    env_file:
+      - /opt/docker/secrets.env
+      - /opt/docker/.env
     #depends_on:
     #  lldap:
     #    condition: service_healthy
@@ -40,7 +42,9 @@ services:
     image: certbot/dns-cloudflare:v5.6.0
     container_name: certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
-    env_file: /opt/docker/secrets.env
+    env_file:
+      - /opt/docker/secrets.env
+      - /opt/docker/.env
     environment:
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
     volumes:
@@ -61,7 +65,9 @@ services:
     image: ghcr.io/patchmon/patchmon-server:2.0.2
     container_name: patchmon
     restart: unless-stopped
-    env_file: /opt/docker/secrets.env
+    env_file:
+      - /opt/docker/secrets.env
+      - /opt/docker/.env
     networks:
       - patchmon-internal
     depends_on:
@@ -81,7 +87,9 @@ services:
     image: postgres:17.10-alpine
     container_name: database
     restart: unless-stopped
-    env_file: /opt/docker/secrets.env
+    env_file:
+      - /opt/docker/secrets.env
+      - /opt/docker/.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -101,7 +109,9 @@ services:
     image: redis:7.4.9-alpine
     container_name: redis
     restart: unless-stopped
-    env_file: /opt/docker/secrets.env
+    env_file:
+      - /opt/docker/secrets.env
+      - /opt/docker/.env
     command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
