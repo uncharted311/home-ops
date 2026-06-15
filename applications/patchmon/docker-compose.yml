@@ -60,7 +60,7 @@ services:
   server:
     image: ghcr.io/patchmon/patchmon-server:2.0.2
     restart: unless-stopped
-    env_file: .env
+    env_file: /opt/docker/secrets.env
     networks:
       - patchmon-internal
     depends_on:
@@ -79,7 +79,7 @@ services:
   database:
     image: postgres:17-alpine
     restart: unless-stopped
-    env_file: .env
+    env_file: /opt/docker/secrets.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -98,7 +98,7 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    env_file: .env
+    env_file: /opt/docker/secrets.env
     command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
