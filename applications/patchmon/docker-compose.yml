@@ -68,6 +68,13 @@ services:
     env_file:
       - /opt/docker/secrets.env
       - /opt/docker/.env
+    environment:
+      - CORS_ORIGIN=${CORS_ORIGIN}
+      - JWT_SECRET=${JWT_SECRET}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - AI_ENCRYPTION_KEY=${AI_ENCRYPTION_KEY}
     networks:
       - patchmon-internal
     depends_on:
@@ -90,15 +97,18 @@ services:
     env_file:
       - /opt/docker/secrets.env
       - /opt/docker/.env
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - patchmon-internal
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 3s
+      test: ["CMD-SHELL", "pg_isready -U patchmon_user"]
+      interval: 10s
       timeout: 5s
-      retries: 7
+      retries: 5
+      start_period: 5s
     logging:
       driver: "json-file"
       options:
@@ -112,6 +122,8 @@ services:
     env_file:
       - /opt/docker/secrets.env
       - /opt/docker/.env
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
