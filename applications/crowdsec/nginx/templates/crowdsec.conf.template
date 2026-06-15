@@ -23,7 +23,6 @@ server {
     # --- IP-Whitelist (Zugriffsschutz) --- #
     include /etc/nginx/admin.conf/whitelist_admin.conf;
     allow ${PUBLIC_IPv4_ZTNA};
-    allow ${PUBLIC_IPv4_OC_ARM1};
     allow ${PUBLIC_IPv4_OC_ARM2};
     allow ${PUBLIC_IPv4_OC_AMD1};
     allow ${PUBLIC_IPv4_OC_AMD2};
