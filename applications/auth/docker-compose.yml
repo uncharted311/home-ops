@@ -92,7 +92,7 @@ services:
     logging: *default-logging
   
   pocket-id:
-    image: ghcr.io/pocket-id/pocket-id:v2.8.0
+    image: ghcr.io/pocket-id/pocket-id:v2.9.0
     container_name: pocket-id
     restart: unless-stopped
     env_file: /opt/docker/secrets.env
