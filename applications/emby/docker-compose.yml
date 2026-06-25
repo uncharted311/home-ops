@@ -63,8 +63,8 @@ services:
     container_name: emby
     env_file: /opt/docker/secrets.env
     environment:
-      - UID=3006
-      - GID=3006
+      - PUID=3006
+      - PGID=3006
       - GIDLIST=100,3006,44,992
     volumes:
       - /opt/docker/emby/config:/config    # Configuration directory
