@@ -68,7 +68,7 @@ services:
       - GIDLIST=100,3006,44,992
     volumes:
       - /opt/docker/emby/config:/config    # Configuration directory
-      - /mnt/data:/data            # Media Content
+      - /mnt/data/content:/data/content            # Media Content
     ports:
       - 8096:8096 # HTTP port
       #- 8920:8920 # HTTPS port
