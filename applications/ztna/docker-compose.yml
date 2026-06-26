@@ -1,6 +1,6 @@
 services:
   pangolin:
-    image: fosrl/pangolin:ee-postgresql-1.19.3@sha256:29802cc9f113159aa82b2e440bf8cd59a91097939a3f185649977a1b821fe056
+    image: fosrl/pangolin:ee-postgresql-1.19.4@sha256:5ebaf97feb6888e07b75592c810f2e8c539d703697564cc9a4552aaf277ddae6
     container_name: pangolin
     labels:
       - "autoheal=true"
