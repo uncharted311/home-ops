@@ -379,7 +379,7 @@ services:
 
   # Qbit Torrent WebUI - Automation
   qui:
-    image: ghcr.io/autobrr/qui:v1.20.0
+    image: ghcr.io/autobrr/qui:v1.21.0
     container_name: qui
     labels:
       - "autoheal=true"
