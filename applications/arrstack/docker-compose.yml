@@ -197,7 +197,7 @@ services:
 
   # Sonarr - https://hub.docker.com/r/linuxserver/sonarr
   sonarr:
-    image: linuxserver/sonarr:version-4.0.17.2952
+    image: linuxserver/sonarr:version-4.0.19.2979
     container_name: sonarr
     labels:
       - "autoheal=true"
