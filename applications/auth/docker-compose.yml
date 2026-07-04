@@ -105,6 +105,7 @@ services:
       PGID: 1000
       ANALYTICS_DISABLED: true
       VERSION_CHECK_DISABLED: true
+      ALLOW_DOWNGRADE: true
     networks:
       - auth-net
     volumes:
