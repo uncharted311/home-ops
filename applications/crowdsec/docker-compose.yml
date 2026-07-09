@@ -36,7 +36,7 @@ services:
 
   # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
   crowdsec-certbot:
-    image: certbot/dns-cloudflare:v5.6.0
+    image: certbot/dns-cloudflare:v5.7.0
     container_name: crowdsec-certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
     env_file: /opt/crowdsec-central/secrets.env
