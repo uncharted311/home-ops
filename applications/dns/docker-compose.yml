@@ -75,7 +75,7 @@ services:
       retries: 3
 
   blocky:
-    image: ghcr.io/0xerr0r/blocky:v0.31.0@sha256:2e5696efe4f920a9c07efa5587650fb94e7c4dc68759a77debde3daaa1e30cdb
+    image: ghcr.io/0xerr0r/blocky:v0.34.0@sha256:595136fb127f4c952b621113e668c09acdcf15ac054d96ee6d4c51a76c35f5fd
     container_name: blocky
     depends_on:
       blocky-config-generator:
