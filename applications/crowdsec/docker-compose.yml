@@ -137,7 +137,7 @@ services:
 
   # Crowdsec Blocklist Import - https://github.com/wolffcatskyy/crowdsec-blocklist-import
   crowdsec-blocklist-import:
-    image: ghcr.io/wolffcatskyy/crowdsec-blocklist-import:3.6.0@sha256:9311e988088082f6b97bad1c7c58e44383d684e28d3a3c86bcf8521b535752a4
+    image: ghcr.io/wolffcatskyy/crowdsec-blocklist-import:3.7.1@sha256:78ec83464827a129128e2e1cba0bc23562988bec177745334a9f2896c817860c
     container_name: crowdsec-blocklist-import
     restart: unless-stopped
     depends_on:
