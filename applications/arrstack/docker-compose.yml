@@ -261,7 +261,7 @@ services:
  
   # VPN Container for qBittorrent with WireGuard and ProtonVPN
   qbittorrent-vpn:
-    image: qmcgaw/gluetun:v3.41.1
+    image: qmcgaw/gluetun:v3.41.3
     container_name: qbittorrent-vpn
     #labels:
     #  - "autoheal=true"
