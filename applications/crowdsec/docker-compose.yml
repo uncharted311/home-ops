@@ -50,7 +50,7 @@ services:
       - crowdsec-net
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "openssl x509 -checkend 86400 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
+      test: ["CMD-SHELL", "openssl x509 -checkend 604800 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 10
