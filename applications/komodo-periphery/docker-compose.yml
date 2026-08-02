@@ -1,6 +1,6 @@
 services:
   periphery:
-    image: ghcr.io/moghtech/komodo-periphery:2.2.0@sha256:7fb1a4807d125ce036a17d37c940b4001402afcaf342a2c720c98d096b1b54da
+    image: ghcr.io/moghtech/komodo-periphery:2.3.1@sha256:637bf3c03a84f04821c902eba12f63e527ea1f781a350489aa34f17f48f36e57
     container_name: komodo-periphery
     labels:
       komodo.skip:
