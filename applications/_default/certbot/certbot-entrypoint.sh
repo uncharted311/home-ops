@@ -57,14 +57,18 @@ if [ ! -f "$CERT_PATH" ]; then
       --cert-name "$NAME" \
       $CERT_ARGS \
       --non-interactive
-else
-    echo "Zertifikat vorhanden. Prüfe auf Erneuerung..."
+fi
+# Dauerhafte Erneuerungsschleife (alle 12h)
+echo "Starte Certbot Renewal Daemon..."
+while true; do
+    echo "--- Zertifikats-Prüfung gestartet: $(date) ---"
     certbot renew \
       --dns-cloudflare \
       --dns-cloudflare-credentials /cloudflare.ini \
       --dns-cloudflare-propagation-seconds 30 \
       --non-interactive
-fi
-
-echo "Certbot abgeschlossen. Gehe in den Wartemodus."
-exec sleep infinity
+    
+    # 12 Stunden schlafen (12h * 3600s = 43200s)
+    sleep 43200 &
+    wait $!
+done
