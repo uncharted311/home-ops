@@ -520,29 +520,28 @@ services:
   #        memory: 1000M
 
   # Repollo - https://codeberg.org/upPollo/rePollo
-  #repollo:
-  #  image: uppollo/repollo:v0.2.3
-  #  container_name: repollo
-  #  env_file: /opt/docker/secrets.env
-  #  environment:
-  #    - TZ=Europe/Berlin
-  #  volumes:
-  #    - /opt/docker/repollo/config:/home/repollo/.config/rePollo
-  #    - /opt/docker/repollo/data:/home/repollo/.config/rePollo/state
-  #  networks:
-  #    - arr_network
-  #  restart: unless-stopped
-    #healthcheck:
-    #  test: ["CMD-SHELL", "curl -f http://localhost:5007/ || exit 1"]
-    #  interval: 30s
-    #  timeout: 10s
-    #  retries: 5
-    #  start_period: 30s
-  #  logging: *default-logging
-  #  deploy:
-  #    resources:
-  #      limits:
-  #        memory: 1000M
+  repollo:
+    image: uppollo/repollo:v0.6.0
+    container_name: repollo
+    network_mode: "service:qbittorrent-vpn"
+    env_file: /opt/docker/secrets.env
+    environment:
+      - TZ=Europe/Berlin
+    volumes:
+      - /opt/docker/repollo/config:/home/repollo/.config/rePollo
+      - /opt/docker/repollo/data:/home/repollo/.config/rePollo/state
+    restart: unless-stopped
+   #healthcheck:
+   #  test: ["CMD-SHELL", "curl -f http://localhost:5007/ || exit 1"]
+   #  interval: 30s
+   #  timeout: 10s
+   #  retries: 5
+   #  start_period: 30s
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
 
     # Clonarr - Sync, build and manage quality profiles and custom formats for Radarr and Sonarr - https://github.com/ProphetSe7en/clonarr
   clonarr :
