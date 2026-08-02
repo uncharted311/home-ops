@@ -525,11 +525,15 @@ services:
     container_name: repollo
     network_mode: "service:qbittorrent-vpn"
     env_file: /opt/docker/secrets.env
+    user: "3006:3006"
     environment:
       - TZ=Europe/Berlin
+      - PUID=3006
+      - PGID=3006
     volumes:
       - /opt/docker/repollo/config:/home/repollo/.config/rePollo
       - /opt/docker/repollo/data:/var/lib/rePollo/state
+      - /mnt/data:/data
     restart: unless-stopped
    #healthcheck:
    #  test: ["CMD-SHELL", "curl -f http://localhost:5007/ || exit 1"]
