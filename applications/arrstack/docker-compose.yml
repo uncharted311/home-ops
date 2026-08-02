@@ -529,7 +529,7 @@ services:
       - TZ=Europe/Berlin
     volumes:
       - /opt/docker/repollo/config:/home/repollo/.config/rePollo
-      - /opt/docker/repollo/data:/home/repollo/.config/rePollo/state
+      - /opt/docker/repollo/data:/var/lib/rePollo/state
     restart: unless-stopped
    #healthcheck:
    #  test: ["CMD-SHELL", "curl -f http://localhost:5007/ || exit 1"]
