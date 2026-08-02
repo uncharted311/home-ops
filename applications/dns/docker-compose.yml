@@ -91,7 +91,7 @@ services:
     logging: *default-logging
 
   blocky-redis:
-    image: redis:8.8.0-alpine@sha256:09160599abd229764c0fb44cb6be640294e1d360a54b19985ab4843dcf2d90f1
+    image: redis:8.10.0-alpine@sha256:978f0e01593e65eed801f2402944efcd936d43b5027e4908a7897baf88ed6241
     container_name: blocky-redis
     restart: unless-stopped
     env_file: /opt/docker/secrets.env
