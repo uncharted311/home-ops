@@ -622,6 +622,33 @@ services:
         limits:
           memory: 1000M
 
+  # UmlautadaptarrEX - https://github.com/xpsony/UmlautAdaptarrEX
+  umlautadaptarrex:
+    image: lexfi/umlautadaptarrex:1.3.0
+    container_name: umlautadaptarrex
+    env_file: /opt/docker/secrets.env
+    environment:
+      - TZ=Europe/Berlin
+      # Service ports. Set these (e.g. in a .env file next to this compose
+      # file) to run on non-default ports. See .env.example.
+      - UMLAUTADAPTARREX_LEGACYAPI_PORT=${UMLAUTADAPTARREX_LEGACYAPI_PORT:-5005}
+      - UMLAUTADAPTARREX_WEBUI_PORT=${UMLAUTADAPTARREX_WEBUI_PORT:-5007}
+      - UMLAUTADAPTARREX_PROXY_PORT=${UMLAUTADAPTARREX_PROXY_PORT:-5006}
+    expose:
+      - 5005 # Fastify API + WS logs (URL the *arrs / Prowlarr point at)
+      - 5006 # TCP HTTP indexer proxy
+      - 5007 # Web UI (Next.js)
+    volumes:
+      - /opt/docker/umlautadaptarrex/data:/data
+    networks:
+      - arr_network
+    restart: unless-stopped
+    logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
+    
   # Episeerr - https://github.com/vansmak/episeerr
   episeerr:
     image: vansmak/episeerr:3.8.6
