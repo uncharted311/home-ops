@@ -711,7 +711,7 @@ services:
 
   # Crowdsec AppSec for Arrstack
   crowdsec:
-    image: crowdsecurity/crowdsec:v1.7.8
+    image: crowdsecurity/crowdsec:v1.8.1
     container_name: crowdsec
     networks:
       - arr_network
