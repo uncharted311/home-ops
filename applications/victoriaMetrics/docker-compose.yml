@@ -218,7 +218,7 @@ services:
 
   ## ISG Exporter - https://github.com/sfudeus/isg_exporter
   isg-exporter:
-    image: sfudeus/isg_exporter:1.5.34@sha256:a9f7a1961c5545363bb9d5929e3538f82ce953ea103410b32b8532a6a2372c68
+    image: sfudeus/isg_exporter:1.5.36@sha256:57a3ed140a1710ecac6967abd1089d874cac3152a00631af739531117da06283
     container_name: isg-exporter
     env_file: /opt/docker/secrets.env
     environment:
