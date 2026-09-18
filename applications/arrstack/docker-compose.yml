@@ -624,7 +624,7 @@ services:
 
   # UmlautadaptarrEX - https://github.com/xpsony/UmlautAdaptarrEX
   umlautadaptarrex:
-    image: lexfi/umlautadaptarrex:1.3.0
+    image: lexfi/umlautadaptarrex:1.4.0
     container_name: umlautadaptarrex
     env_file: /opt/docker/secrets.env
     environment:
