@@ -600,7 +600,7 @@ services:
 
   # Umlautadaptarr - https://github.com/PCJones/UmlautAdaptarr
   umlautadaptarr:
-    image: pcjones/umlautadaptarr:0.7.5
+    image: pcjones/umlautadaptarr:0.7.6
     container_name: umlautadaptarr
     env_file: /opt/docker/secrets.env
     environment:
