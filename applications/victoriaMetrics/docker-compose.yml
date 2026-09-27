@@ -91,13 +91,13 @@ services:
       - "--graphiteListenAddr=:2003"
       - "--opentsdbListenAddr=:4242"
       - "--httpListenAddr=:8428"
-      - "--influxListenAddr=:8089"
+      #- "--influxListenAddr=:8089"
       - "--vmalert.proxyURL=http://vmalert:8880"
-      - "--retentionPeriod=5y"
+      - "--retentionPeriod=10y"
     ports:
       - 8428:8428     # webui
-      - 8089:8089     # influx
-      - 8089:8089/udp # influx
+      #- 8089:8089     # influx
+      #- 8089:8089/udp # influx
       - 2003:2003     # graphite
       - 2003:2003/udp # graphite
       - 4242:4242     # opentsdb
