@@ -63,6 +63,11 @@ services:
     image: ghcr.io/patchmon/patchmon-server:2.1.6
     container_name: patchmon
     restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     env_file:
       - /opt/docker/secrets.env
       - /opt/docker/.env
@@ -83,16 +88,7 @@ services:
       - 3000
     networks:
       - patchmon-internal
-    depends_on:
-      database:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *default-logging
 
   database:
     image: postgres:17.11-alpine
@@ -115,11 +111,7 @@ services:
       timeout: 5s
       retries: 5
       start_period: 5s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *default-logging
 
   redis:
     image: redis:8.10.2-alpine
@@ -143,11 +135,7 @@ services:
       interval: 3s
       timeout: 5s
       retries: 7
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *default-logging
 
   guacd:
     image: guacamole/guacd:1.6.0
@@ -180,11 +168,7 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *default-logging
 
 volumes:
   postgres_data:
