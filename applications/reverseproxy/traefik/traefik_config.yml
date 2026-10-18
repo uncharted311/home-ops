@@ -11,7 +11,7 @@ experimental:
   plugins:
     crowdsec:
       moduleName: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
-      version: "1.7.1"
+      version: "1.8.1"
     geoblock:
       moduleName: "github.com/PascalMinder/geoblock"
       version: "0.3.8"
