@@ -145,7 +145,7 @@ services:
     env_file: /opt/crowdsec-central/secrets.env
     environment:
       - RUN_ON_START=true
-      - LOG_LEVEL=INFO
+      - LOG_LEVEL=WARN
       - INTERVAL=14400
       - DECISION_DURATION=24h
       - DECISION_REASON=external_blocklist
@@ -156,9 +156,9 @@ services:
       - ALLOWLIST=172.16.0.0/16,1.1.1.1,9.9.9.9
       - ALLOWLIST_GITHUB=true
       - LOG_TIMESTAMPS=true
-      - BATCH_SIZE=1000
+      - BATCH_SIZE=2000
       - FETCH_TIMEOUT=60
-      - MAX_RETRIES=3
+      - MAX_RETRIES=5
       - TELEMETRY_ENABLED=false
       - METRICS_ENABLED=false
       - PRESET=server
