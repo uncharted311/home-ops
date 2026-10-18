@@ -6,9 +6,9 @@ services:
     env_file:
       - /opt/docker/secrets.env
       - /opt/docker/.env
-    #depends_on:
-    #  lldap:
-    #    condition: service_healthy
+    depends_on:
+      patchmon:
+        condition: service_healthy
     #  pocket-id:
     #    condition: service_healthy
     environment:
