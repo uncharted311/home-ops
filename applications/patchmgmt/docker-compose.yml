@@ -174,8 +174,6 @@ services:
       - ALL
     mem_limit: 512m
     cpus: '1.0'
-    networks:
-      - patchmon-internal
     healthcheck:
       test: ["CMD-SHELL", "nc -z 127.0.0.1 4822 && ls /sys/class/net | grep -q '^eth' || exit 1"]
       interval: 10s
