@@ -71,18 +71,27 @@ services:
     environment:
       - CORS_ORIGIN=${CORS_ORIGIN}
       - JWT_SECRET=${JWT_SECRET}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
       - SESSION_SECRET=${SESSION_SECRET}
       - AI_ENCRYPTION_KEY=${AI_ENCRYPTION_KEY}
+      - POSTGRES_HOST=database
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=patchmon_user
+      - POSTGRES_DB=patchmon_db
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DB=0
+      - TRUST_PROXY=true
+      - GUACD_ADDRESS="127.0.0.1:4822"
+    expose:
+      - 3000
     networks:
       - patchmon-internal
     depends_on:
       database:
         condition: service_healthy
       redis:
-        condition: service_healthy
-      guacd:
         condition: service_healthy
     logging:
       driver: "json-file"
@@ -144,9 +153,21 @@ services:
     image: guacamole/guacd:1.6.0
     container_name: guacd
     restart: unless-stopped
+    network_mode: "service:patchmon"
+    depends_on:
+      patchmon:
+        condition: service_started
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        /opt/guacamole/entrypoint.sh -b 127.0.0.1 & pid=$$!
+        trap 'kill $$pid; wait $$pid; exit 0' TERM INT
+        while kill -0 $$pid 2>/dev/null && ls /sys/class/net | grep -q '^eth'; do sleep 5 & wait $$!; done
+        kill $$pid 2>/dev/null; exit 1
     read_only: true
     tmpfs:
       - /tmp:size=64m
+      - /home/guacd:size=16m,uid=1000,gid=1000
     security_opt:
       - no-new-privileges:true
     cap_drop:
@@ -156,7 +177,7 @@ services:
     networks:
       - patchmon-internal
     healthcheck:
-      test: ["CMD-SHELL", "nc -z localhost 4822 || exit 1"]
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 4822 && ls /sys/class/net | grep -q '^eth' || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 3
