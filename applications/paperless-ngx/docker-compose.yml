@@ -62,10 +62,14 @@ services:
     container_name: paperless
     image: paperlessngx/paperless-ngx:3.3.2@sha256:d232cba37cc0bab0d6c6581ecd320383b7a6f49f33e0fd16adda4d009eb600dd
     depends_on:
-      - database
-      - redis
-      - gotenberg
-      - tika
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      gotenberg:
+        condition: service_healthy
+      tika:
+        condition: service_healthy
     volumes:
       - /opt/docker/paperless/data:/usr/src/paperless/data
       - /mnt/paperless/media:/usr/src/paperless/media
@@ -214,6 +218,12 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /opt/docker/crowdsec/acquis.d:/etc/crowdsec/acquis.d
       - /opt/docker/crowdsec/data:/var/lib/crowdsec/data
+    healthcheck:
+      test: ["CMD", "cscli", "version"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     logging: *default-logging
 
 volumes:
