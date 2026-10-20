@@ -1,0 +1,96 @@
+services:
+  # Nginx Reverse Proxy - https://github.com/nginx/nginx
+  nginx:
+    image: nginx:1.31.7-alpine
+    container_name: nginx
+    env_file:
+      - /opt/docker/secrets.env
+      - /opt/docker/.env
+    depends_on:
+      evcc:
+        condition: service_healthy
+    environment:
+      - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
+      - SECRET_CERT_NAME=${SECRET_CERT_NAME}
+    volumes:
+      - /opt/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/docker/nginx/templates:/etc/nginx/templates:ro
+      - /opt/docker/nginx/includes:/etc/nginx/includes:ro
+      - /opt/docker/certbot/certs:/etc/letsencrypt:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - evcc-internal
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -so /dev/null http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: &default-logging # default logging
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
+  certbot:
+    image: certbot/dns-cloudflare:v5.7.0
+    container_name: certbot
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    env_file:
+      - /opt/docker/secrets.env
+      - /opt/docker/.env
+    environment:
+      - SECRET_CERT_NAME=${SECRET_CERT_NAME}
+    volumes:
+      - /opt/docker/certbot/certs:/etc/letsencrypt
+      - /opt/docker/certbot/cloudflare.ini:/cloudflare.ini:ro
+      - /opt/docker/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
+    networks:
+      - evcc-internal
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "openssl x509 -checkend 604800 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    logging: *default-logging
+
+  # EVCC - https://github.com/evcc-io/evcc
+  evcc:
+    image: evcc/evcc:v0.317.1
+    container_name: evcc
+    command:
+      - evcc
+    env_file:
+      - /opt/docker/secrets.env
+      - /opt/docker/.env
+    volumes:
+      - /opt/docker/evcc/evcc.yaml:/etc/
+      - /opt/docker/evcc/.evcc:/root/.evcc
+    expose:
+      - 7070/tcp # Webserver
+    ports:
+      - 8887:8887/tcp # OCPP Server
+      - 5353:5353/udp # mDNS
+      - 4712:4712/udp # EEBUS
+      - 8899:8899/tcp # Modbus UDP
+      - 9522:9522/udp # SMA Sunny Home Manager
+      - 7090:7090/udp # KEBA charges
+      - 28376:28376/udp # EVSE Masters chargers
+    networks:
+      - evcc-internal
+    restart: unless-stopped
+    #healthcheck:
+    #  test: ["CMD-SHELL", "openssl x509 -checkend 604800 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
+    #  interval: 30s
+    #  timeout: 10s
+    #  retries: 10
+    logging: *default-logging
+
+networks:
+  evcc-internal:
+    driver: bridge
