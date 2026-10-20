@@ -61,7 +61,7 @@ services:
 
   # EVCC - https://github.com/evcc-io/evcc
   evcc:
-    image: evcc/evcc:0.317.1
+    image: evcc/evcc:0.317.2
     container_name: evcc
     command:
       - evcc
