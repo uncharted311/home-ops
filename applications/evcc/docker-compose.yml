@@ -69,7 +69,6 @@ services:
       - /opt/docker/secrets.env
       - /opt/docker/.env
     volumes:
-      - /opt/docker/evcc/evcc.yaml:/etc/
       - /opt/docker/evcc/.evcc:/root/.evcc
     expose:
       - 7070/tcp # Webserver
