@@ -63,8 +63,6 @@ services:
   evcc:
     image: evcc/evcc:0.317.2
     container_name: evcc
-    command:
-      - evcc
     env_file:
       - /opt/docker/secrets.env
       - /opt/docker/.env
