@@ -68,7 +68,7 @@ certificatesResolvers:
     acme:
       dnsChallenge:
         provider: "cloudflare"
-    #  email: admin@example.com set for TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL
+      email: admin@seifert.dev
       storage: "/letsencrypt/acme.json"
       caServer: "https://acme-v02.api.letsencrypt.org/directory"
 entryPoints:
