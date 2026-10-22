@@ -1,6 +1,6 @@
 services:
   pangolin:
-    image: fosrl/pangolin:ee-postgresql-1.24.0@sha256:cb0748d91642f7181b3eb70459c083001fa9d9a0449dcdd17b4cdafe3cf474fd
+    image: fosrl/pangolin:ee-postgresql-1.25.1@sha256:1e89ef0bb5152136b6763446aa6dd604aa4b779dda4199176a275facefb89d22
     container_name: pangolin
     labels:
       - "autoheal=true"
@@ -85,7 +85,7 @@ services:
       retries: 3
 
   traefik:
-    image: traefik:v3.7.15@sha256:0f6150202bc1fed72a7bd2107460eaa510e5b8a905f3fdb5b84f2c8619c33368
+    image: traefik:v3.7.16@sha256:6d3e069ee484ab1da5adfdda555a75eb9b1545ef09096a0cc7c3043101986a20
     container_name: traefik
     restart: unless-stopped
     labels:

@@ -1,7 +1,7 @@
 services:
   # Nginx Reverse Proxy - https://github.com/nginx/nginx
   nginx:
-    image: nginx:1.31.7-alpine
+    image: nginx:1.31.8-alpine
     container_name: nginx
     env_file: /opt/docker/secrets.env
     environment:
@@ -53,7 +53,7 @@ services:
     logging: *default-logging
 
   nextcloud:
-    image: nextcloud:35.0.2-apache
+    image: nextcloud:35.0.2-apache@sha256:3f05f4d5eded9d3d029e617926500645cca6344710364737a374088f6811095a
     container_name: nextcloud
     depends_on:
       - postgres
