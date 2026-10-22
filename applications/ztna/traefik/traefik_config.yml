@@ -76,6 +76,8 @@ entryPoints:
     address: ":8080"
   web:
     address: ":80"
+    http:
+      aliasHeadersStrategy: delete
   websecure:
     address: ":443"
     transport:
@@ -87,6 +89,7 @@ entryPoints:
       encodedCharacters:
         allowEncodedSlash: true
         allowEncodedQuestionMark: true
+      aliasHeadersStrategy: delete
 serversTransport:
   insecureSkipVerify: true
 ping:
