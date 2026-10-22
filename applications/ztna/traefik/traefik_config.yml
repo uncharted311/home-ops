@@ -68,6 +68,9 @@ certificatesResolvers:
     acme:
       dnsChallenge:
         provider: "cloudflare"
+        resolvers:
+          - "1.1.1.1:53"
+          - "1.0.0.1:53"
       email: admin@seifert.dev
       storage: "/letsencrypt/acme.json"
       caServer: "https://acme-v02.api.letsencrypt.org/directory"
@@ -77,14 +80,22 @@ entryPoints:
   web:
     address: ":80"
     http:
-      aliasHeadersStrategy: delete
+      redirections: # Only caring for https based traffic.
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
   websecure:
     address: ":443"
-    transport:
-      respondingTimeouts:
-        readTimeout: 30m
+    asDefault: true
+    http3:
+      advertisedPort: 443
+#    transport:
+#      respondingTimeouts:
+#        readTimeout: 30m
     http:
       tls:
+        options: default
         certResolver: letsencrypt
       encodedCharacters:
         allowEncodedSlash: true
