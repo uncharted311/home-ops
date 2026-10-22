@@ -27,6 +27,11 @@ server {
     allow ${PUBLIC_IPv4_OC_AMD1};
     allow ${PUBLIC_IPv4_OC_AMD2};
     allow ${PUBLIC_IPv4_MAIL};
+    allow ${PUBLIC_IPv6_ZTNA};
+    allow ${PUBLIC_IPv6_OC_ARM2};
+    allow ${PUBLIC_IPv6_OC_AMD1};
+    allow ${PUBLIC_IPv6_OC_AMD2};
+    allow ${PUBLIC_IPv6_MAIL};
     allow 172.16.0.0/12;  # Docker Bridge Network
     deny all;
 
