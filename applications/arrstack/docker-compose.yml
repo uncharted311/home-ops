@@ -395,7 +395,7 @@ services:
           memory: 1000M
   
   cross-seed:
-    image: ghcr.io/cross-seed/cross-seed:6.13.7
+    image: ghcr.io/cross-seed/cross-seed:6.13.9
     container_name: cross-seed
     env_file: /opt/docker/secrets.env
     command: daemon
