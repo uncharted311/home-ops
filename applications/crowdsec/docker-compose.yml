@@ -156,8 +156,8 @@ services:
       - ALLOWLIST=172.16.0.0/16,1.1.1.1,9.9.9.9
       - ALLOWLIST_GITHUB=true
       - LOG_TIMESTAMPS=true
-      - BATCH_SIZE=2000
-      - FETCH_TIMEOUT=60
+      - BATCH_SIZE=1000
+      - FETCH_TIMEOUT=120
       - MAX_RETRIES=5
       - TELEMETRY_ENABLED=false
       - METRICS_ENABLED=false
