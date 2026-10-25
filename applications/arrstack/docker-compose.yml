@@ -331,7 +331,7 @@ services:
           memory: 4000M
   
   gluetun-qbt-watchdog:
-    image: ghcr.io/brunoorsolon/gluetun-qbt-watchdog:1.0.1
+    image: ghcr.io/brunoorsolon/gluetun-qbt-watchdog:2.0.3
     container_name: gluetun-qbt-watchdog
     #labels:
     #  - "autoheal=true"
