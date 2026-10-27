@@ -89,7 +89,7 @@ server {
     # ---------------------------------
 
     location /ui/ {
-        proxy_pass http://crowdsec-webui;
+        proxy_pass http://crowdsec-webui:3000/;
 
         auth_basic           "Administrator’s Area";
         auth_basic_user_file /etc/nginx/.htpasswd;
