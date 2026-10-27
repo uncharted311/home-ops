@@ -11,6 +11,8 @@ services:
       - PANGOLIN_ENDPOINT=https://${ZTNA_ENDPOINT}
       - NEWT_ID=${NEWT_ID}
       - NEWT_SECRET=${NEWT_SECRET}
+    networks:
+      - newt-internal
     healthcheck:
       test: ["CMD-SHELL", "pgrep newt > /dev/null || exit 1"]
       interval: 30s
@@ -22,3 +24,6 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+networks:
+  newt-internal:
+    driver: bridge
