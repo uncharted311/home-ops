@@ -171,8 +171,7 @@ services:
       - WEBHOOK_URL=${BLOCKLIST_IMPORT_DISCORD_WEBHOOK_URL}
       - WEBHOOK_TYPE=discord
     networks:
-      crowdsec-net:
-        ipv4_address: 172.18.0.5
+      - crowdsec-net
     logging: *default-logging
   
   # Crowdsec Cloudflare Worker Bouncer - https://github.com/crowdsecurity/cs-cloudflare-worker-bouncer
@@ -189,8 +188,7 @@ services:
     volumes:
       - /opt/crowdsec-central/cloudflare-worker/config:/etc/crowdsec/bouncers/
     networks:
-      crowdsec-net:
-        ipv4_address: 172.18.0.4
+      - crowdsec-net
     logging: *default-logging
 
 #   ToDo: Blocklist-Mirror offen
@@ -215,10 +213,8 @@ services:
 
 networks:
   crowdsec-net:
-    ipam:
-      driver: bridge
-      config:
-        - subnet: 172.18.0.0/16
+    driver: bridge
+    
 
 volumes:
   crowdsec-db-data:
