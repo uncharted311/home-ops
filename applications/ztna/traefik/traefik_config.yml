@@ -90,9 +90,9 @@ entryPoints:
     asDefault: true
     http3:
       advertisedPort: 443
-#    transport:
-#      respondingTimeouts:
-#        readTimeout: 30m
+    transport:
+      respondingTimeouts:
+        readTimeout: 30m
     http:
       tls:
         options: default

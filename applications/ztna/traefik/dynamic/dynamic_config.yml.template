@@ -254,9 +254,8 @@ tls:
         - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
         - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
       curvePreferences:
-        - secp521r1
-        - secp384r1
-        - x25519
+        - CurveP256
+        - CurveP384
   stores:
     default:
       defaultGeneratedCert:
