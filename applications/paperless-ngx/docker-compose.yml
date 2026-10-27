@@ -125,7 +125,7 @@ services:
   # Redis Cache
   redis:
     container_name: redis
-    image: redis:8.10.2-alpine@sha256:72cedd9603038893af961e90ac5e1a1a0d8377d5e338dbdad8fe284ea25de18f
+    image: redis:8.10.3-alpine@sha256:896f241f438ab6a210cfb24f573b84bea721a4cbe67f1b4fd07eb638b3b02a7b
     volumes:
       - redisdata:/data
     networks:
