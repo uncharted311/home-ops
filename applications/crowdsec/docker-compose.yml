@@ -17,6 +17,7 @@ services:
       - /opt/crowdsec-central/nginx/templates:/etc/nginx/templates:ro
       - /opt/crowdsec-central/nginx/includes:/etc/nginx/includes:ro
       - /opt/crowdsec-central/certbot/certs:/etc/letsencrypt:ro
+      - /opt/crowdsec-central/webui/.htpasswd:/etc/nginx/.htpasswd:ro
     ports:
       - "8443:8443"
     networks:
@@ -134,6 +135,25 @@ services:
           memory: 8192M
         reservations:
           memory: 4096M
+  
+  # Crowdsec Webui - https://github.com/TheDuffman85/crowdsec-web-ui
+  crowdsec-webui:
+    image: ghcr.io/theduffman85/crowdsec-web-ui:2026.10.11
+    container_name: crowdsec-webui
+    restart: unless-stopped
+    depends_on:
+      - crowdsec
+    env_file: /opt/crowdsec-central/secrets.env
+    environment:
+      - CROWDSEC_URL=http://crowdsec:8080
+      - CROWDSEC_USER=${CROWDSEC_WEBUI_MACHINE_ID}
+      - CROWDSEC_PASSWORD=${CROWDSEC_WEBUI_API_KEY}
+      - CROWDSEC_LOOKBACK_PERIOD=30d
+    volumes:
+      - crowdsec-webui-data:/app/data
+    networks:
+      - crowdsec-net
+    logging: *default-logging
 
   # Crowdsec Blocklist Import - https://github.com/wolffcatskyy/crowdsec-blocklist-import
   crowdsec-blocklist-import:
@@ -218,3 +238,4 @@ networks:
 
 volumes:
   crowdsec-db-data:
+  crowdsec-webui-data:
