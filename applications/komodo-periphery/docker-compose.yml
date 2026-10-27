@@ -1,29 +1,32 @@
 services:
   periphery:
-    image: ghcr.io/moghtech/komodo-periphery:2.3.3@sha256:fa3f1a641a265216066676950d5eecdf506955a7bafe2f01996135ae93115cd5
+    image: ghcr.io/moghtech/komodo-periphery:2.3.4
     container_name: komodo-periphery
-    labels:
-      komodo.skip:
     restart: unless-stopped
     network_mode: host
-    env_file: /opt/docker/secrets.env
+    env_file:
+      - .env
+    labels:
+      komodo.skip: ""
     environment:
       PERIPHERY_ROOT_DIRECTORY: /etc/komodo
       PERIPHERY_ALLOWED_IPS: 172.16.10.18
       PERIPHERY_CORE_PUBLIC_KEYS: "MCowBQYDK2VuAyEA/LCYwDiBxrMYOZdqbntwPoIPHZ7CKpCAOmQQT6JnOyA="
       PERIPHERY_SSL_ENABLED: true
-      PERIPHERY_DISABLE_TERMINALS: false
-      PERIPHERY_INCLUDE_DISK_MOUNTS: /etc/hostname
-      PERIPHERY_LOGGING_LEVEL: "warn"
+      PERIPHERY_DISABLE_TERMINALS: "true"
+      PERIPHERY_DISABLE_CONTAINER_TERMINALS: "true"
+      PERIPHERY_LOGGING_LEVEL: "info"
     volumes:
+      - periphery-keys:/config/keys
       - /var/run/docker.sock:/var/run/docker.sock
       - /proc:/proc
-      - /etc/komodo:/etc/komodo:rw
-      - /etc/komodo/keys:/config/keys:rw
+      - /etc/komodo:/etc/komodo
       - /opt/docker:/opt/docker:rw
-
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
+
+volumes:
+  periphery-keys:
