@@ -17,7 +17,7 @@ services:
       - /opt/crowdsec-central/nginx/templates:/etc/nginx/templates:ro
       - /opt/crowdsec-central/nginx/includes:/etc/nginx/includes:ro
       - /opt/crowdsec-central/certbot/certs:/etc/letsencrypt:ro
-      - /opt/crowdsec-central/webui:/etc/nginx/auth:ro
+      - /opt/crowdsec-central/webui:/etc/nginx/auth
     ports:
       - "8443:8443"
     networks:
