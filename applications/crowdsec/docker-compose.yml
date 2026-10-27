@@ -146,6 +146,7 @@ services:
     env_file: /opt/crowdsec-central/secrets.env
     environment:
       - CROWDSEC_URL=http://crowdsec:8080
+      - CONFIG_INSTANCE_METRICS_URL=http://crowdsec:6060/metrics
       - CROWDSEC_USER=${CROWDSEC_WEBUI_MACHINE_ID}
       - CROWDSEC_PASSWORD=${CROWDSEC_WEBUI_API_KEY}
       - CONFIG_AUTH_ENABLED=false
