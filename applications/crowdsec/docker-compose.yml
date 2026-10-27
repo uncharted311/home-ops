@@ -149,6 +149,7 @@ services:
       - CROWDSEC_USER=${CROWDSEC_WEBUI_MACHINE_ID}
       - CROWDSEC_PASSWORD=${CROWDSEC_WEBUI_API_KEY}
       - CROWDSEC_LOOKBACK_PERIOD=30d
+      - CONFIG_SERVER_BASE_PATH=/ui
     volumes:
       - crowdsec-webui-data:/app/data
     networks:
