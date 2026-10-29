@@ -299,7 +299,7 @@ services:
 
   # Torrent Downloader
   qbittorrent:
-    image: linuxserver/qbittorrent:5.2.4
+    image: linuxserver/qbittorrent:5.3.0
     container_name: qbittorrent
     depends_on:
       qbittorrent-vpn:
