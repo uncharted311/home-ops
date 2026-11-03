@@ -343,21 +343,32 @@ services:
       - qbittorrent
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - watchdog-state:/state
     env_file: /opt/docker/secrets.env
     environment:
+      - DOCKER_ENABLED=${DOCKER_ENABLED:-true}
       - GLUETUN_API=http://qbittorrent-vpn:8000
       - GLUETUN_API_KEY=${GLUETUN_API_KEY}
       - GLUETUN_CONTAINER_NAME=qbittorrent-vpn
       - QBT_API=http://qbittorrent-vpn:8080
-      #- QBT_API_KEY=${QBT_API_KEY:-}
+      - QBT_API_KEY=${QBT_API_KEY:-}
       - QBT_AUTH_MODE=${QBT_AUTH_MODE:-auto}
       - QBT_USER=${QBIT_USER}
       - QBT_PASS=${QBIT_PASSWORD}
       - QBT_CONTAINER_NAME=qbittorrent
       - CHECK_INTERVAL=60
-      - HEARTBEAT_CYCLE_FREQUENCY=10
-      - MAX_RESTART_WAIT=${MAX_RESTART_WAIT:-120}
-      - ADDITIONAL_RESTART=${ADDITIONAL_RESTART:-}
+      - CHECK_INTERVAL=${CHECK_INTERVAL:-60}
+      - PORT_MISS_THRESHOLD=${PORT_MISS_THRESHOLD:-3}
+      - MISSING_PORT_GRACE=${MISSING_PORT_GRACE:-300}
+      - GLUETUN_RECOVERY_GRACE=${GLUETUN_RECOVERY_GRACE:-300}
+      - RESTART_COOLDOWN=${RESTART_COOLDOWN:-900}
+      - MAX_VPN_RESTARTS=${MAX_VPN_RESTARTS:-2}
+      - RESTART_GLUETUN_CONTAINER=${RESTART_GLUETUN_CONTAINER:-true}
+      - STATE_DIR=/state
+      - HEALTH_BIND=0.0.0.0
+      - HEALTH_PORT=${HEALTH_PORT:-8081}
+      - WATCHDOG_API_KEY=${WATCHDOG_API_KEY:-}
+      - HEARTBEAT_CYCLE_FREQUENCY=${HEARTBEAT_CYCLE_FREQUENCY:-10}
       - TZ=Europe/Berlin
     logging: *default-logging
     deploy:
@@ -748,7 +759,7 @@ volumes:
   tracearr_postgres:
   tracearr_redis:
   tracearr_data:
-  thelounge:
+  watchdog-state:
   
 networks:
   arr_network:
