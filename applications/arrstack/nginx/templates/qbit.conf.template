@@ -10,7 +10,7 @@ server {
     include /etc/nginx/includes/default_header_params.conf;
 
     #access_log  off;
-    access_log /dev/stdout;
+    access_log /dev/stdout combined if=$loggable;
     error_log /dev/stderr;
 
     location / {

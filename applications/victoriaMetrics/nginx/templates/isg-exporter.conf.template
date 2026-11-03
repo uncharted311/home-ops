@@ -2,7 +2,7 @@ server {
     listen 8088;
     server_name _;
 
-    access_log /dev/stdout;
+    access_log /dev/stdout combined if=$loggable;
     error_log /dev/stderr;
 
     location / {

@@ -122,6 +122,6 @@ server {
 
     }
 
-    access_log /dev/stdout;
+    access_log /dev/stdout combined if=$loggable;
     error_log /dev/stderr warn;
 }
