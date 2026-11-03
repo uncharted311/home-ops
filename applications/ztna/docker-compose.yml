@@ -86,7 +86,7 @@ services:
       retries: 3
 
   traefik:
-    image: traefik:v3.7.16@sha256:6d3e069ee484ab1da5adfdda555a75eb9b1545ef09096a0cc7c3043101986a20
+    image: traefik:v3.7.17@sha256:68ae5fe5b64ca166704b746a9e8afcd385e36b3f569a5691401bf652d57b3748
     container_name: traefik
     restart: unless-stopped
     labels:
