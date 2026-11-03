@@ -6,7 +6,7 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/${SECRET_CERT_NAME}/privkey.pem;
 
     include /etc/nginx/includes/default_ssl_params.conf;
-    include /etc/nginx/includes/default_proxy_params.conf;
+    include /etc/nginx/includes/default_reverse_proxys.conf;
     include /etc/nginx/includes/default_header_params.conf;
 
     access_log  off;
@@ -14,12 +14,12 @@ server {
     error_log /dev/stderr;
 
     location / {
-        proxy_pass http://radarr:7878/;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
+        set $upstream_backend http://radarr:7878;
+        proxy_pass $upstream_backend;
+        include /etc/nginx/includes/default_proxy_params.conf;
+        
+        # Radarr Customization
+        proxy_read_timeout 300s;
+        proxy_send_timeout 300s;
     }
 }
