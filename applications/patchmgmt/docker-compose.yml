@@ -60,7 +60,7 @@ services:
     logging: *default-logging
 
   patchmon:
-    image: ghcr.io/patchmon/patchmon-server:2.1.6
+    image: ghcr.io/patchmon/patchmon-server:2.1.7
     container_name: patchmon
     restart: unless-stopped
     depends_on:
