@@ -57,7 +57,7 @@ services:
   #  It scrapes targets defined in --promscrape.config
   #  And forward them to --remoteWrite.url
   vmagent:
-    image: victoriametrics/vmagent:v1.155.0@sha256:8e3c03905be15bba8312d4868e8ae6f9fc2fefee0a41d544472034249ca42bb4
+    image: victoriametrics/vmagent:v1.155.0
     container_name: vmagent
     depends_on:
       - "victoriametrics"
@@ -82,7 +82,7 @@ services:
 
   # VictoriaMetrics instance
   victoriametrics:
-    image: victoriametrics/victoria-metrics:v1.155.0@sha256:f60dc268b54ecf87f6e09d740c2b732838aa9193090cc741417c9f6386a130df
+    image: victoriametrics/victoria-metrics:v1.155.0
     container_name: victoriametrics
     volumes:
       - /opt/docker/victoria/vmdata:/storage
@@ -114,7 +114,7 @@ services:
 
   # vmalert executes alerting and recording rules
   vmalert:
-    image: victoriametrics/vmalert:v1.155.0@sha256:3256cba5ddaca5974eae6141105cec4ce37871f1c213f0a5c267ec0111bc68e1
+    image: victoriametrics/vmalert:v1.155.0
     container_name: vmalert
     depends_on:
       - "victoriametrics"
@@ -146,7 +146,7 @@ services:
   # alertmanager receives alerting notifications from vmalert
   # and distributes them according to --config.file.
   alertmanager:
-    image: prom/alertmanager:v0.34.2@sha256:39d8bb3966c694a124428a3a88fbcffd40bd069129ecd47c059f8a3f17c55f3b
+    image: prom/alertmanager:v0.34.2
     container_name: alertmanager
     volumes:
       - /opt/docker/prom-alertmanager:/config
@@ -167,7 +167,7 @@ services:
 
   # pve-exporter
   pve-prometheus-exporter:
-    image: prompve/prometheus-pve-exporter:3.11.0@sha256:290756c34fd13e1d9972b8e64344d49a15ab99dd0053b29d9716f1ca4ae4c069
+    image: prompve/prometheus-pve-exporter:3.11.0
     container_name: prometheus-pve-exporter
     volumes:
       - /opt/docker/exporter/pve-exporter/pve.yml:/etc/prometheus/pve.yml
@@ -186,7 +186,7 @@ services:
 
   # source: https://github.com/prometheus/snmp_exporter
   snmp-prometheus-exporter:
-    image: prom/snmp-exporter:v0.31.0@sha256:e5f1aba929145cea2a3bad89c29959efaec0dc26fb87e3761414616a1a392c1c
+    image: prom/snmp-exporter:v0.31.0
     container_name: prometheus-snmp-exporter
     #expose:
     #  - 9116
@@ -218,7 +218,7 @@ services:
 
   ## ISG Exporter - https://github.com/sfudeus/isg_exporter
   isg-exporter:
-    image: sfudeus/isg_exporter:1.5.37@sha256:38390a94eeba2ad6dd4dca3e630e727bda4a00962fc37ed5f5967acb15558d93
+    image: sfudeus/isg_exporter:1.5.37
     container_name: isg-exporter
     env_file: /opt/docker/secrets.env
     environment:
@@ -236,7 +236,7 @@ services:
 
   # source: https://github.com/akpw/mktxp
   mikrotik-mktxp:
-    image: ghcr.io/akpw/mktxp:1.2.20@sha256:f894f2457670ec76d57a8cea9cb8ac66bcd3e8e2360c85453b8f9ddb9390bfc7
+    image: ghcr.io/akpw/mktxp:1.2.20
     container_name: mikrotik-mktxp
     volumes:
       - /opt/docker/exporter/mktxp:/home/mktxp/mktxp/
@@ -254,7 +254,7 @@ services:
     logging: *default-logging
 
   blackbox-exporter:
-    image: prom/blackbox-exporter:v0.29.1@sha256:ea1c7aa3ef3f307cd03e85f34abb604478ccb90b567fc690da0cd9776da76b13
+    image: prom/blackbox-exporter:v0.29.1
     container_name: blackbox-exporter
     command:
       - '--config.file=/etc/blackbox/blackbox.yml'

@@ -1,6 +1,6 @@
 services:
   pangolin:
-    image: fosrl/pangolin:ee-postgresql-1.26.0@sha256:4f94ce782b6a07625eb7c90d6a308c074fba4c51abc62c344a3e12010a53d7ce
+    image: fosrl/pangolin:ee-postgresql-1.26.0
     container_name: pangolin
     labels:
       - "autoheal=true"
@@ -31,7 +31,7 @@ services:
         max-file: "3"
 
   gerbil:
-    image: fosrl/gerbil:1.6.0@sha256:420f5210b6d1a6d3035f15c3938b5289fee5aeff51ffdcb9b217838338908885
+    image: fosrl/gerbil:1.6.0
     container_name: gerbil
     restart: unless-stopped
     labels:
@@ -64,7 +64,7 @@ services:
 
   # Config Generator for Blocky
   traefik-config-generator:
-    image: alpine:3.24@sha256:a2d49ea686c2adfe3c992e47dc3b5e7fa6e6b5055609400dc2acaeb241c829f4
+    image: alpine:3.24
     container_name: traefik-config-generator
     restart: always
     labels:
@@ -86,7 +86,7 @@ services:
       retries: 3
 
   traefik:
-    image: traefik:v3.7.17@sha256:68ae5fe5b64ca166704b746a9e8afcd385e36b3f569a5691401bf652d57b3748
+    image: traefik:v3.7.17
     container_name: traefik
     restart: unless-stopped
     labels:
@@ -124,7 +124,7 @@ services:
     logging: *default-logging
 
   redis:
-    image: redis:8.10.3-alpine@sha256:896f241f438ab6a210cfb24f573b84bea721a4cbe67f1b4fd07eb638b3b02a7b
+    image: redis:8.10.3-alpine
     container_name: redis
     restart: unless-stopped
     labels:
@@ -139,7 +139,7 @@ services:
     logging: *default-logging
 
   pangolin-db:
-    image: postgres:18.4-alpine@sha256:96d56f7f57c6aacd1fcb908bc83b345ec5f83231ee486dd66a1baadce274db88
+    image: postgres:18.4-alpine
     container_name: pangolin-db
     restart: unless-stopped
     labels:
@@ -177,7 +177,7 @@ services:
 
   # https://docs.pangolin.net/self-host/community-guides/geolite2automation
   geoipupdate:
-    image: ghcr.io/maxmind/geoipupdate:v8.0.0@sha256:51e70dd6f16cd3e4d845ac02d09940b10772a75b9d741427d235a78570923c1d
+    image: ghcr.io/maxmind/geoipupdate:v8.0.0
     container_name: geoipupdate
     restart: unless-stopped
     labels:
@@ -199,7 +199,7 @@ services:
     logging: *default-logging
 
   crowdsec:
-    image: crowdsecurity/crowdsec:v1.8.2@sha256:65b74942f7e7ed5c60fde4ac15fc4ba715904c398c8b16dd451f4907d90347d4
+    image: crowdsecurity/crowdsec:v1.8.2
     container_name: crowdsec
     restart: unless-stopped
     labels:

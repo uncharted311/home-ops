@@ -59,7 +59,7 @@ services:
 
   # Crowdsec - https://github.com/crowdsecurity/crowdsec
   crowdsec:
-    image: crowdsecurity/crowdsec:v1.8.2@sha256:65b74942f7e7ed5c60fde4ac15fc4ba715904c398c8b16dd451f4907d90347d4
+    image: crowdsecurity/crowdsec:v1.8.2
     container_name: crowdsec
     depends_on:
       crowdsec-db:
@@ -92,7 +92,7 @@ services:
 
   # Crowdsec-Datenbank Postgres - https://github.com/postgres/postgres
   crowdsec-db:
-    image: postgres:18.4-alpine@sha256:96d56f7f57c6aacd1fcb908bc83b345ec5f83231ee486dd66a1baadce274db88
+    image: postgres:18.4-alpine
     container_name: crowdsec-db
     restart: unless-stopped
     shm_size: '1gb'
@@ -160,7 +160,7 @@ services:
 
   # Crowdsec Blocklist Import - https://github.com/wolffcatskyy/crowdsec-blocklist-import
   crowdsec-blocklist-import:
-    image: ghcr.io/wolffcatskyy/crowdsec-blocklist-import:3.9.0@sha256:71e36b47858f8f91f6dd92b5e6dbbc583775c7568b0459761127ce81f1944a08
+    image: ghcr.io/wolffcatskyy/crowdsec-blocklist-import:3.9.0
     container_name: crowdsec-blocklist-import
     restart: unless-stopped
     depends_on:

@@ -60,7 +60,7 @@ services:
   # Paperless
   paperless:
     container_name: paperless
-    image: paperlessngx/paperless-ngx:3.4.2@sha256:d704e84f88300eb6ab001ab15720a2330ff99169cf9f94d6b8fcc44b63a84c84
+    image: paperlessngx/paperless-ngx:3.4.2
     depends_on:
       database:
         condition: service_healthy
@@ -125,7 +125,7 @@ services:
   # Redis Cache
   redis:
     container_name: redis
-    image: redis:8.10.3-alpine@sha256:896f241f438ab6a210cfb24f573b84bea721a4cbe67f1b4fd07eb638b3b02a7b
+    image: redis:8.10.3-alpine
     volumes:
       - redisdata:/data
     networks:
@@ -142,7 +142,7 @@ services:
   # Postgres-DB for Paperless
   database:
     container_name: database
-    image: postgres:18.4-alpine@sha256:96d56f7f57c6aacd1fcb908bc83b345ec5f83231ee486dd66a1baadce274db88
+    image: postgres:18.4-alpine
     volumes:
       - pgdata18:/var/lib/postgresql
     env_file: /opt/docker/secrets.env
@@ -164,7 +164,7 @@ services:
 
   # Gotenberg for Paperless
   gotenberg:
-    image: gotenberg/gotenberg:8.40.0@sha256:53073e798c8ef39ea2187e44cb67bab77894ea2509100b94c4fe3b461f7b2996
+    image: gotenberg/gotenberg:8.40.0
     container_name: gotenberg
     command:
       - "gotenberg"
@@ -183,7 +183,7 @@ services:
 
   # Tika for Paperless
   tika:
-    image: apache/tika:3.3.3.0@sha256:326b238b37904c94ff61fed87afe0af72e6a29fa715933b10af97b7d56f1d4cb
+    image: apache/tika:3.3.3.0
     container_name: tika
     networks:
       - localhost
@@ -199,7 +199,7 @@ services:
   
   # Crowdsec AppSec for Paperless
   crowdsec:
-    image: crowdsecurity/crowdsec:v1.8.2@sha256:65b74942f7e7ed5c60fde4ac15fc4ba715904c398c8b16dd451f4907d90347d4
+    image: crowdsecurity/crowdsec:v1.8.2
     container_name: crowdsec
     networks:
       - localhost
