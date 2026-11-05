@@ -210,7 +210,7 @@ services:
       LOCAL_API_URL: ${CROWDSEC_LAPI_URL}                   # Crowdsec Central LAPI URL https://example.com:8443
       AGENT_USERNAME: ${CROWDSEC_LAPI_USERNAME}             # Crowdsec Maschine Username
       AGENT_PASSWORD: ${CROWDSEC_LAPI_PASSWORD}             # Crowdsec Maschine Password
-      COLLECTIONS: crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules crowdsecurity/traefik
+      COLLECTIONS: crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
       ENROLL_TAGS: docker
       GID: "1000"
       PARSERS: crowdsecurity/whitelists
