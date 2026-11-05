@@ -12,7 +12,7 @@ http:
         crowdsec:
           enabled: true
           crowdsecAppsecEnabled: true
-          logLevel: INFO
+          logLevel: DEBUG
           crowdsecMode: live
           streamStartupBlock: false
           crowdsecLapiScheme: https
