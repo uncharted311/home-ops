@@ -2,6 +2,38 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   packageRules: [
     {
+      description: "Changelog & Release Notes for Fossorial Pangolin (strips ee-postgresql- prefix to match GitHub release tags)",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["fosrl/pangolin", "ghcr.io/fosrl/pangolin"],
+      sourceUrl: "https://github.com/fosrl/pangolin",
+      extractVersion: "^(?:ee-postgresql-|ee-|postgresql-)?(?<version>\\d+\\.\\d+\\.\\d+)$",
+      changelogUrl: "https://github.com/fosrl/pangolin/releases",
+    },
+    {
+      description: "Changelog & Release Notes for Fossorial Gerbil / Newt",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["fosrl/gerbil", "fosrl/newt", "fosrl/badger"],
+      sourceUrl: "https://github.com/{{depName}}",
+    },
+    {
+      description: "Changelog & Release Notes for VictoriaMetrics ecosystem (victoria-metrics, vmagent, vmalert)",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/^victoriametrics\\//"],
+      sourceUrl: "https://github.com/VictoriaMetrics/VictoriaMetrics",
+    },
+    {
+      description: "Changelog & Release Notes for Prometheus PVE Exporter",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["prompve/prometheus-pve-exporter"],
+      sourceUrl: "https://github.com/prometheus-pve/prometheus-pve-exporter",
+    },
+    {
+      description: "Changelog & Release Notes for Umlautadaptarr",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["pcjones/umlautadaptarr"],
+      sourceUrl: "https://github.com/PCJones/Umlautadaptarr",
+    },
+    {
       description: "Changelog URL for 1Password Connect",
       matchPackageNames: ["/1password/"],
       changelogUrl: "https://github.com/1Password/connect/blob/main/CHANGELOG.md",
@@ -9,16 +41,19 @@
     {
       description: "Changelog URL for Cloudflared",
       matchPackageNames: ["/cloudflared/"],
+      sourceUrl: "https://github.com/cloudflare/cloudflared",
       changelogUrl: "https://github.com/cloudflare/cloudflared/blob/master/RELEASE_NOTES",
     },
     {
-      description: "Changelog URL for Apache Tika",
+      description: "Changelog URL for Apache Tika (matches 4-digit docker tags like 3.3.0.0 to 3.3.0)",
       matchPackageNames: ["/tika/"],
+      sourceUrl: "https://github.com/apache/tika",
       changelogUrl: "https://github.com/apache/tika/blob/main/CHANGES.txt",
     },
     {
       description: "Changelog URL for Spegel",
       matchPackageNames: ["/spegel/"],
+      sourceUrl: "https://github.com/spegel-org/spegel",
       changelogUrl: "https://github.com/spegel-org/spegel/blob/main/CHANGELOG.md",
     },
   ],

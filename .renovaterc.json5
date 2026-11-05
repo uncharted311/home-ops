@@ -3,6 +3,7 @@
   extends: [
     'config:recommended',
     'docker:enableMajor',
+    'workarounds:all',
     'helpers:pinGitHubActionDigests',
     'github>uncharted311/home-ops//.renovate/changelogs.json5',
     'github>uncharted311/home-ops//.renovate/groups.json5',
@@ -11,13 +12,14 @@
     ':dependencyDashboard',
     ':semanticCommits',
     ':timezone(Europe/Berlin)',
-    ':prConcurrentLimit10',
-    ':prHourlyLimit4',
+    ':prHourlyLimitNone',
   ],
   dependencyDashboardTitle: 'Renovate Dashboard 🤖',
   assignees: [
     'uncharted311',
   ],
+  // Erlaubt bis zu 30 gleichzeitige PRs statt 10 (verhindert den Rückstau im Dashboard)
+  prConcurrentLimit: 30,
   pinDigests: false,
   ignorePaths: [
     '**/*.sops.*',
@@ -46,25 +48,6 @@
     },
   ],
   packageRules: [
-    // 1. GLOBALE DOCKER REGELN
-    {
-      description: 'Docker uses docker versioning by default',
-      matchDatasources: [
-        'docker',
-      ],
-      versioning: 'docker',
-      pinDigests: false,
-    },
-    {
-      description: 'Disable digest updates for Docker registries',
-      matchDatasources: [
-        'docker',
-      ],
-      matchUpdateTypes: [
-        'digest',
-      ],
-      enabled: false,
-    },
     {
       description: 'Separate major container upgrades and prioritize them',
       matchDatasources: [
@@ -73,7 +56,6 @@
       separateMajorMinor: true,
       prPriority: 10,
     },
-    // 2. SPEZIFISCHE MANAGER REGELN
     {
       description: 'Automerge GitHub Actions digest/patch',
       matchManagers: [
@@ -85,25 +67,28 @@
       ],
       automerge: true,
     },
-    // 3. SPEZIFISCHE VERSIONIERUNGEN
     {
-      description: 'Special versioning for Linuxserver.io images',
+      description: 'Clean versioning for all Linuxserver.io images (supports 3- and 4-part versions with or without version- prefix)',
       matchDatasources: [
         'docker',
       ],
       matchPackageNames: [
         '/^linuxserver\\//',
+        '/^lscr\\.io\\/linuxserver\\//',
+        '/^ghcr\\.io\\/linuxserver\\//',
       ],
-      matchCurrentValue: '/^version-/',
-      versioning: 'regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:\\.(?<build>\\d+))?(?:-ls(?<revision>\\d+))?$',
+      versioning: 'regex:^(?<compatibility>version-|v)?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:\\.(?<build>\\d+))?(?:-ls(?<revision>\\d+))?$',
     },
     {
-      description: 'Pangolin weird versioning',
+      description: 'Pangolin versioning (supports ee-postgresql-, ee-, postgresql- prefixes and ignores arch-specific tags)',
+      matchDatasources: [
+        'docker',
+      ],
       matchPackageNames: [
         'fosrl/pangolin',
+        'ghcr.io/fosrl/pangolin',
       ],
-      versioning: 'regex:^(?<compatibility>.*-)?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$',
-      pinDigests: false,
+      versioning: 'regex:^(?<compatibility>(?:ee-postgresql|ee|postgresql)-)?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$',
     },
   ],
 }
