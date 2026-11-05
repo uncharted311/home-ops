@@ -467,7 +467,7 @@ services:
 
   # Speedtest-Tracker for Qbit VPN
   speedtest-tracker-qbit:
-    image: lscr.io/linuxserver/speedtest-tracker:1.15.0
+    image: lscr.io/linuxserver/speedtest-tracker:1.15.1
     container_name: speedtest-tracker-qbit
     network_mode: "service:qbittorrent-vpn"
     env_file: /opt/docker/secrets.env
