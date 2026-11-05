@@ -177,7 +177,7 @@ http:
         certResolver: letsencrypt
     # Management Dashboard for Traefik
     traefik-dashboard:
-      rule: "Host(`ztna-traefik.${SECRET_DOMAIN}`)"
+      rule: "Host(`ztna.${SECRET_DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
       service: api@internal
       entryPoints:
         - websecure
