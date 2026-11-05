@@ -53,6 +53,7 @@
         'docker',
       ],
       separateMajorMinor: true,
+      separateMultipleMajor: true,
       prPriority: 10,
     },
     {
