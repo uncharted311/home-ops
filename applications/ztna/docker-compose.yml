@@ -217,7 +217,6 @@ services:
     volumes:
       - /opt/docker/crowdsec/config:/etc/crowdsec
       - /opt/docker/crowdsec/data:/var/lib/crowdsec/data
-      - /var/log/traefik:/var/log/traefik:ro
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:7422/ || [ $? -ne 7 ]"]
       interval: 30s
