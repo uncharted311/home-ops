@@ -101,6 +101,8 @@ entryPoints:
         allowEncodedSlash: true
         allowEncodedQuestionMark: true
       aliasHeadersStrategy: delete
+      middlewares:
+        - secured-stack@file
 serversTransport:
   insecureSkipVerify: true
 ping:

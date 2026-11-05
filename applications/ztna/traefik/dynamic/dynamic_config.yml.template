@@ -30,9 +30,11 @@ http:
           crowdsecAppsecHost: "crowdsec:7422"
           crowdsecAppsecUnreachableBlock: true
           crowdsecAppsecFailureBlock: true
-          crowdsecAppsecBodyLimit: 102400
+          crowdsecAppsecUnreadableBodyBlock: false
+          crowdsecAppsecBodyLimit: 1048576
           BanFilePath: /etc/traefik/sites/ban.html
-          defaultDecisionSeconds: 60
+          defaultDecisionSeconds: 300
+          metricsUpdateIntervalSeconds: 0
           trustForwardHeader: true
           forwardedHeadersTrustedIPs:
             - 127.0.0.1/32
@@ -40,7 +42,7 @@ http:
           httpTimeoutSeconds: 10
           updateIntervalSeconds: 30
           defaultDecisionTimeoutSeconds: 10
-          updateMaxFailure: 0
+          updateMaxFailure: -1
           captchaProvider: turnstile
           captchaSiteKey: "${TRAEFIK_CROWDSEC_CAPTCHA_SITE_KEY}"
           captchaSecretKey: "${TRAEFIK_CROWDSEC_CAPTCHA_SECRET_KEY}"
@@ -61,7 +63,7 @@ http:
           logApiRequests: false
           api: "https://get.geojs.io/v1/ip/country/{ip}"
           apiTimeoutMs: 500
-          cacheSize: 25
+          cacheSize: 10000
           ipDatabaseCachePath: "/var/lib/geoblock/ip-cache.db"
           forceMonthlyUpdate: true
           allowUnknownCountries: false
