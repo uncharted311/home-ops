@@ -184,7 +184,6 @@ http:
       middlewares:
         - secured-stack@file
         - dashboard-admin@file
-        - badger@file
       tls:
         certResolver: letsencrypt
     # HTTP to HTTPS Redirect
