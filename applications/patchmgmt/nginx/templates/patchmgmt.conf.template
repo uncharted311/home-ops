@@ -20,6 +20,8 @@ server {
         # Patch Mgmt Customizations
         proxy_read_timeout 300s;
         proxy_send_timeout 300s;
-
+        # Deaktiviere Buffering für Echtzeit-API-Antworten
+        proxy_buffering off;
+        proxy_request_buffering off;
     }
 }
