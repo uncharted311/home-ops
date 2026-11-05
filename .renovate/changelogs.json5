@@ -2,6 +2,26 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   packageRules: [
     {
+      description: "Changelog & Release Notes for Vansmak Episeerr",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["vansmak/episeerr"],
+      sourceUrl: "https://github.com/Vansmak/episeerr",
+      changelogUrl: "https://github.com/Vansmak/episeerr/releases",
+    },
+    {
+      description: "Official Release Notes link for PostgreSQL (PostgreSQL does not use GitHub Releases)",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["postgres", "library/postgres"],
+      changelogUrl: "https://www.postgresql.org/docs/release/",
+    },
+    {
+      description: "Changelog & Release Notes for Redis (points from docker-library to official redis repo)",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["redis", "library/redis"],
+      sourceUrl: "https://github.com/redis/redis",
+      extractVersion: "^(?<version>\\d+\\.\\d+\\.\\d+)",
+    },
+    {
       description: "Changelog & Release Notes for Fossorial Pangolin (strips ee-postgresql- prefix to match GitHub release tags)",
       matchDatasources: ["docker"],
       matchPackageNames: ["fosrl/pangolin", "ghcr.io/fosrl/pangolin"],
@@ -10,7 +30,7 @@
       changelogUrl: "https://github.com/fosrl/pangolin/releases",
     },
     {
-      description: "Changelog & Release Notes for Fossorial Gerbil / Newt",
+      description: "Changelog & Release Notes for Fossorial Gerbil / Newt / Badger",
       matchDatasources: ["docker"],
       matchPackageNames: ["fosrl/gerbil", "fosrl/newt", "fosrl/badger"],
       sourceUrl: "https://github.com/{{depName}}",
@@ -26,6 +46,12 @@
       matchDatasources: ["docker"],
       matchPackageNames: ["prompve/prometheus-pve-exporter"],
       sourceUrl: "https://github.com/prometheus-pve/prometheus-pve-exporter",
+    },
+    {
+      description: "Changelog & Release Notes for Gluetun VPN client",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["qmcgaw/gluetun"],
+      sourceUrl: "https://github.com/qdm12/gluetun",
     },
     {
       description: "Changelog & Release Notes for Umlautadaptarr",
@@ -45,7 +71,7 @@
       changelogUrl: "https://github.com/cloudflare/cloudflared/blob/master/RELEASE_NOTES",
     },
     {
-      description: "Changelog URL for Apache Tika (matches 4-digit docker tags like 3.3.0.0 to 3.3.0)",
+      description: "Changelog URL for Apache Tika",
       matchPackageNames: ["/tika/"],
       sourceUrl: "https://github.com/apache/tika",
       changelogUrl: "https://github.com/apache/tika/blob/main/CHANGES.txt",
