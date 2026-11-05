@@ -210,13 +210,14 @@ services:
       LOCAL_API_URL: ${CROWDSEC_LAPI_URL}                   # Crowdsec Central LAPI URL https://example.com:8443
       AGENT_USERNAME: ${CROWDSEC_LAPI_USERNAME}             # Crowdsec Maschine Username
       AGENT_PASSWORD: ${CROWDSEC_LAPI_PASSWORD}             # Crowdsec Maschine Password
-      COLLECTIONS: crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules crowdsecurity/traefik
+      COLLECTIONS: crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules crowdsecurity/traefik crowdsecurity/http-generic-bf
       ENROLL_TAGS: docker
       GID: "1000"
       PARSERS: crowdsecurity/whitelists
     volumes:
       - /opt/docker/crowdsec/config:/etc/crowdsec
       - /opt/docker/crowdsec/data:/var/lib/crowdsec/data
+      - /var/log/traefik:/var/log/traefik:ro
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:7422/ || [ $? -ne 7 ]"]
       interval: 30s
