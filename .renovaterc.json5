@@ -43,7 +43,10 @@
       ],
       datasourceTemplate: 'github-releases',
       versioningTemplate: 'semver',
-      extractVersionTemplate: '^v?(?<version>.*)$',
+      extractVersionTemplate: '^(?<prefix>v)?(?<version>\\d+\\.\\d+\\.\\d+)$',
+      replacements: {
+        version: '{{{prefix}}}{{{newVersion}}}',
+      },
     },
   ],
   packageRules: [
