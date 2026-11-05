@@ -46,7 +46,7 @@ http:
           captchaSecretKey: "${TRAEFIK_CROWDSEC_CAPTCHA_SECRET_KEY}"
           captchaGracePeriodSeconds: 1800
           CaptchaFilePath: /etc/traefik/sites/captcha.html
-          redisCacheEnabled: false
+          redisCacheEnabled: true
           redisCacheHost: "redis:6379"
           redisCachePassword: "${REDIS_PASSWORD}"
           redisCacheDatabase: 2
