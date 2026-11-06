@@ -14,7 +14,7 @@ server {
     error_log /dev/stderr;
 
     location / {
-        set $upstream_backend http://qbittorrent-vpn:8080;
+        set $upstream_backend http://qbittorrent:8080;
         proxy_pass $upstream_backend;
         include /etc/nginx/includes/default_proxy_params.conf;
 
