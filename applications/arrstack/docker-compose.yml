@@ -381,31 +381,6 @@ services:
         limits:
           memory: 1000M
 
-  # Speedtest-Tracker for Qbit VPN
-  speedtest-tracker-qbit:
-    image: lscr.io/linuxserver/speedtest-tracker:version-v1.15.1
-    container_name: speedtest-tracker-qbit
-    network_mode: "service:qbittorrent-vpn"
-    env_file: /opt/docker/secrets.env
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Berlin
-      - APP_KEY=${SPEEDTEST_APP_KEY}
-      - APP_URL=${SPEEDTEST_APP_URL}
-      - DB_CONNECTION=sqlite
-      - SPEEDTEST_SCHEDULE=0 */2 * * *
-      #- SPEEDTEST_SERVERS=
-      - DISPLAY_TIMEZONE=Europe/Berlin #optional
-    volumes:
-      - /opt/docker/speedtest-tracker:/config
-    restart: unless-stopped
-    logging: *default-logging
-    deploy:
-      resources:
-        limits:
-          memory: 1000M
-
   ## Uploader for Private Torrent Trackers (RHD)
   #uppollo:
   #  image: uppollo/uppollo:1.13.2
