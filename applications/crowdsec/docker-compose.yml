@@ -212,6 +212,12 @@ services:
       - /opt/crowdsec-central/cloudflare-worker/config:/etc/crowdsec/bouncers/
     networks:
       - crowdsec-net
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f crowdsec-cloudflare || pgrep -f cloudflare-bouncer || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     logging: *default-logging
 
 #   ToDo: Blocklist-Mirror offen
