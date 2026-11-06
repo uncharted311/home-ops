@@ -220,7 +220,7 @@ services:
       start_period: 20s
     logging: *default-logging
 
-  # Crowdsec Blocklist-Mirror
+  # Crowdsec Blocklist-Mirror - https://hub.docker.com/r/crowdsecurity/blocklist-mirror
   crowdsec-blocklist-mirror:
     image: crowdsecurity/blocklist-mirror:v0.0.6
     container_name: crowdsec-blocklist-mirror
