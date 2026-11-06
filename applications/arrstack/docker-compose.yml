@@ -264,7 +264,7 @@ services:
       - VPN_ENABLED=true
       - VPN_CONF=wg0
       - VPN_PROVIDER=proton
-      - VPN_LAN_NETWORK=172.16.0.0/16
+      - VPN_LAN_NETWORK=172.16.0.0/16,172.17.0.0/16
       - VPN_LAN_LEAK_ENABLE=false
       - VPN_EXPOSE_PORTS_ON_LAN=8080/tcp
       - VPN_AUTO_PORT_FORWARD=true
