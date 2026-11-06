@@ -247,7 +247,7 @@ services:
         limits:
           memory: 1000M
 
-   # Torrent Downloader
+   # QBit - Torrent Downloader
   qbittorrent:
     image: ghcr.io/hotio/qbittorrent:release-v5.2.4
     container_name: qbittorrent
