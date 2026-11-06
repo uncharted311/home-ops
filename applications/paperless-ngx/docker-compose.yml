@@ -164,7 +164,7 @@ services:
 
   # Gotenberg for Paperless
   gotenberg:
-    image: gotenberg/gotenberg:8.40.0
+    image: gotenberg/gotenberg:9.1.0
     container_name: gotenberg
     command:
       - "gotenberg"
