@@ -21,7 +21,8 @@ services:
     ports:
       - "8443:8443"
     networks:
-      - crowdsec-net
+      crowdsec-net:
+        ipv4_address: 172.28.0.10
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -so /dev/null http://localhost/ || exit 1"]
@@ -48,7 +49,8 @@ services:
       - /opt/crowdsec-central/certbot/cloudflare.ini:/cloudflare.ini:ro
       - /opt/crowdsec-central/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
     networks:
-      - crowdsec-net
+      crowdsec-net:
+        ipv4_address: 172.28.0.11
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "openssl x509 -checkend 604800 -noout -in /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem || exit 1"]
@@ -81,7 +83,8 @@ services:
       - /opt/crowdsec-central/crowdsec/config:/etc/crowdsec
       - /opt/crowdsec-central/crowdsec/data:/var/lib/crowdsec/data
     networks:
-      - crowdsec-net
+      crowdsec-net:
+        ipv4_address: 172.28.0.12
     healthcheck:
       test: ["CMD-SHELL", "wget --spider --quiet --tries=1 --timeout=5 http://localhost:8080/health > /dev/null 2>&1 || exit 1"]
       interval: 30s
@@ -122,7 +125,8 @@ services:
       -c commit_delay=10000
       -c commit_siblings=10
     networks:
-      - crowdsec-net
+      crowdsec-net:
+        ipv4_address: 172.28.0.13
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U crowdsec -d crowdsec"]
       interval: 30s
@@ -155,7 +159,8 @@ services:
     volumes:
       - crowdsec-webui-data:/app/data
     networks:
-      - crowdsec-net
+      crowdsec-net:
+        ipv4_address: 172.28.0.14
     logging: *default-logging
 
   # Crowdsec Blocklist Import - https://github.com/wolffcatskyy/crowdsec-blocklist-import
@@ -194,7 +199,8 @@ services:
       - WEBHOOK_URL=${BLOCKLIST_IMPORT_DISCORD_WEBHOOK_URL}
       - WEBHOOK_TYPE=discord
     networks:
-      - crowdsec-net
+      crowdsec-net:
+        ipv4_address: 172.28.0.15
     logging: *default-logging
   
   # Crowdsec Cloudflare Worker Bouncer - https://github.com/crowdsecurity/cs-cloudflare-worker-bouncer
@@ -211,7 +217,8 @@ services:
     volumes:
       - /opt/crowdsec-central/cloudflare-worker/config:/etc/crowdsec/bouncers/
     networks:
-      - crowdsec-net
+      crowdsec-net:
+        ipv4_address: 172.28.0.16
     healthcheck:
       test: ["CMD-SHELL", "pgrep -f crowdsec-cloudflare || pgrep -f cloudflare-bouncer || exit 1"]
       interval: 30s
@@ -230,7 +237,8 @@ services:
       - /opt/crowdsec-central/blocklist-mirror/blocklist-mirror.yaml:/etc/crowdsec/bouncers/crowdsec-blocklist-mirror.yaml:ro
     restart: unless-stopped
     networks:
-      - crowdsec-net
+      crowdsec-net:
+        ipv4_address: 172.28.0.17
     healthcheck:
       test: ["CMD", "ps", "aux", "|", "grep", "crowdsec-blocklist-mirror"]
       interval: 30s
@@ -242,6 +250,9 @@ services:
 networks:
   crowdsec-net:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
     
 
 volumes:
