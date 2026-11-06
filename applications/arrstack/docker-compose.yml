@@ -256,8 +256,8 @@ services:
     env_file: /opt/docker/secrets.env
     environment:
       - TZ=Europe/Berlin
-      - PUID=0
-      - PGID=0
+      - PUID=3006
+      - PGID=3006
       - UMASK=002
       - WEBUI_PORTS=8080/tcp
       - LIBTORRENT=v1
