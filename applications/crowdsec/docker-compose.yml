@@ -220,25 +220,24 @@ services:
       start_period: 20s
     logging: *default-logging
 
-#   ToDo: Blocklist-Mirror offen
-#  # Crowdsec Blocklist-Mirror
-#  crowdsec-blocklist-mirror:
-#    image: crowdsecurity/blocklist-mirror:v0.0.6
-#    container_name: crowdsec-blocklist-mirror
-#    depends_on:
-#      - crowdsec
-#    volumes:
-#      - /opt/crowdsec-central/blocklist-mirror/blocklist-mirror.yaml:/etc/crowdsec/bouncers/crowdsec-blocklist-mirror.yaml:ro
-#    restart: unless-stopped
-#    networks:
-#      - crowdsec-net
-#    healthcheck:
-#      test: ["CMD", "ps", "aux", "|", "grep", "crowdsec-blocklist-mirror"]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 3
-#      start_period: 10s
-#    logging: *default-logging
+  # Crowdsec Blocklist-Mirror
+  crowdsec-blocklist-mirror:
+    image: crowdsecurity/blocklist-mirror:v0.0.6
+    container_name: crowdsec-blocklist-mirror
+    depends_on:
+      - crowdsec
+    volumes:
+      - /opt/crowdsec-central/blocklist-mirror/blocklist-mirror.yaml:/etc/crowdsec/bouncers/crowdsec-blocklist-mirror.yaml:ro
+    restart: unless-stopped
+    networks:
+      - crowdsec-net
+    healthcheck:
+      test: ["CMD", "ps", "aux", "|", "grep", "crowdsec-blocklist-mirror"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging: *default-logging
 
 networks:
   crowdsec-net:
