@@ -10,7 +10,6 @@ services:
     read_only: true
     cap_add:
       - NET_ADMIN
-      - SYS_MODULE
     environment:
       NODE64_MODE: honeypot
       NODE64_FIREWALL: nftables
