@@ -198,6 +198,7 @@ services:
       - ABUSEIPDB_API_KEY=${BLOCKLIST_IMPORT_CROWDSEC_ABUSEIPDB_API_KEY}
       - WEBHOOK_URL=${BLOCKLIST_IMPORT_DISCORD_WEBHOOK_URL}
       - WEBHOOK_TYPE=discord
+      - CUSTOM_BLOCKLISTS="{IPV64-BLOCKLIST}"
     networks:
       crowdsec-net:
         ipv4_address: 172.28.0.15
