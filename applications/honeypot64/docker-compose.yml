@@ -1,0 +1,23 @@
+services:
+   honeypot64:
+    image: ghcr.io/ipv64net/node64:1.1.0
+    container_name: honeypot64
+    network_mode: host
+    restart: unless-stopped
+    env_file:
+      - .env
+      - /opt/docker/secrets.env
+    read_only: true
+    environment:
+      NODE64_MODE: honeypot
+      NODE64_HONEYPOT_PROFILE: standard   # oder: minimal, full
+      NODE64_IPV64_KEY: $[NODE64_IPV64_KEY}    # optional: Meldung an ipv64 einschalten
+    volumes:
+      - honeypot64:/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+volumes:
+  honeypot64:
