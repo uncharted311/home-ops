@@ -8,6 +8,9 @@ services:
       - .env
       - /opt/docker/secrets.env
     read_only: true
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
     environment:
       NODE64_MODE: honeypot
       NODE64_HONEYPOT_PROFILE: standard   # oder: minimal, full
