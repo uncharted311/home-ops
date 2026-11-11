@@ -86,7 +86,7 @@ services:
       retries: 3
 
   traefik:
-    image: traefik:v3.7.17
+    image: traefik:v3.7.18
     container_name: traefik
     restart: unless-stopped
     labels:
