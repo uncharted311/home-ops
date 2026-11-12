@@ -7,7 +7,7 @@ services:
       - /opt/docker/secrets.env
       - /opt/docker/.env
     depends_on:
-      evcc:
+      immich:
         condition: service_healthy
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
@@ -64,8 +64,10 @@ services:
     image: ghcr.io/immich-app/immich-server:v3.4.0
     container_name: immich
     depends_on:
-      - redis
-      - database
+      redis:
+        condition: service_healthy
+      database:
+        condition: service_healthy
     env_file:
       - /opt/docker/secrets.env
       - /opt/docker/.env
