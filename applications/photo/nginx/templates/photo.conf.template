@@ -1,0 +1,20 @@
+server {
+    listen 443 ssl;
+    server_name photo.${SECRET_DOMAIN};
+    
+    ssl_certificate /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SECRET_CERT_NAME}/privkey.pem;
+
+    include /etc/nginx/includes/default_ssl_params.conf;
+    include /etc/nginx/includes/default_reverse_proxys.conf;
+    include /etc/nginx/includes/default_header_params.conf;
+
+    access_log /dev/stdout combined if=$loggable;
+    error_log /dev/stderr;
+    
+    location / {
+        set $upstream_backend http://immich:2283/;
+        proxy_pass $upstream_backend;
+        include /etc/nginx/includes/default_proxy_params.conf;
+    }
+}
