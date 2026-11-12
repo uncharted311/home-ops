@@ -93,9 +93,9 @@ services:
     logging: *default-logging
     
   # Immich - https://github.com/immich-app/immich
-  immich_ml:
+  immich-machine-learning:
     image: ghcr.io/immich-app/immich-machine-learning:v3.4.0
-    container_name: immich_ml
+    container_name: immich-machine-learning
     env_file:
       - /opt/docker/secrets.env
       - /opt/docker/.env
