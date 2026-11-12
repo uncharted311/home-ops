@@ -40,7 +40,7 @@ services:
 
   # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
   certbot:
-    image: certbot/dns-cloudflare:v5.9.0
+    image: certbot/dns-cloudflare:v5.10.0
     container_name: certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
     env_file: /opt/docker/secrets.env
@@ -102,7 +102,7 @@ services:
 
   # Seerr - https://github.com/seerr-team/seerr
   seerr:
-    image: ghcr.io/seerr-team/seerr:v3.5.1
+    image: ghcr.io/seerr-team/seerr:v3.5.2
     container_name: seerr
     init: true
     labels:

@@ -32,7 +32,7 @@ services:
         max-file: "3"
 
   traefik:
-    image: traefik:v3.7.17
+    image: traefik:v3.7.18
     container_name: traefik
     restart: unless-stopped
     labels:
@@ -79,7 +79,7 @@ services:
     logging: *default-logging
 
   cloudflared:
-    image: cloudflare/cloudflared:2026.10.7
+    image: cloudflare/cloudflared:2026.11.0
     container_name: cloudflared
     restart: unless-stopped
     networks:
