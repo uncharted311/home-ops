@@ -101,6 +101,8 @@ services:
       - /opt/docker/.env
     environment:
       - MACHINE_LEARNING_MODEL_REVISION=v2
+      - MACHINE_LEARNING_MODEL_TTL=30
+      - MACHINE_LEARNING_WORKERS=1
     volumes:
       - model-cache:/cache
     networks:
@@ -114,6 +116,10 @@ services:
     #  timeout: 10s
     #  retries: 10
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          cpus: '2.5'
 
   redis:
     image: docker.io/valkey/valkey:9@sha256:418652cfb58ef879d4978c33553735d7147016032d5aefaa14c828e611eb9dfd
@@ -129,10 +135,6 @@ services:
       timeout: 10s
       retries: 10
     logging: *default-logging
-    deploy:
-      resources:
-        limits:
-          cpus: '2.5'
 
   # Immich - https://github.com/immich-app/immich
   database:
