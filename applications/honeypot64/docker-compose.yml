@@ -1,6 +1,6 @@
 services:
    honeypot64:
-    image: ghcr.io/ipv64net/node64:1.5.4
+    image: ghcr.io/ipv64net/node64:1.5.6
     container_name: honeypot64
     network_mode: host
     restart: unless-stopped
