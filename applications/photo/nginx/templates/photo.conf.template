@@ -13,8 +13,19 @@ server {
     error_log /dev/stderr;
     
     location / {
-        set $upstream_backend http://immich:2283/;
+        set $upstream_backend http://immich:2283;
         proxy_pass $upstream_backend;
         include /etc/nginx/includes/default_proxy_params.conf;
+
+        # Immich Customizations
+        client_max_body_size 50000M;
+        client_body_buffer_size 1024k;
+
+        proxy_request_buffering off;
+        proxy_buffering off;
+        
+        proxy_read_timeout 600s;
+        proxy_send_timeout 600s;
+        send_timeout 600s;
     }
 }
