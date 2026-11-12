@@ -129,6 +129,10 @@ services:
       timeout: 10s
       retries: 10
     logging: *default-logging
+    deploy:
+      resources:
+        limits:
+          cpus: '2.5'
 
   # Immich - https://github.com/immich-app/immich
   database:
