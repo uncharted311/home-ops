@@ -101,8 +101,6 @@ services:
       - /opt/docker/.env
     environment:
       - MACHINE_LEARNING_MODEL_REVISION=v2
-      - MACHINE_LEARNING_MODEL_TTL=30
-      - MACHINE_LEARNING_WORKERS=1
     volumes:
       - model-cache:/cache
     networks:
