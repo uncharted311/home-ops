@@ -140,7 +140,7 @@ services:
     logging: *default-logging
 
   postgres:
-    image: postgres:18.4-alpine
+    image: postgres:18.7-alpine
     container_name: postgres
     volumes:
       - nextcloud.db-data:/var/lib/postgresql
