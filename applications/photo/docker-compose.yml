@@ -61,7 +61,7 @@ services:
 
   # Immich - https://github.com/immich-app/immich
   immich:
-    image: ghcr.io/immich-app/immich-server:v3.4.0
+    image: ghcr.io/immich-app/immich-server:v3.4.1
     container_name: immich
     depends_on:
       redis:
@@ -94,7 +94,7 @@ services:
     
   # Immich - https://github.com/immich-app/immich
   immich-machine-learning:
-    image: ghcr.io/immich-app/immich-machine-learning:v3.4.0
+    image: ghcr.io/immich-app/immich-machine-learning:v3.4.1
     container_name: immich-machine-learning
     env_file:
       - /opt/docker/secrets.env
