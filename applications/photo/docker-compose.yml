@@ -150,7 +150,7 @@ services:
       POSTGRES_INITDB_ARGS: '--data-checksums'
     shm_size: 128mb
     volumes:
-      - immich-db-data:/var/lib/postgresql/data
+      - immich-db-data:/var/lib/postgresql
     networks:
       - immich-internal
     restart: unless-stopped
