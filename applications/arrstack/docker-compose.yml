@@ -249,7 +249,7 @@ services:
 
    # QBit - Torrent Downloader
   qbittorrent:
-    image: ghcr.io/hotio/qbittorrent:release-v5.2.4
+    image: ghcr.io/hotio/qbittorrent:release-v5.3.0
     container_name: qbittorrent
     cap_add:
       - NET_ADMIN
