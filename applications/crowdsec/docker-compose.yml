@@ -142,7 +142,7 @@ services:
   
   # Crowdsec Webui - https://github.com/TheDuffman85/crowdsec-web-ui
   crowdsec-webui:
-    image: ghcr.io/theduffman85/crowdsec-web-ui:2026.11.10
+    image: ghcr.io/theduffman85/crowdsec-web-ui:2026.11.11
     container_name: crowdsec-webui
     restart: unless-stopped
     depends_on:

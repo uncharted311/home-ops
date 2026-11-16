@@ -14,7 +14,9 @@
     ':timezone(Europe/Berlin)',
     ':prHourlyLimitNone',
   ],
-  dependencyDashboardTitle: 'Renovate Dashboard 🤖',
+  dependencyDashboard: {
+    title: 'Renovate Dashboard 🤖',
+  },
   assignees: [
     'uncharted311',
   ],
@@ -78,9 +80,7 @@
         '/^lscr\\.io\\/linuxserver\\//',
         '/^ghcr\\.io\\/linuxserver\\//',
       ],
-      // Erlaubt KEINE -ls305 Suffixe mehr -> verhindert PRs wie 4.10.2 -> 4.10.2.0-ls305
       versioning: 'regex:^(?<compatibility>version-|v)?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:\\.(?<build>\\d+))?$',
-      // Generischer Schutzfilter für alle LSIO-Container: Ignoriert Ubuntu-Releases (14.04, 20.04.1), Jahreszahlen (>20) und den kaputten 7.0.19 Build
       allowedVersions: '!/^(?:version-|v)?(?:7\\.0\\.19|14\\.|20\\.|[2-9]\\d\\.)/',
     },
     {

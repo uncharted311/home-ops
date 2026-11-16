@@ -167,7 +167,7 @@ services:
 
   # pve-exporter
   pve-prometheus-exporter:
-    image: prompve/prometheus-pve-exporter:3.11.0
+    image: prompve/prometheus-pve-exporter:3.12.0
     container_name: prometheus-pve-exporter
     volumes:
       - /opt/docker/exporter/pve-exporter/pve.yml:/etc/prometheus/pve.yml
