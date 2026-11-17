@@ -60,7 +60,7 @@ services:
   # Paperless
   paperless:
     container_name: paperless
-    image: paperlessngx/paperless-ngx:3.4.2
+    image: paperlessngx/paperless-ngx:3.5.0
     depends_on:
       database:
         condition: service_healthy
