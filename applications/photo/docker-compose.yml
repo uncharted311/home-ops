@@ -1,7 +1,7 @@
 services:
   # Nginx Reverse Proxy - https://github.com/nginx/nginx
   nginx:
-    image: nginx:1.31.8-alpine
+    image: nginx:1.31.9-alpine
     container_name: nginx
     env_file:
       - /opt/docker/secrets.env
@@ -61,7 +61,7 @@ services:
 
   # Immich - https://github.com/immich-app/immich
   immich:
-    image: ghcr.io/immich-app/immich-server:v3.4.1
+    image: ghcr.io/immich-app/immich-server:v3.4.2
     container_name: immich
     depends_on:
       redis:
@@ -94,7 +94,7 @@ services:
     
   # Immich - https://github.com/immich-app/immich
   immich-machine-learning:
-    image: ghcr.io/immich-app/immich-machine-learning:v3.4.1
+    image: ghcr.io/immich-app/immich-machine-learning:v3.4.2
     container_name: immich-machine-learning
     env_file:
       - /opt/docker/secrets.env
@@ -122,7 +122,7 @@ services:
           cpus: '2.5'
 
   redis:
-    image: docker.io/valkey/valkey:9@sha256:418652cfb58ef879d4978c33553735d7147016032d5aefaa14c828e611eb9dfd
+    image: docker.io/valkey/valkey:9@sha256:3add1a336a920ea54770a001ab6feb3da5fceea96a40373a3a2cd469b815f0b7
     container_name: immich_redis
     env_file:
       - /opt/docker/.env

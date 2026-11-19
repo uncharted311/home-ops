@@ -2,7 +2,7 @@ services:
 
   # Nginx Reverse Proxy - https://github.com/nginx/nginx
   nginx:
-    image: nginx:1.31.8-alpine
+    image: nginx:1.31.9-alpine
     container_name: nginx
     env_file: /opt/docker/secrets.env
     labels:
@@ -133,7 +133,7 @@ services:
 
   # Radarr - https://hub.docker.com/r/linuxserver/radarr
   radarr:
-    image: lscr.io/linuxserver/radarr:version-6.4.4.10685
+    image: lscr.io/linuxserver/radarr:version-7.0.3.10918
     container_name: radarr
     labels:
       - "autoheal=true"
@@ -161,7 +161,7 @@ services:
 
   # Radarr - https://hub.docker.com/r/linuxserver/radarr
   radarr-list:
-    image: lscr.io/linuxserver/radarr:version-6.4.4.10685
+    image: lscr.io/linuxserver/radarr:version-7.0.3.10918
     container_name: radarr-list
     labels:
       - "autoheal=true"
@@ -217,7 +217,7 @@ services:
 
   # Prowlarr - Indexer Management - https://github.com/Prowlarr/Prowlarr
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:version-2.7.0.5723
+    image: lscr.io/linuxserver/prowlarr:version-3.0.2.5780
     container_name: prowlarr
     labels:
       - "autoheal=true"
@@ -541,7 +541,7 @@ services:
     
   # Episeerr - https://github.com/vansmak/episeerr
   episeerr:
-    image: vansmak/episeerr:4.0.6
+    image: vansmak/episeerr:4.0.12
     container_name: episeerr
     depends_on:
       - "sonarr"

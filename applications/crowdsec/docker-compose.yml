@@ -2,7 +2,7 @@ services:
 
   # Nginx Reverse Proxy - https://github.com/nginx/nginx
   crowdsec-nginx:
-    image: nginx:1.31.8-alpine
+    image: nginx:1.31.9-alpine
     container_name: crowdsec-nginx
     depends_on:
       - crowdsec
@@ -142,7 +142,7 @@ services:
   
   # Crowdsec Webui - https://github.com/TheDuffman85/crowdsec-web-ui
   crowdsec-webui:
-    image: ghcr.io/theduffman85/crowdsec-web-ui:2026.11.11
+    image: ghcr.io/theduffman85/crowdsec-web-ui:2026.11.12
     container_name: crowdsec-webui
     restart: unless-stopped
     depends_on:
