@@ -102,7 +102,7 @@ services:
       - POSTGRES_USER=patchmon_user
       - POSTGRES_DB=patchmon_db
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     networks:
       - patchmon-internal
     healthcheck:
