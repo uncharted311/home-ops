@@ -113,14 +113,14 @@ services:
   
   redis:
     container_name: redis
-    image: redis:8.10.3-alpine
+    image: docker.io/valkey/valkey:9.2.0-alpine
     restart: unless-stopped
     command: >
       sh -c "
       mkdir -p /redis &&
-      chown redis:redis /redis &&
-      exec su redis -s /bin/sh -c '
-        redis-server
+      chown valkey:valkey /redis &&
+      exec su valkey -s /bin/sh -c '
+        valkey-server
           --save \"\"
           --appendonly no
           --unixsocket /redis/redis.sock
@@ -132,7 +132,7 @@ services:
     networks:
       - nextcloud-net
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "valkey-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
