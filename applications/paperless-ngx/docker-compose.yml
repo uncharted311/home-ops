@@ -125,7 +125,7 @@ services:
   # Redis Cache
   redis:
     container_name: redis
-    image: redis:8.10.3-alpine
+    image: docker.io/valkey/valkey:9.2.0-alpine
     volumes:
       - redisdata:/data
     networks:
