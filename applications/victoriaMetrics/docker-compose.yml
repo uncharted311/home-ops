@@ -236,7 +236,7 @@ services:
 
   # source: https://github.com/akpw/mktxp
   mikrotik-mktxp:
-    image: ghcr.io/akpw/mktxp:1.2.20
+    image: ghcr.io/akpw/mktxp:2.1.0
     container_name: mikrotik-mktxp
     volumes:
       - /opt/docker/exporter/mktxp:/home/mktxp/mktxp/
