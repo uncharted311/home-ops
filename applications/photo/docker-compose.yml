@@ -138,7 +138,7 @@ services:
 
   # Immich - https://github.com/immich-app/immich
   database:
-    image: ghcr.io/immich-app/postgres:18-vectorchord1.1.1-pgvector0.8.7-upgrade
+    image: ghcr.io/immich-app/postgres:18-vectorchord1.1.1-pgvector0.8.7
     container_name: immich_postgres
     env_file:
       - /opt/docker/secrets.env
