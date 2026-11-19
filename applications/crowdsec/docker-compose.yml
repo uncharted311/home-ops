@@ -168,8 +168,6 @@ services:
     image: ghcr.io/wolffcatskyy/crowdsec-blocklist-import:3.9.0
     container_name: crowdsec-blocklist-import
     restart: unless-stopped
-    depends_on:
-      - crowdsec
     env_file: /opt/crowdsec-central/secrets.env
     environment:
       - RUN_ON_START=true
