@@ -40,7 +40,7 @@
   ansible.builtin.uri:
     url: "{{ admin_github_keys_url }}"
     return_content: true
-  register: github_ssh_keys
+  register: bootstrap_github_ssh_keys
   check_mode: false
 
 - name: SSH Authorized Keys für heinrich-adm synchronisieren
@@ -48,10 +48,10 @@
     user: "{{ admin_user }}"
     state: present
     exclusive: true
-    key: "{{ github_ssh_keys.content }}"
-  when: github_ssh_keys.content is defined
+    key: "{{ bootstrap_github_ssh_keys.content }}"
+  when: bootstrap_github_ssh_keys.content is defined
 
-- name: Zeitzone auf {{ timezone }} setzen
+- name: "Zeitzone setzen auf {{ timezone }}"
   community.general.timezone:
     name: "{{ timezone }}"
 

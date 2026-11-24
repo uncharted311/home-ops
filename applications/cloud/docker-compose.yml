@@ -110,7 +110,7 @@ services:
     networks:
       - nextcloud-net
     logging: *default-logging
-  
+
   redis:
     container_name: redis
     image: docker.io/valkey/valkey:9.2.0-alpine

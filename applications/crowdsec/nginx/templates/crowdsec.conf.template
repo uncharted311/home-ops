@@ -40,7 +40,7 @@ server {
     # -------------------------------
     location ^~ /security/blocklist/ {
         rewrite ^/security/blocklist/?(.*)$ /$1 break;
-        
+
         set $upstream_backend_blocklist http://crowdsec-blocklist-mirror:41412;
         proxy_pass $upstream_backend_blocklist;
         include /etc/nginx/includes/default_proxy_params.conf;
@@ -61,7 +61,7 @@ server {
         set $upstream_backend_api http://crowdsec_backend;
         proxy_pass $upstream_backend_api;
         include /etc/nginx/includes/default_proxy_params.conf;
-        
+
         # Crowdsec Customizations
         # Zugriffsschutz
         limit_req zone=lapi_limit burst=50 nodelay;
@@ -88,7 +88,7 @@ server {
 
         # Crowdsec WebUi Customizations
         auth_basic           "Restricted Administrator Area";
-        auth_basic_user_file /etc/nginx/auth/.htpasswd;     
+        auth_basic_user_file /etc/nginx/auth/.htpasswd;
         proxy_set_header Authorization "";
         client_max_body_size 50M;
         # Deaktiviere Buffering für Echtzeit-API-Antworten
@@ -108,7 +108,7 @@ server {
         set $upstream_backend http://crowdsec_backend;
         proxy_pass $upstream_backend;
         include /etc/nginx/includes/default_proxy_params.conf;
-        
+
         # Crowdsec Customizations
         # Zugriffsschutz
         limit_req zone=lapi_limit burst=50 nodelay;

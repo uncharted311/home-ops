@@ -55,5 +55,5 @@
 - name: Firewall-Regeln sofort prüfen und anwenden
   ansible.builtin.command:
     cmd: /usr/local/bin/update-iptables-management.sh
-  register: fw_run_result
-  changed_when: "'Verarbeite' in fw_run_result.stdout or 'Repariere' in fw_run_result.stdout"
+  register: public_firewall_run_result
+  changed_when: "'Verarbeite' in public_firewall_run_result.stdout or 'Repariere' in public_firewall_run_result.stdout"

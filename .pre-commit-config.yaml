@@ -1,35 +1,51 @@
----
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v5.0.0
     hooks:
-      - id: requirements-txt-fixer
-      - id: sort-simple-yaml
       - id: detect-private-key
       - id: check-merge-conflict
+      - id: check-added-large-files
       - id: end-of-file-fixer
       - id: mixed-line-ending
+        args: [--fix=lf]
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
+
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.33.0
+    rev: v1.35.1
     hooks:
       - id: yamllint
         args: [-c=.yamllint]
-  - repo: https://github.com/ansible-community/ansible-lint.git
-    rev: v6.22.2
-    hooks:
-      - id: ansible-lint
+
   - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.9.0.6
+    rev: v0.10.0.1
     hooks:
       - id: shellcheck
-  - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.5.4
-    hooks:
-      - id: remove-crlf
-      - id: remove-tabs
+        args: [--severity=error]
+        exclude: '^applications/crowdsec/scripts/'
+
   - repo: https://github.com/sirosen/texthooks
-    rev: 0.6.4
+    rev: 0.6.8
     hooks:
       - id: fix-smartquotes
+
+  - repo: local
+    hooks:
+      - id: sops-encryption-check
+        name: SOPS Encryption Guard (*.sops.*)
+        language: pygrep
+        entry: '(?s)\A(?!(?=.*(?:^sops:|"sops":|^sops_version=))(?=.*ENC\[))'
+        args: [--multiline]
+        files: '[^/\\]+\.sops\.(ya?ml|json|env)$'
+
+      - id: ansible-lint
+        name: Ansible Lint (WSL / Local)
+        language: system
+        entry: >-
+          bash -c 'if command -v wsl.exe >/dev/null 2>&1; then
+            MSYS_NO_PATHCONV=1 wsl.exe /usr/local/bin/wsl-ansible-run ansible-lint infrastructure/ansible/playbooks/;
+          else
+            ANSIBLE_CONFIG=ansible.cfg ansible-lint infrastructure/ansible/playbooks/;
+          fi'
+        files: '^infrastructure/ansible/.*\.(ya?ml|j2)$'
+        pass_filenames: false

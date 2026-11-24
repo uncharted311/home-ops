@@ -24,7 +24,7 @@ http:
           crowdsecAppsecHost: "crowdsec:7422"
           crowdsecAppsecUnreachableBlock: true
           crowdsecAppsecFailureBlock: true
-          crowdsecAppsecBodyLimit: 10485760        
+          crowdsecAppsecBodyLimit: 10485760
           banHTMLFilePath: /etc/traefik/sites/ban.html
           defaultDecisionSeconds: 60
           trustForwardHeader: true
@@ -129,7 +129,7 @@ http:
           ipStrategy:
             depth: 0
     global-compress:
-      compress: {}          
+      compress: {}
     secured-stack:
       chain:
         middlewares:

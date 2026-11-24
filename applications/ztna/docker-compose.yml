@@ -74,7 +74,7 @@ services:
     volumes:
       - /opt/docker/traefik/config/dynamic/:/mnt/config/
     command: >
-      sh -c "apk add --no-cache gettext >/dev/null && 
+      sh -c "apk add --no-cache gettext >/dev/null &&
              envsubst < /mnt/config/dynamic_config.yml.template > /mnt/config/dynamic_config.yml &&
              chown 1000:1000 /mnt/config/dynamic_config.yml &&
              echo 'Config generiert, schlafe jetzt...' &&

@@ -24,7 +24,7 @@
 - name: Prüfen ob Docker-Socket bereits existiert
   ansible.builtin.stat:
     path: /var/run/docker.sock
-  register: docker_socket
+  register: komodo_periphery_docker_socket
 
 - name: Komodo Periphery Container in gepinnter Version betreiben
   community.docker.docker_container:
@@ -39,4 +39,4 @@
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - "{{ komodo_base_dir }}:{{ komodo_base_dir }}"
-  when: not ansible_check_mode or docker_socket.stat.exists
+  when: not ansible_check_mode or komodo_periphery_docker_socket.stat.exists

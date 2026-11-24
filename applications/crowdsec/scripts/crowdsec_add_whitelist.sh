@@ -59,7 +59,7 @@ process_ip() {
         docker exec $CONTAINER_CROWDSEC cscli decisions delete -i "$ip" > /dev/null 2>&1
         docker exec $CONTAINER_CROWDSEC cscli decisions add --ip "$ip" --type whitelist --reason "$reason" --duration "$DURATION"
         echo "$ip" > "$db_file"
-        return 0 
+        return 0
     fi
 
     [[ "$ip" != "$last_ip" ]] && echo "$ip" > "$db_file" && return 0
@@ -75,7 +75,7 @@ CHANGED_V6=$?
 if [[ $CHANGED_V4 -eq 0 ]] || [[ $CHANGED_V6 -eq 0 ]] || [[ ! -f "$NGINX_CONF" ]]; then
     echo "[*] Update NGINX Dyn-Whitelist..."
     mkdir -p "$(dirname "$NGINX_CONF")"
-    
+
     {
         echo "# Dynamische Admin-IPs - Generiert $(date)"
         [[ -n "$CURRENT_IP4" ]] && echo "allow $CURRENT_IP4;"

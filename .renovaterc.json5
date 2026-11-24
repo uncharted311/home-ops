@@ -31,6 +31,7 @@
     'docker-compose',
     'dockerfile',
     'github-actions',
+    'pre-commit',
     'custom.regex',
   ],
   customManagers: [
@@ -109,6 +110,17 @@
         'patch',
       ],
       groupName: 'Ansible Galaxy collections',
+    },
+    {
+      description: 'Group minor and patch updates for pre-commit hooks',
+      matchManagers: [
+        'pre-commit',
+      ],
+      matchUpdateTypes: [
+        'minor',
+        'patch',
+      ],
+      groupName: 'pre-commit hooks',
     },
     {
       description: 'Clean versioning for all Linuxserver.io images (ignores -ls rebuild tags and historic Ubuntu/broken tags)',

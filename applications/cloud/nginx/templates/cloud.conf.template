@@ -1,7 +1,7 @@
 server {
     listen 443 ssl;
     server_name cloud.srv.${SECRET_DOMAIN};
-    
+
     ssl_certificate /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${SECRET_CERT_NAME}/privkey.pem;
 
@@ -26,7 +26,7 @@ server {
         set $upstream_backend http://nextcloud:80;
         proxy_pass $upstream_backend;
         include /etc/nginx/includes/default_proxy_params.conf;
-        
+
         # Nextcloud Customization
         # 1. Upload-Größe & Buffering (essenziell für WebDAV/Sync)
         client_max_body_size 0;

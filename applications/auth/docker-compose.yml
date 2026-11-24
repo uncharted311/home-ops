@@ -57,7 +57,7 @@ services:
       timeout: 10s
       retries: 10
     logging: *default-logging
-  
+
   # LLDAP - https://github.com/lldap/lldap
   lldap:
     image: ghcr.io/lldap/lldap:v0.6.3-alpine
@@ -90,7 +90,7 @@ services:
       retries: 3
       start_period: 10s
     logging: *default-logging
-  
+
   pocket-id:
     image: ghcr.io/pocket-id/pocket-id:v2.19.3
     container_name: pocket-id

@@ -21,10 +21,3 @@ passkeys = []
 ## Env: PERIPHERY_CORE_PUBLIC_KEYS - PERIPHERY_CORE_PUBLIC_KEYS: "MCowBQYDK2VuAyEA/LCYwDiBxrMYOZdqbntwPoIPHZ7CKpCAOmQQT6JnOyA="
 ## Optional, no default.
 core_public_keys = "MCowBQYDK2VuAyEA/LCYwDiBxrMYOZdqbntwPoIPHZ7CKpCAOmQQT6JnOyA="
-
-
-
-
-
-
-

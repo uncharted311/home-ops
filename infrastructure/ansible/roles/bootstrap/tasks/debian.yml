@@ -17,11 +17,11 @@
 
 - name: Fastfetch-Architektur bestimmen (amd64 / aarch64)
   ansible.builtin.set_fact:
-    fastfetch_arch: "{{ 'aarch64' if ansible_facts['architecture'] == 'aarch64' else 'amd64' }}"
+    bootstrap_fastfetch_arch: "{{ 'aarch64' if ansible_facts['architecture'] == 'aarch64' else 'amd64' }}"
 
 - name: Fastfetch in gepinnter Version installieren (Debian/Ubuntu)
   ansible.builtin.apt:
-    deb: "https://github.com/fastfetch-cli/fastfetch/releases/download/{{ fastfetch_version }}/fastfetch-linux-{{ fastfetch_arch }}.deb"
+    deb: "https://github.com/fastfetch-cli/fastfetch/releases/download/{{ fastfetch_version }}/fastfetch-linux-{{ bootstrap_fastfetch_arch }}.deb"
     state: present
 
 - name: NTP-Zeitsynchronisation (systemd-timesyncd) aktivieren

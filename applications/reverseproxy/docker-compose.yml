@@ -12,7 +12,7 @@ services:
     volumes:
       - /opt/docker/traefik/config/dynamic/:/mnt/config/
     command: >
-      sh -c "apk add --no-cache gettext >/dev/null && 
+      sh -c "apk add --no-cache gettext >/dev/null &&
               find /mnt/config/dynamic -type f -name '*.template' | while read -r template; do
                 output=\"\${template%.template}\" &&
                 envsubst < \"\$template\" > \"\$output\" &&
@@ -62,7 +62,7 @@ services:
       retries: 10
       start_period: 60s
     logging: *default-logging
-  
+
   redis-cache:
     image: docker.io/valkey/valkey:9.2.0-alpine
     container_name: redis-cache

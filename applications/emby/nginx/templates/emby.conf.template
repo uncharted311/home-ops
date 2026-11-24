@@ -1,7 +1,7 @@
 server {
     listen 443 ssl;
     server_name emby.srv.${SECRET_DOMAIN};
-    
+
     ssl_certificate /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${SECRET_CERT_NAME}/privkey.pem;
 
@@ -11,12 +11,12 @@ server {
 
     access_log  off;
     error_log /dev/stderr;
-    
+
     location / {
         set $upstream_backend http://emby:8096;
         proxy_pass $upstream_backend;
         include /etc/nginx/includes/default_proxy_params.conf;
-        
+
         # Emby Customization
         # Disable buffering to allow for real-time streaming and reduce latency
         proxy_buffering off;

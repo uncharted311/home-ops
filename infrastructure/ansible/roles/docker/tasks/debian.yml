@@ -11,11 +11,15 @@
     dest: /etc/apt/keyrings/docker.asc
     mode: "0644"
 
-- name: Docker APT-Repository hinzufügen
+- name: Offizielles Docker APT-Repository einbinden
   ansible.builtin.apt_repository:
-    repo: "deb [arch={{ 'amd64' if ansible_facts['architecture'] == 'x86_64' else ansible_facts['architecture'] }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }} {{ ansible_facts['distribution_release'] }} stable"
-    state: present
+    repo: >-
+      deb [arch={{ 'arm64' if ansible_facts['architecture'] == 'aarch64' else 'amd64' }}
+      signed-by=/etc/apt/keyrings/docker.asc]
+      https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }}
+      {{ ansible_facts['distribution_release'] }} stable
     filename: docker
+    state: present
 
 - name: Docker Engine & Compose Plugin installieren
   ansible.builtin.apt:

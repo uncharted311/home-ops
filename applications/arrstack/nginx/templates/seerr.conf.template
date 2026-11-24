@@ -1,7 +1,7 @@
 server {
     listen 443 ssl;
     server_name seerr.${SECRET_CERT_NAME} seerr.${SECRET_DOMAIN};
-    
+
     ssl_certificate /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${SECRET_CERT_NAME}/privkey.pem;
 
@@ -16,7 +16,7 @@ server {
         set $upstream_backend http://seerr:5055;
         proxy_pass $upstream_backend;
         include /etc/nginx/includes/default_proxy_params.conf;
-        
+
         # Seerr Customization
         proxy_read_timeout 300s;
         proxy_send_timeout 300s;

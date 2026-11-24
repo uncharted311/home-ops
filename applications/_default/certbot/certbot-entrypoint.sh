@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-# 
+#
 # -------------------------------------------- README --------------------------------------------
 # SECRET_DOMAIN=> (Main-Domain for Certbot-Path /live/)
 # optional SECRET_CERT_DOMAINS=> Commaseparted list for multiple Domains "example.comf,*.example.com"
@@ -13,7 +13,7 @@ set -e
 #      - SECRET_CERT_NAME=srv.example.com
 #      - SECRET_CERT_DOMAINS=srv.example.com,*.srv.example.com
 #      - SECRET_ADMIN_EMAIL=${SECRET_ADMIN_EMAIL}
-# 
+#
 # 2. Example for Single Domains:
 #
 #    Docker-environment:
@@ -67,7 +67,7 @@ while true; do
       --dns-cloudflare-credentials /cloudflare.ini \
       --dns-cloudflare-propagation-seconds 30 \
       --non-interactive
-    
+
     # 12 Stunden schlafen (12h * 3600s = 43200s)
     sleep 43200 &
     wait $!

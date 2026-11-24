@@ -13,7 +13,7 @@ def main():
 
     base_name = job_name.replace(".nzb", "").replace(".NZB", "")
     new_job_string = f"{base_name} / {clean_password}"
-    
+
     print("1")
     print(new_job_string)
     print("")

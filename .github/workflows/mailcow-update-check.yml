@@ -19,16 +19,16 @@ jobs:
         id: get_release
         run: |
           RESPONSE=$(curl -s https://api.github.com/repos/mailcow/mailcow-dockerized/releases/latest)
-          
+
           TAG_NAME=$(echo "$RESPONSE" | jq -r .tag_name)
           RELEASE_NAME=$(echo "$RESPONSE" | jq -r .name)
           RELEASE_URL=$(echo "$RESPONSE" | jq -r .html_url)
           BODY=$(echo "$RESPONSE" | jq -r .body | head -c 500)
-          
+
           echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
           echo "name=$RELEASE_NAME" >> $GITHUB_OUTPUT
           echo "url=$RELEASE_URL" >> $GITHUB_OUTPUT
-          
+
           echo "body<<EOF" >> $GITHUB_OUTPUT
           echo "$BODY..." >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -44,7 +44,7 @@ jobs:
         if: "${{ steps.cache_version.outputs.cache-hit != 'true' || github.event.inputs.ignore_cache == 'true' }}"
         run: |
           echo "${{ steps.get_release.outputs.tag }}" > last_version.txt
-          
+
           PAYLOAD=$(jq -n \
             --arg description "🚀 **Neues Mailcow Update**" \
             --arg title "${{ steps.get_release.outputs.name }}" \

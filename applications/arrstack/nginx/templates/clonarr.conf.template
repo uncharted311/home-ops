@@ -1,7 +1,7 @@
 server {
     listen 443 ssl;
     server_name clonarr.${SECRET_CERT_NAME};
-    
+
     ssl_certificate /etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${SECRET_CERT_NAME}/privkey.pem;
 
@@ -12,7 +12,7 @@ server {
     access_log  off;
     #access_log /dev/stdout combined if=$loggable;
     error_log /dev/stderr;
-    
+
     location / {
         set $upstream_backend http://clonarr:6060;
         proxy_pass $upstream_backend;

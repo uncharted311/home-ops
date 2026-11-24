@@ -1,0 +1,21 @@
+extends: default
+
+ignore: |
+  *.sops.*
+  .venv/
+
+rules:
+  braces:
+    max-spaces-inside: 1
+  brackets: disable
+  colons: disable
+  comments: disable
+  comments-indentation: false
+  document-start: disable
+  indentation: disable
+  line-length: disable
+  octal-values:
+    forbid-implicit-octal: true
+    forbid-explicit-octal: true
+  truthy:
+    check-keys: false
