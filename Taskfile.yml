@@ -1,0 +1,54 @@
+version: '3'
+
+env:
+  ANSIBLE_CONFIG: 'ansible.cfg'
+
+vars:
+  ANSIBLE_DIR: '{{.ROOT_DIR}}/infrastructure/ansible'
+  RUN_PREFIX: '{{if eq OS "windows"}}wsl /usr/local/bin/wsl-ansible-run {{end}}'
+
+tasks:
+  default:
+    desc: Zeigt alle verfügbaren Tasks an
+    cmds:
+      - task --list
+
+  ansible:deps:
+    desc: Installiert alle gepinnten Ansible Collections
+    cmds:
+      - '{{.RUN_PREFIX}}ansible-galaxy collection install -r infrastructure/ansible/requirements.yml --force'
+
+  ansible:lint:
+    desc: Prüft Playbooks und Rollen mit ansible-lint
+    cmds:
+      - '{{.RUN_PREFIX}}ansible-lint infrastructure/ansible/playbooks/'
+
+  ansible:inventory:
+    desc: Zeigt die aufgelöste Gruppen- und Host-Struktur
+    cmds:
+      - '{{.RUN_PREFIX}}ansible-inventory --graph'
+
+  ansible:check:
+    desc: Dry-Run (Check-Mode) für Docker-Hosts
+    cmds:
+      - '{{.RUN_PREFIX}}ansible-playbook infrastructure/ansible/playbooks/docker_hosts.yml --check --diff {{.CLI_ARGS}}'
+
+  ansible:basic:
+    desc: Default-Setup & Hardening für alle Linux-Hosts ausrollen
+    cmds:
+      - '{{.RUN_PREFIX}}ansible-playbook infrastructure/ansible/playbooks/basic.yml {{.CLI_ARGS}}'
+
+  ansible:docker:
+    desc: Docker-Hosts & Komodo Periphery ausrollen
+    cmds:
+      - '{{.RUN_PREFIX}}ansible-playbook infrastructure/ansible/playbooks/docker_hosts.yml {{.CLI_ARGS}}'
+
+  ansible:secrets:all:
+    desc: Bearbeitet globale Ansible SOPS-Secrets
+    cmds:
+      - sops {{.ANSIBLE_DIR}}/group_vars/all.sops.yml
+
+  ansible:secrets:public:
+    desc: Bearbeitet SOPS-Secrets für Public-Hosts
+    cmds:
+      - sops {{.ANSIBLE_DIR}}/group_vars/public.sops.yml

@@ -1,0 +1,42 @@
+- name: Docker auf Debian/Ubuntu installieren
+  ansible.builtin.include_tasks: debian.yml
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Docker auf Alpine installieren
+  ansible.builtin.include_tasks: alpine.yml
+  when: ansible_facts['os_family'] == "Alpine"
+
+- name: Verzeichnis /etc/docker sicherstellen
+  ansible.builtin.file:
+    path: /etc/docker
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Gehärtete Docker daemon.json ausrollen
+  ansible.builtin.template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart Docker
+
+- name: Docker-Gruppe sicherstellen
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: Prüfen ob Gruppe docker bereits im System existiert
+  ansible.builtin.getent:
+    database: group
+    key: docker
+    fail_key: false
+
+- name: Admin-User zur Docker-Gruppe hinzufügen
+  ansible.builtin.user:
+    name: "{{ admin_user }}"
+    groups: docker
+    append: true
+  when: not ansible_check_mode or (ansible_facts['getent_group']['docker'] | default(none) is not none)

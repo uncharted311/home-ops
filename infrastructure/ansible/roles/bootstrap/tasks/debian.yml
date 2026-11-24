@@ -1,0 +1,38 @@
+---
+- name: Basis-Pakete, bpytop, NTP & Prometheus Node Exporter auf Debian/Ubuntu installieren
+  ansible.builtin.apt:
+    name:
+      - curl
+      - ca-certificates
+      - gnupg
+      - tzdata
+      - sudo
+      - btop
+      - prometheus-node-exporter
+      - systemd-timesyncd
+      - qemu-guest-agent
+      - unattended-upgrades
+    state: present
+    update_cache: true
+
+- name: Fastfetch-Architektur bestimmen (amd64 / aarch64)
+  ansible.builtin.set_fact:
+    fastfetch_arch: "{{ 'aarch64' if ansible_facts['architecture'] == 'aarch64' else 'amd64' }}"
+
+- name: Fastfetch in gepinnter Version installieren (Debian/Ubuntu)
+  ansible.builtin.apt:
+    deb: "https://github.com/fastfetch-cli/fastfetch/releases/download/{{ fastfetch_version }}/fastfetch-linux-{{ fastfetch_arch }}.deb"
+    state: present
+
+- name: NTP-Zeitsynchronisation (systemd-timesyncd) aktivieren
+  ansible.builtin.systemd:
+    name: systemd-timesyncd
+    enabled: true
+    state: started
+  when: ansible_facts['virtualization_type'] != "lxc"
+
+- name: Prometheus Node Exporter aktivieren und starten
+  ansible.builtin.systemd:
+    name: prometheus-node-exporter
+    enabled: true
+    state: started

@@ -1,0 +1,14 @@
+---
+- name: Reload Systemd Daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Restart Management Firewall Timer
+  ansible.builtin.systemd:
+    name: update-iptables-management.timer
+    state: restarted
+
+- name: Run Management Firewall Update
+  ansible.builtin.systemd:
+    name: update-iptables-management.service
+    state: started

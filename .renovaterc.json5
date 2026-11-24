@@ -27,6 +27,7 @@
     '**/resources/**',
   ],
   enabledManagers: [
+    'ansible-galaxy',
     'docker-compose',
     'dockerfile',
     'github-actions',
@@ -47,6 +48,34 @@
       versioningTemplate: 'semver',
       extractVersionTemplate: '^(?<prefix>v)?(?<version>\\d+\\.\\d+\\.\\d+)$',
       autoReplaceStringTemplate: 'version: "{{{currentValue}}}"',
+    },
+    {
+      customType: 'regex',
+      description: 'Komodo version in Ansible variables',
+      managerFilePatterns: [
+        '/infrastructure\\/ansible\\/.*\\.ya?ml$/',
+      ],
+      matchStrings: [
+        'komodo(?:_periphery|_core)?_version:\\s*["\']?(?<currentValue>[^"\'\\s]+)["\']?',
+      ],
+      depNameTemplate: 'moghtech/komodo',
+      datasourceTemplate: 'github-releases',
+      versioningTemplate: 'semver',
+      extractVersionTemplate: '^v?(?<version>\\d+\\.\\d+\\.\\d+)$',
+    },
+    {
+      customType: 'regex',
+      description: 'Fastfetch version in Ansible variables',
+      managerFilePatterns: [
+        '/infrastructure\\/ansible\\/.*\\.ya?ml$/',
+      ],
+      matchStrings: [
+        'fastfetch_version:\\s*["\']?(?<currentValue>[^"\'\\s]+)["\']?',
+      ],
+      depNameTemplate: 'fastfetch-cli/fastfetch',
+      datasourceTemplate: 'github-releases',
+      versioningTemplate: 'semver',
+      extractVersionTemplate: '^v?(?<version>\\d+\\.\\d+\\.\\d+)$',
     },
   ],
   packageRules: [
@@ -69,6 +98,17 @@
         'patch',
       ],
       automerge: true,
+    },
+    {
+      description: 'Group minor and patch updates for Ansible Galaxy collections',
+      matchManagers: [
+        'ansible-galaxy',
+      ],
+      matchUpdateTypes: [
+        'minor',
+        'patch',
+      ],
+      groupName: 'Ansible Galaxy collections',
     },
     {
       description: 'Clean versioning for all Linuxserver.io images (ignores -ls rebuild tags and historic Ubuntu/broken tags)',

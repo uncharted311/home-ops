@@ -3,6 +3,5 @@ creation_rules:
     input_type: dotenv
     age: "age1y0sfh0eqgfyx07jckhchel9fhlxzmnr9jn6lm0adta6ry052mp6qdez8us"
 
-  - path_regex: (infrastructure|applications)[/\\].*\.sops\.ya?ml$
-    encrypted_regex: "^(data|stringData)$"
+  - path_regex: .*[/\\]?infrastructure[/\\]ansible[/\\].*\.sops\.ya?ml$
     age: "age1y0sfh0eqgfyx07jckhchel9fhlxzmnr9jn6lm0adta6ry052mp6qdez8us"

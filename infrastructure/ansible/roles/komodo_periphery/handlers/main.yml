@@ -1,0 +1,7 @@
+# handlers/main.yml
+---
+- name: Restart Komodo Periphery
+  community.docker.docker_container:
+    name: komodo-periphery
+    state: started
+    restart: true

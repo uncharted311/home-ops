@@ -1,0 +1,29 @@
+---
+- name: Default-Setup für Docker-Hosts
+  hosts: docker_hosts
+  gather_facts: false
+  roles:
+    - bootstrap
+
+- name: Hardening, Docker & Komodo Periphery auf Docker-Hosts ausrollen
+  hosts: docker_hosts
+  become: true
+  tasks:
+    - name: OS Hardening auf Debian/Ubuntu ausführen
+      ansible.builtin.include_role:
+        name: devsec.hardening.os_hardening
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: SSH Hardening auf allen Docker-Hosts ausführen
+      ansible.builtin.include_role:
+        name: devsec.hardening.ssh_hardening
+
+  roles:
+    - docker
+    - komodo_periphery
+
+- name: Dynamische Management-Firewall für Public-Docker-Hosts synchronisieren
+  hosts: public_docker
+  become: true
+  roles:
+    - public_firewall

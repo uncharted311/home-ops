@@ -1,0 +1,13 @@
+---
+# Dynamische Public IP -> Authentifizierung in Periphery über TLS + core_public_keys
+komodo_allowed_ips: []
+
+# Firewall DynDNS Management-Zugriff (nur Public-Hosts)
+fw_mgmt_ipv4_fqdn: "ipv4.seifert.dev"
+fw_mgmt_ipv6_fqdn: "ipv6.seifert.dev"
+fw_mgmt_ports:
+  - 9100
+  - 8120
+fw_mgmt_comment: "DYN_MGMT_ACCESS"
+fw_mgmt_old_comment: "DYN_NODE_EXPORTER"
+fw_mgmt_timer_interval: "2min"

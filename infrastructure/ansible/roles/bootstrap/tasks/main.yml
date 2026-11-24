@@ -1,0 +1,80 @@
+---
+- name: Python3 & Basis-Tools auf Alpine vorab bereitstellen (Raw-Bootstrap)
+  ansible.builtin.raw: |
+    if [ -f /etc/alpine-release ]; then
+      apk update && apk add --no-cache python3 sudo curl bash ca-certificates
+    fi
+  changed_when: false
+  check_mode: false
+
+- name: System-Facts einsammeln
+  ansible.builtin.setup:
+
+- name: OS-spezifische Pakete & Dienste (Debian/Ubuntu) einrichten
+  ansible.builtin.include_tasks: debian.yml
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: OS-spezifische Pakete & Dienste (Alpine) einrichten
+  ansible.builtin.include_tasks: alpine.yml
+  when: ansible_facts['os_family'] == "Alpine"
+
+- name: Admin-User heinrich-adm sicherstellen
+  ansible.builtin.user:
+    name: "{{ admin_user }}"
+    shell: /bin/bash
+    groups: "{{ 'wheel' if ansible_facts['os_family'] == 'Alpine' else 'sudo' }}"
+    append: true
+    create_home: true
+    state: present
+
+- name: Passwordless Sudo für heinrich-adm in sudoers.d hinterlegen
+  ansible.builtin.copy:
+    dest: "/etc/sudoers.d/{{ admin_user }}"
+    content: "{{ admin_user }} ALL=(ALL) NOPASSWD:ALL\n"
+    owner: root
+    group: root
+    mode: "0440"
+    validate: "visudo -cf %s"
+
+- name: GitHub SSH-Keys für heinrich-adm abrufen
+  ansible.builtin.uri:
+    url: "{{ admin_github_keys_url }}"
+    return_content: true
+  register: github_ssh_keys
+  check_mode: false
+
+- name: SSH Authorized Keys für heinrich-adm synchronisieren
+  ansible.posix.authorized_key:
+    user: "{{ admin_user }}"
+    state: present
+    exclusive: true
+    key: "{{ github_ssh_keys.content }}"
+  when: github_ssh_keys.content is defined
+
+- name: Zeitzone auf {{ timezone }} setzen
+  community.general.timezone:
+    name: "{{ timezone }}"
+
+- name: Statische /etc/motd leeren (wird durch fastfetch ersetzt)
+  ansible.builtin.copy:
+    content: ""
+    dest: /etc/motd
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Fastfetch als dynamisches Login-MOTD einrichten
+  ansible.builtin.copy:
+    dest: /etc/profile.d/00-motd.sh
+    owner: root
+    group: root
+    mode: "0755"
+    content: |
+      #!/bin/sh
+      case "$-" in
+        *i*)
+          if command -v fastfetch >/dev/null 2>&1; then
+            fastfetch
+          fi
+          ;;
+      esac

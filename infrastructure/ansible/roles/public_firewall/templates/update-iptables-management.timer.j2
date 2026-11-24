@@ -1,0 +1,11 @@
+[Unit]
+Description=Periodic DynDNS Firewall Check for Management Ports
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec={{ fw_mgmt_timer_interval }}
+AccuracySec=15s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

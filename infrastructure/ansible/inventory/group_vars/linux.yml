@@ -1,0 +1,3 @@
+admin_user: "heinrich-adm"
+admin_github_keys_url: "https://github.com/uncharted311.keys"
+ansible_control_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILXXGHm4r8tgA+KNTZ7a7uMGB/C1ntas/8MacZzAdZOW heinrich-ansible"

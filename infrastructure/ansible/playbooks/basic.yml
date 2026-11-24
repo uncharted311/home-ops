@@ -1,0 +1,25 @@
+---
+- name: Default-Setup & OS-Hardening für alle Linux-Hosts
+  hosts: linux
+  gather_facts: false
+  roles:
+    - bootstrap
+
+- name: Hardening mit devsec.hardening anwenden
+  hosts: linux
+  become: true
+  tasks:
+    - name: OS Hardening auf Debian/Ubuntu ausführen
+      ansible.builtin.include_role:
+        name: devsec.hardening.os_hardening
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: SSH Hardening auf allen Linux-Systemen ausführen
+      ansible.builtin.include_role:
+        name: devsec.hardening.ssh_hardening
+
+- name: Dynamische Management-Firewall nur auf Public-Hosts einrichten
+  hosts: public
+  become: true
+  roles:
+    - public_firewall

@@ -1,0 +1,8 @@
+[Unit]
+Description=Update Dynamic Management Firewall Rules (Komodo & Node Exporter)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/update-iptables-management.sh

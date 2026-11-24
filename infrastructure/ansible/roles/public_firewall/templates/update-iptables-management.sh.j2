@@ -1,0 +1,124 @@
+#!/bin/bash
+
+# --- KONFIGURATION ---
+ONPREM_IP="{{ fw_mgmt_ipv4_fqdn }}"
+ONPREM_IPv6="{{ fw_mgmt_ipv6_fqdn }}"
+PORTS=({{ fw_mgmt_ports | join(' ') }})
+COMMENT="{{ fw_mgmt_comment }}"
+OLD_COMMENT="{{ fw_mgmt_old_comment }}"
+DISCORD_WEBHOOK="{{ fw_mgmt_discord_webhook | default('') }}"
+
+# Servernamen und Cache-Pfad (persistent)
+SERVER_NAME=$(hostname)
+CACHE_DIR="/var/lib/fw_dns_cache"
+mkdir -p "$CACHE_DIR"
+
+# --- 1. FUNKTION FÜR DISCORD ---
+send_discord_notification() {
+    local MESSAGE=$1
+    if [[ "$DISCORD_WEBHOOK" != "DEIN_WEBHOOK_URL_HIER" && -n "$DISCORD_WEBHOOK" ]]; then
+        local FULL_MESSAGE="🖥️ **Server:** \`$SERVER_NAME\`\n$MESSAGE"
+        curl -s -H "Content-Type: application/json" -X POST -d "{\"content\": \"$FULL_MESSAGE\"}" "$DISCORD_WEBHOOK" > /dev/null 2>&1
+    fi
+}
+
+# --- 2. IP-ADRESSEN ERMITTELN (NO-CACHE) ---
+TS=$(date +%s%N)
+
+# IPv4 Auflösung (A-Record)
+RESOLVED_IPv4=$(curl -s -H "accept: application/dns-json" -H "cache-control: no-cache" \
+    "https://1.1.1.1/dns-query?name=$ONPREM_IP&type=A&random=$TS" | jq -r '.Answer[0].data // empty' 2>/dev/null | grep -E '^[0-9.]+$')
+
+# IPv6 Auflösung (AAAA-Record)
+RESOLVED_IPv6=$(curl -s -H "accept: application/dns-json" -H "cache-control: no-cache" \
+    "https://1.1.1.1/dns-query?name=$ONPREM_IPv6&type=AAAA&random=$TS" | jq -r '.Answer[0].data // empty' 2>/dev/null | grep -E '^[0-9a-fA-F:]+$')
+
+# --- 3. FUNKTION FÜR DAS FIREWALL UPDATE ---
+update_firewall() {
+    local BINARY=$1    # iptables oder ip6tables
+    local IP=$2        # Die aufgelöste IP
+    local PROTO=$3     # "IPv4" oder "IPv6"
+    local CACHE_FILE="$CACHE_DIR/fw_$(echo $PROTO).ip"
+
+    # Alte IP aus Cache lesen
+    local OLD_IP=""
+    [ -f "$CACHE_FILE" ] && OLD_IP=$(cat "$CACHE_FILE")
+
+    # Abbruch wenn IP leer (DNS Fehler)
+    if [ -z "$IP" ] || [ "$IP" == "null" ]; then
+        echo "[ERROR] Keine $PROTO Adresse für $PROTO gefunden."
+        return
+    fi
+
+    # --- OPTIMIERUNG: Prüfung gegen tatsächliche Firewall-Regeln ---
+    local RULES_EXIST=false
+    if $BINARY -L INPUT -n | grep -q "$IP"; then
+        RULES_EXIST=true
+    fi
+
+    # Prüfen, ob Update nötig ist (Nur wenn IP gleich UND Regeln existieren)
+    if [ "$IP" == "$OLD_IP" ] && [ "$RULES_EXIST" = true ]; then
+        echo "[INFO] $PROTO ($IP) unverändert und in Firewall aktiv. Keine Aktion."
+        return
+    fi
+
+    if [ "$IP" == "$OLD_IP" ] && [ "$RULES_EXIST" = false ]; then
+        echo "[WARN] $PROTO ($IP) im Cache, aber Regeln fehlen in Firewall. Repariere..."
+    else
+        echo "--- Verarbeite $PROTO Update: $OLD_IP -> $IP ---"
+    fi
+
+    # Chains ermitteln
+    local TARGET_CHAINS=("INPUT")
+    if $BINARY -L DOCKER-USER -n >/dev/null 2>&1; then
+        TARGET_CHAINS+=("DOCKER-USER")
+    fi
+
+    # A. Cleanup: Alle dynamischen Regeln entfernen (alte IP und alte Kommentare)
+    for CHAIN in "${TARGET_CHAINS[@]}"; do
+        $BINARY -S "$CHAIN" 2>/dev/null | grep -E "($COMMENT|$OLD_COMMENT)" | sed "s/-A/-D/" | while read line; do
+            $BINARY $line
+        done
+    done
+
+    # B. Neue Regeln setzen (Ports werden einzeln behandelt für bessere Übersicht)
+    for PORT in "${PORTS[@]}"; do
+        for CHAIN in "${TARGET_CHAINS[@]}"; do
+            # 1. ALLOW für die neue IP (Ganz oben einfügen)
+            $BINARY -I "$CHAIN" 1 -p tcp -s "$IP" --dport "$PORT" -m comment --comment "$COMMENT" -j ACCEPT
+
+            # 2. Globaler Block direkt darunter (Position 2)
+            if [ "$CHAIN" == "INPUT" ]; then
+                $BINARY -I "$CHAIN" 2 -p tcp --dport "$PORT" -m comment --comment "$COMMENT" -j REJECT
+            else
+                $BINARY -I "$CHAIN" 2 -p tcp --dport "$PORT" -m comment --comment "$COMMENT" -j DROP
+            fi
+        done
+    done
+
+    # Cache aktualisieren
+    echo "$IP" > "$CACHE_FILE"
+
+    # Discord Benachrichtigung senden
+    if [ -z "$OLD_IP" ]; then
+        send_discord_notification "✅ **Initialisierung**: Regeln für **$PROTO** erstellt. Aktuelle IP: \`$IP\`. Ports: \`${PORTS[*]}\`."
+    elif [ "$IP" != "$OLD_IP" ]; then
+        send_discord_notification "🔄 **IP-Wechsel**: Regeln für **$PROTO** aktualisiert. \`$OLD_IP\` ➔ \`$IP\`. Ports: \`${PORTS[*]}\`."
+    else
+        send_discord_notification "🛠️ **Reparatur**: Regeln für **$PROTO** wurden in der Firewall wiederhergestellt (\`$IP\`)."
+    fi
+}
+
+# --- 4. AUSFÜHRUNG ---
+
+if ! command -v jq &> /dev/null; then
+    echo "Fehler: 'jq' wird benötigt. Bitte mit 'apt install jq' installieren."
+    exit 1
+fi
+
+update_firewall "iptables" "$RESOLVED_IPv4" "IPv4"
+echo ""
+update_firewall "ip6tables" "$RESOLVED_IPv6" "IPv6"
+
+echo "--------------------------------------"
+echo "Update abgeschlossen: $(date)"

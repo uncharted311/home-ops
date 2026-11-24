@@ -9,10 +9,20 @@
     /* Dateizuordnungen */
     "files.associations": {
         "*.sops.env": "dotenv",
+        "*.sops.yml": "yaml",
+        "*.sops.yaml": "yaml",
         "*.conf.template": "nginx",
         "*.conf": "nginx",
         "nginx.conf": "nginx",
-        "secrets.env": "dotenv"
+        "secrets.env": "dotenv",
+        "**/infrastructure/ansible/playbooks/*.yml": "ansible",
+        "**/infrastructure/ansible/roles/**/tasks/*.yml": "ansible",
+        "**/infrastructure/ansible/roles/**/handlers/*.yml": "ansible"
+    },
+
+    /* Sprachspezifische Einstellungen: YAML (SOPS-Schutz beim Speichern) */
+    "[yaml]": {
+        "editor.formatOnSave": false
     },
 
     /* Sprachspezifische Einstellungen: Dotenv (Secrets) */
@@ -34,7 +44,8 @@
         }
     },
 
-    /* Linter-Integration (falls die Extension installiert ist) */
+    /* Linter-Integration */
+    "ansible.validation.lint.enabled": false,
     "nginx.linter.enable": true,
     "nginx.linter.run": "onType"
 }

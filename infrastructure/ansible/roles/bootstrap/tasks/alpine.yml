@@ -1,0 +1,53 @@
+---
+- name: Alpine Community-Repository aktivieren
+  ansible.builtin.replace:
+    path: /etc/apk/repositories
+    regexp: '^#(.*community)$'
+    replace: '\1'
+
+- name: Basis-Pakete, fastfetch, btop, chrony & Node Exporter auf Alpine installieren
+  community.general.apk:
+    name:
+      - curl
+      - ca-certificates
+      - shadow
+      - tzdata
+      - fastfetch
+      - btop
+      - chrony
+      - prometheus-node-exporter
+      - qemu-guest-agent
+    state: present
+    update_cache: true
+
+- name: NTP-Zeitsynchronisation (chronyd) auf Alpine aktivieren
+  ansible.builtin.service:
+    name: chronyd
+    enabled: true
+    state: started
+  when: ansible_facts['virtualization_type'] != "lxc"
+
+- name: Prometheus Node Exporter auf Alpine aktivieren und starten
+  ansible.builtin.service:
+    name: node-exporter
+    enabled: true
+    state: started
+
+- name: Sysctl Kernel-Härtung auf Alpine anwenden
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_set: true
+    state: present
+    reload: true
+  loop: "{{ custom_sysctl_settings | dict2items }}"
+
+- name: IP-Forwarding für Docker-Hosts auf Alpine aktivieren
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_set: true
+    state: present
+    reload: true
+  loop: "{{ sysctl_overwrite | dict2items }}"
+  when: "'docker_hosts' in group_names"

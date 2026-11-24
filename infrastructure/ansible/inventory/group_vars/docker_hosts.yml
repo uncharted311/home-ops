@@ -1,0 +1,18 @@
+---
+sysctl_overwrite:
+  net.ipv4.ip_forward: 1
+  net.ipv6.conf.all.forwarding: 1
+
+# renovate: datasource=docker depName=ghcr.io/moghtech/komodo-periphery
+komodo_periphery_version: "2.3.3"
+
+komodo_periphery_port: 8120
+komodo_base_dir: "/etc/komodo"
+komodo_repo_dir: "/etc/komodo/repos"
+komodo_stack_dir: "/etc/komodo/stacks"
+komodo_ssl_enabled: true
+
+# Public Key deines Komodo Core Servers (steht beim Start im Core-Log)
+# Da es ein Public Key ist, kann er unverschlüsselt eingecheckt werden
+komodo_core_public_keys:
+  - "MCowBQYDK2VuAyEA/LCYwDiBxrMYOZdqbntwPoIPHZ7CKpCAOmQQT6JnOyA="

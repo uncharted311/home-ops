@@ -13,6 +13,11 @@ talosconfig
 .kube/
 .talos/
 
+# Ansible
+.vault_pass
+*.retry
+__pycache__/
+
 # Misc.
 .private/
 .task/

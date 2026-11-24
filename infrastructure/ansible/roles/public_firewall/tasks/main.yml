@@ -1,0 +1,59 @@
+---
+- name: Abhängigkeiten für DynDNS-Firewall installieren (jq, curl, iptables)
+  ansible.builtin.apt:
+    name:
+      - jq
+      - curl
+      - iptables
+    state: present
+    update_cache: true
+
+- name: Cache-Verzeichnis für Firewall-IPs sicherstellen
+  ansible.builtin.file:
+    path: /var/lib/fw_dns_cache
+    state: directory
+    owner: root
+    group: root
+    mode: "0750"
+
+- name: Skript update-iptables-management.sh ausrollen
+  ansible.builtin.template:
+    src: update-iptables-management.sh.j2
+    dest: /usr/local/bin/update-iptables-management.sh
+    owner: root
+    group: root
+    mode: "0750"
+  notify: Run Management Firewall Update
+
+- name: Systemd-Service für DynDNS-Firewall ausrollen
+  ansible.builtin.template:
+    src: update-iptables-management.service.j2
+    dest: /etc/systemd/system/update-iptables-management.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload Systemd Daemon
+
+- name: Systemd-Timer für DynDNS-Firewall ausrollen
+  ansible.builtin.template:
+    src: update-iptables-management.timer.j2
+    dest: /etc/systemd/system/update-iptables-management.timer
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload Systemd Daemon
+    - Restart Management Firewall Timer
+
+- name: DynDNS-Firewall Timer aktivieren und starten
+  ansible.builtin.systemd:
+    name: update-iptables-management.timer
+    daemon_reload: true
+    enabled: true
+    state: started
+
+- name: Firewall-Regeln sofort prüfen und anwenden
+  ansible.builtin.command:
+    cmd: /usr/local/bin/update-iptables-management.sh
+  register: fw_run_result
+  changed_when: "'Verarbeite' in fw_run_result.stdout or 'Repariere' in fw_run_result.stdout"

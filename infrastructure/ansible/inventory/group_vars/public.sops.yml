@@ -1,0 +1,21 @@
+fw_mgmt_discord_webhook: ENC[AES256_GCM,data:S3PLnlomCZaALiv3Ev+CwgzJyoELLNQ2ssgfr6fmMvO1HNbOHx46vQQwTCJevREQQTRNPPUQpuJspFD+ooDSr6Gg3eCuFB8gjarkp68oCzkYmbAW5NIklDs2CrqDuccyYGDaVQrlGhUIi+wJv0a9MiHTVIzfjFnjkw==,iv:IzFHCybnjbZBzr+tMygzoqZ/AFBRb8XFB69fCUKmSJg=,tag:kZ3g7KZ2OJ6NpCZHB/p7Cg==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1y0sfh0eqgfyx07jckhchel9fhlxzmnr9jn6lm0adta6ry052mp6qdez8us
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBpdTY0NHlsQi9ISFRpTWFM
+            NmMyVGtMS3RBdG1WUUUvaE5VYWNXMHU5eDJRClZweldvdUtOMk1PdWtFQlRzRXNQ
+            b0NoZWpvSWxjVEdDR1JxTnhETWo1c00KLS0tIHFZTmd5M3RZUUFvaHJ4N1Z2RllW
+            SGRVQVo3c0FITkRrWXJHc1RhRGFpNlkKP6AbTZ7bOkLrjVUeNyHRx4chIVc2wDPO
+            BELXf8+cQXOds2OhbJnlGoS9t69QzKYSC7GDBY8vyuBCiE+oFPrFWg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-11-24T13:13:06Z"
+    mac: ENC[AES256_GCM,data:1hvb4pGps8jTvCXdqvPYOhaGgdA2vB1boRJvEcBdmO7vmMkImfGh7KnO5QmVvUmS2OZTbbOCdt8m5Ahd1UxGz/arP1f5jgjVQG2IhJotM73My+//nMYvUV+4cwjLIn7bCeYEIniwruRs6RoH3jwks6NCuhKsME3ElxW97NqrPjQ=,iv:g45zSlPio1A0YJMwcshfHkLKsOzH0sH1PObhSPNUxMs=,tag:DxBNIiD/q5RMhI+cGjgmqA==,type:str]
+    pgp: []
+    unencrypted_suffix: _unencrypted
+    version: 3.7.1
