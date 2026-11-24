@@ -4,7 +4,7 @@ sysctl_overwrite:
   net.ipv6.conf.all.forwarding: 1
 
 # renovate: datasource=docker depName=ghcr.io/moghtech/komodo-periphery
-komodo_periphery_version: "2.3.3"
+komodo_periphery_version: "2.3.4"
 
 komodo_periphery_port: 8120
 komodo_base_dir: "/etc/komodo"
