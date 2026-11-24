@@ -51,3 +51,13 @@
     reload: true
   loop: "{{ sysctl_overwrite | dict2items }}"
   when: "'docker_hosts' in group_names"
+
+- name: Prüfen ob Kernel-Module zum laufenden Kernel passen
+  ansible.builtin.stat:
+    path: "/lib/modules/{{ ansible_facts['kernel'] }}"
+  register: bootstrap_kernel_modules_dir
+
+- name: VM nach Kernel-Upgrade neu starten
+  ansible.builtin.reboot:
+    reboot_timeout: 120
+  when: not bootstrap_kernel_modules_dir.stat.exists

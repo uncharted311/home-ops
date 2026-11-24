@@ -9,6 +9,8 @@
 *.yml linguist-detectable linguist-language=YAML
 *.yaml linguist-detectable linguist-language=YAML
 *.yaml.j2 linguist-detectable linguist-language=YAML
+*.sh text eol=lf
+*.sh.j2 text eol=lf
 
 *.sops.env text eol=lf
 *.sops.yaml text eol=lf

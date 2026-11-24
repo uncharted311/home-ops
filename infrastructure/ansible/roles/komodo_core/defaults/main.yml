@@ -1,0 +1,10 @@
+---
+komodo_core_base_dir: "/opt/komodo"
+komodo_core_version: "{{ komodo_version | default('2.3.3') }}"
+komodo_core_port: 9120
+komodo_core_hostname: "komodo.srv.seifert.dev"
+komodo_core_host: "https://{{ komodo_core_hostname }}"
+komodo_core_ferretdb_version: "2.1.0"
+komodo_core_postgres_version: "17-0.102.0"
+komodo_core_first_server: "https://172.16.10.20:{{ komodo_periphery_port | default(8120) }}"
+komodo_core_first_server_name: "komodo.srv.seifert.dev"

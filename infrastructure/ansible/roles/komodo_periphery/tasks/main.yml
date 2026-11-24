@@ -1,42 +1,31 @@
 # tasks/main.yml
 ---
-- name: Komodo Verzeichnisse anlegen
+- name: Persistente Komodo- und Stack-Verzeichnisse anlegen
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: root
     group: root
-    mode: "0750"
+    mode: "0755"
   loop:
     - "{{ komodo_base_dir }}"
-    - "{{ komodo_repo_dir }}"
-    - "{{ komodo_stack_dir }}"
+    - /opt/docker
 
-- name: Gehärtete periphery.config.toml ausrollen
+- name: Docker Compose Datei für Komodo Periphery ausrollen
   ansible.builtin.template:
-    src: periphery.config.toml.j2
-    dest: "{{ komodo_base_dir }}/periphery.config.toml"
+    src: docker-compose.yml.j2
+    dest: "{{ komodo_base_dir }}/docker-compose.yml"
     owner: root
     group: root
-    mode: "0600"
-  notify: Restart Komodo Periphery
+    mode: "0644"
 
-- name: Prüfen ob Docker-Socket bereits existiert
-  ansible.builtin.stat:
-    path: /var/run/docker.sock
-  register: komodo_periphery_docker_socket
-
-- name: Komodo Periphery Container in gepinnter Version betreiben
-  community.docker.docker_container:
-    name: komodo-periphery
-    image: "ghcr.io/moghtech/komodo-periphery:{{ komodo_periphery_version }}"
-    state: started
-    restart_policy: unless-stopped
-    network_mode: host
-    security_opts:
-      - no-new-privileges:true
-    command: --config-path {{ komodo_base_dir }}/periphery.config.toml
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - "{{ komodo_base_dir }}:{{ komodo_base_dir }}"
-  when: not ansible_check_mode or komodo_periphery_docker_socket.stat.exists
+- name: Komodo Periphery Stack starten und aktuell halten
+  ansible.builtin.command:
+    cmd: docker compose up -d --remove-orphans
+    chdir: "{{ komodo_base_dir }}"
+  register: komodo_periphery_compose_up
+  changed_when: >-
+    'Started' in komodo_periphery_compose_up.stderr or
+    'Recreated' in komodo_periphery_compose_up.stderr or
+    'Pulling' in komodo_periphery_compose_up.stderr
+  when: not ansible_check_mode

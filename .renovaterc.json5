@@ -51,32 +51,13 @@
       autoReplaceStringTemplate: 'version: "{{{currentValue}}}"',
     },
     {
-      customType: 'regex',
-      description: 'Komodo version in Ansible variables',
-      managerFilePatterns: [
-        '/infrastructure\\/ansible\\/.*\\.ya?ml$/',
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^infrastructure/ansible/.*\\.ya?ml$/"
       ],
-      matchStrings: [
-        'komodo(?:_periphery|_core)?_version:\\s*["\']?(?<currentValue>[^"\'\\s]+)["\']?',
-      ],
-      depNameTemplate: 'moghtech/komodo',
-      datasourceTemplate: 'github-releases',
-      versioningTemplate: 'semver',
-      extractVersionTemplate: '^v?(?<version>\\d+\\.\\d+\\.\\d+)$',
-    },
-    {
-      customType: 'regex',
-      description: 'Fastfetch version in Ansible variables',
-      managerFilePatterns: [
-        '/infrastructure\\/ansible\\/.*\\.ya?ml$/',
-      ],
-      matchStrings: [
-        'fastfetch_version:\\s*["\']?(?<currentValue>[^"\'\\s]+)["\']?',
-      ],
-      depNameTemplate: 'fastfetch-cli/fastfetch',
-      datasourceTemplate: 'github-releases',
-      versioningTemplate: 'semver',
-      extractVersionTemplate: '^v?(?<version>\\d+\\.\\d+\\.\\d+)$',
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)(?:\\s+versioning=(?<versioning>\\S+))?\\s*\\n\\s*[a-zA-Z0-9_]+:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
+      ]
     },
   ],
   packageRules: [

@@ -1,0 +1,29 @@
+#!/bin/sh
+trap 'exit 0' TERM INT
+
+if [ ! -f "/etc/letsencrypt/live/${SECRET_CERT_NAME}/fullchain.pem" ]; then
+  certbot certonly \
+    --non-interactive \
+    --agree-tos \
+    --keep-until-expiring \
+    --email "${SECRET_ADMIN_EMAIL}" \
+    --dns-cloudflare \
+    --dns-cloudflare-credentials /cloudflare.ini \
+    --dns-cloudflare-propagation-seconds 30 \
+    -d "${SECRET_CERT_NAME}"
+fi
+
+# Dauerhafte Erneuerungsschleife (alle 12h)
+echo "Starte Certbot Renewal Daemon..."
+while true; do
+    echo "--- Zertifikats-Prüfung gestartet: $(date) ---"
+    certbot renew \
+      --dns-cloudflare \
+      --dns-cloudflare-credentials /cloudflare.ini \
+      --dns-cloudflare-propagation-seconds 30 \
+      --non-interactive
+
+    # 12 Stunden schlafen (12h * 3600s = 43200s)
+    sleep 43200 &
+    wait $!
+done

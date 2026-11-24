@@ -5,13 +5,23 @@
     regexp: '^#(.*community)$'
     replace: '\1'
 
-- name: Docker und Docker Compose auf Alpine installieren
+- name: Docker, Docker Compose und nftables auf Alpine installieren
   community.general.apk:
     name:
       - docker
       - docker-cli-compose
+      - nftables
     state: present
-    update_cache: true
+
+- name: Benötigte Kernel-Module für Docker laden
+  community.general.modprobe:
+    name: "{{ item }}"
+    state: present
+    persistent: present
+  loop:
+    - overlay
+    - br_netfilter
+    - nf_tables
 
 - name: Docker-Dienst in OpenRC aktivieren und starten
   ansible.builtin.service:

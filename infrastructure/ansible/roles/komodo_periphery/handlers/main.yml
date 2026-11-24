@@ -1,7 +1,6 @@
-# handlers/main.yml
 ---
 - name: Restart Komodo Periphery
-  community.docker.docker_container:
-    name: komodo-periphery
-    state: started
-    restart: true
+  ansible.builtin.command:
+    cmd: docker compose restart
+    chdir: "{{ komodo_base_dir }}"
+  changed_when: true

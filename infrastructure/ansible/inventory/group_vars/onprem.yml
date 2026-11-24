@@ -1,4 +1,4 @@
 ---
 # On-Prem hat Komodo Core eine feste interne IP -> doppelte Absicherung
 komodo_allowed_ips:
-  - "172.16.10.18"
+  - "172.16.10.20"

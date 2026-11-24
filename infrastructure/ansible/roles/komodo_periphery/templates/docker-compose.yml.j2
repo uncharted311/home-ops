@@ -1,0 +1,38 @@
+name: komodo-periphery
+services:
+  periphery:
+    image: ghcr.io/moghtech/komodo-periphery:{{ komodo_periphery_version }}
+    container_name: komodo-periphery
+    restart: unless-stopped
+    environment:
+      TZ: "{{ timezone }}"
+      PERIPHERY_ROOT_DIRECTORY: "{{ komodo_base_dir }}"
+      PERIPHERY_REPO_DIR: "{{ komodo_repo_dir }}"
+      PERIPHERY_STACK_DIR: "{{ komodo_stack_dir }}"
+      PERIPHERY_INCLUDE_DISK_MOUNTS: "{{ komodo_periphery_include_disk_mounts }}"
+{% if 'onprem' in group_names and inventory_hostname != 'komodo' and (komodo_allowed_ips | default('', true) | length > 0) %}
+      PERIPHERY_ALLOWED_IPS: "{{ komodo_allowed_ips if komodo_allowed_ips is string else (komodo_allowed_ips | join(',')) }}"
+{% endif %}
+      PERIPHERY_CORE_PUBLIC_KEYS: "{{ komodo_core_public_keys }}"
+      PERIPHERY_SSL_ENABLED: "{{ komodo_ssl_enabled | lower }}"
+      PERIPHERY_DISABLE_TERMINALS: "true"
+      PERIPHERY_DISABLE_CONTAINER_TERMINALS: "true"
+      PERIPHERY_LOGGING_LEVEL: "info"
+    ports:
+      - "{{ komodo_periphery_port }}:{{ komodo_periphery_port }}"
+    tmpfs:
+      - /tmp/komodo:rw,nosuid,nodev,size=256m
+    volumes:
+      - periphery-keys:/config/keys
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc:/proc
+      - "{{ komodo_base_dir }}:{{ komodo_base_dir }}"
+      - /opt/docker:/opt/docker:rw
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  periphery-keys:

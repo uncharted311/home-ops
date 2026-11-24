@@ -1,0 +1,122 @@
+name: komodo-core
+services:
+  nginx:
+    image: nginx:1.31.9-alpine
+    container_name: komodo-nginx
+    depends_on:
+      certbot:
+        condition: service_healthy
+    volumes:
+      - {{ komodo_core_base_dir }}/nginx/conf:/etc/nginx/conf.d
+      - {{ komodo_core_base_dir }}/certbot/certs:/etc/letsencrypt:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped
+    networks:
+      - localhost
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1/healthz || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging: &default-logging # default logging
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  certbot:
+    image: certbot/dns-cloudflare:v5.10.0
+    container_name: komodo-certbot
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    environment:
+      - SECRET_CERT_NAME={{ komodo_core_hostname }}
+      - SECRET_ADMIN_EMAIL={{ admin_email }}
+    volumes:
+      - {{ komodo_core_base_dir }}/certbot/certs:/etc/letsencrypt
+      - {{ komodo_core_base_dir }}/certbot/cloudflare.ini:/cloudflare.ini:ro
+      - {{ komodo_core_base_dir }}/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
+    networks:
+      - localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "openssl x509 -checkend 604800 -noout -in /etc/letsencrypt/live/{{ komodo_core_hostname }}/fullchain.pem || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    logging: *default-logging
+
+  postgres:
+    image: ghcr.io/ferretdb/postgres-documentdb:{{ komodo_core_postgres_version }}
+    container_name: komodo-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: komodo
+      POSTGRES_PASSWORD: ${KOMODO_DB_PASSWORD}
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - localhost
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U komodo -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging: *default-logging
+
+  ferretdb:
+    image: ghcr.io/ferretdb/ferretdb:{{ komodo_core_ferretdb_version }}
+    container_name: komodo-ferretdb
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      FERRETDB_POSTGRESQL_URL: postgres://komodo:${KOMODO_DB_PASSWORD}@postgres:5432/postgres
+    networks:
+      - localhost
+    logging: *default-logging
+
+  core:
+    image: ghcr.io/moghtech/komodo-core:{{ komodo_core_version }}
+    container_name: komodo-core
+    restart: unless-stopped
+    depends_on:
+      ferretdb:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:{{ komodo_core_port }}:9120"
+    environment:
+      TZ: "{{ timezone | default('Europe/Berlin') }}"
+      KOMODO_HOST: ${KOMODO_HOST}
+      KOMODO_TITLE: "Komodo"
+      KOMODO_DATABASE_ADDRESS: ferretdb:27017
+      KOMODO_DATABASE_USERNAME: komodo
+      KOMODO_DATABASE_PASSWORD: ${KOMODO_DB_PASSWORD}
+      KOMODO_PASSKEY: ${KOMODO_PASSKEY}
+      KOMODO_WEBHOOK_SECRET: ${KOMODO_WEBHOOK_SECRET}
+      KOMODO_LOCAL_AUTH: "true"
+      KOMODO_INIT_ADMIN_USERNAME: ${KOMODO_INIT_ADMIN_USERNAME}
+      KOMODO_INIT_ADMIN_PASSWORD: ${KOMODO_INIT_ADMIN_PASSWORD}
+      KOMODO_FIRST_SERVER: "{{ komodo_core_first_server }}"
+      KOMODO_FIRST_SERVER_NAME: "{{ komodo_core_first_server_name }}"
+      KOMODO_LOGGING_LEVEL: "info"
+    volumes:
+      - core-keys:/config/keys
+      - komodo-repos:/etc/komodo/repos
+    networks:
+      - localhost
+    logging: *default-logging
+
+volumes:
+  postgres-data:
+  core-keys:
+  komodo-repos:
+
+networks:
+    localhost:
+        name: localhost
+        external: false

@@ -1,0 +1,11 @@
+---
+- name: Reload Komodo Nginx
+  ansible.builtin.command:
+    cmd: docker exec nginx nginx -s reload
+  changed_when: true
+
+- name: Restart Komodo Core
+  ansible.builtin.command:
+    cmd: docker compose up -d --force-recreate --remove-orphans
+    chdir: "{{ komodo_core_base_dir }}"
+  changed_when: true

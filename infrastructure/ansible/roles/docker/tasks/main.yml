@@ -15,15 +15,6 @@
     group: root
     mode: "0755"
 
-- name: Gehärtete Docker daemon.json ausrollen
-  ansible.builtin.template:
-    src: daemon.json.j2
-    dest: /etc/docker/daemon.json
-    owner: root
-    group: root
-    mode: "0644"
-  notify: Restart Docker
-
 - name: Docker-Gruppe sicherstellen
   ansible.builtin.group:
     name: docker
@@ -41,3 +32,24 @@
     groups: docker
     append: true
   when: not ansible_check_mode or (ansible_facts['getent_group']['docker'] | default(none) is not none)
+
+- name: Gehärtete Docker daemon.json ausrollen
+  ansible.builtin.template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart Docker
+
+- name: Ausstehende Docker-Handler sofort ausführen
+  ansible.builtin.meta: flush_handlers
+
+- name: Warten bis Docker-Daemon erreichbar ist
+  ansible.builtin.command: docker info
+  register: docker_daemon_ready
+  changed_when: false
+  until: docker_daemon_ready.rc == 0
+  retries: 10
+  delay: 2
+  when: not ansible_check_mode

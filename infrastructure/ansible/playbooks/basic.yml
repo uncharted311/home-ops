@@ -1,11 +1,12 @@
 ---
-- name: Default-Setup & OS-Hardening für alle Linux-Hosts
+- name: Default-Setup für alle Linux-Hosts
   hosts: linux
+  become: true
   gather_facts: false
   roles:
     - bootstrap
 
-- name: Hardening mit devsec.hardening anwenden
+- name: OS- & SSH-Hardening sowie Public-Firewall anwenden
   hosts: linux
   become: true
   tasks:
@@ -18,8 +19,7 @@
       ansible.builtin.include_role:
         name: devsec.hardening.ssh_hardening
 
-- name: Dynamische Management-Firewall nur auf Public-Hosts einrichten
-  hosts: public
-  become: true
-  roles:
-    - public_firewall
+    - name: Dynamische Management-Firewall auf Public-Hosts einrichten
+      ansible.builtin.include_role:
+        name: public_firewall
+      when: "'public' in group_names"
