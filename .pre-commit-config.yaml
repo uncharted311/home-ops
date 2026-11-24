@@ -24,11 +24,6 @@ repos:
         args: [--severity=error]
         exclude: '^applications/crowdsec/scripts/'
 
-  - repo: https://github.com/sirosen/texthooks
-    rev: 0.6.8
-    hooks:
-      - id: fix-smartquotes
-
   - repo: local
     hooks:
       - id: sops-encryption-check
@@ -41,11 +36,12 @@ repos:
       - id: ansible-lint
         name: Ansible Lint (WSL / Local)
         language: system
+        stages: [pre-push]
         entry: >-
           bash -c 'if command -v wsl.exe >/dev/null 2>&1; then
-            MSYS_NO_PATHCONV=1 wsl.exe /usr/local/bin/wsl-ansible-run ansible-lint infrastructure/ansible/playbooks/;
+            MSYS_NO_PATHCONV=1 wsl.exe bash -lc "ANSIBLE_CONFIG=ansible.cfg ansible-lint --offline infrastructure/ansible/playbooks/";
           else
-            ANSIBLE_CONFIG=ansible.cfg ansible-lint infrastructure/ansible/playbooks/;
+            ANSIBLE_CONFIG=ansible.cfg ansible-lint --offline infrastructure/ansible/playbooks/;
           fi'
         files: '^infrastructure/ansible/.*\.(ya?ml|j2)$'
         pass_filenames: false
