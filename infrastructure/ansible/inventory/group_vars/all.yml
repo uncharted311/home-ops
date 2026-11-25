@@ -8,7 +8,7 @@ timezone: "Europe/Berlin"
 fastfetch_version: "2.71.0"
 
 # renovate: datasource=docker depName=ghcr.io/moghtech/komodo-core
-komodo_version: "2.3.3"
+komodo_version: "2.3.4"
 
 # devsec.hardening SSH-Vorgaben
 ssh_permit_root_login: "no"
