@@ -21,7 +21,6 @@
     group: root
     mode: "0600"
   no_log: true
-  notify: Restart Komodo Core
 
 - name: Cloudflare DNS Credentials für Certbot ausrollen
   ansible.builtin.template:
@@ -31,7 +30,7 @@
     group: root
     mode: "0600"
   no_log: true
-  notify: Restart Komodo Core
+  notify: Restart Komodo Certbot
 
 - name: Certbot Entrypoint-Skript ausführbar ausrollen
   ansible.builtin.template:
@@ -40,7 +39,7 @@
     owner: root
     group: root
     mode: "0755"
-  notify: Restart Komodo Core
+  notify: Restart Komodo Certbot
 
 - name: Komodo Core docker-compose.yml ausrollen
   ansible.builtin.template:
@@ -49,7 +48,6 @@
     owner: root
     group: root
     mode: "0644"
-  notify: Restart Komodo Core
 
 - name: Nginx Reverse-Proxy-Konfiguration ausrollen
   ansible.builtin.template:

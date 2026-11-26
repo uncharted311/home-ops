@@ -1,0 +1,4 @@
+komodo_periphery_stack_directories:
+  - path: "/opt/docker/patchmon/data"
+    owner: "1000"
+    group: "1000"

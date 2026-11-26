@@ -33,13 +33,29 @@ tasks:
     cmds:
       - '{{.RUN_PREFIX}}ansible-playbook infrastructure/ansible/playbooks/docker_hosts.yml --check --diff {{.CLI_ARGS}}'
 
+  ansible:check-ssh:
+    desc: Prüft ob der SSH-Agent läuft und der Ansible-Key geladen ist
+    internal: true
+    interactive: true
+    cmds:
+      - >-
+        wsl -e bash -c '
+        export SSH_AUTH_SOCK="$HOME/.ssh/agent.sock";
+        ssh-add -l >/dev/null 2>&1 || {
+          rm -f "$SSH_AUTH_SOCK";
+          eval "$(ssh-agent -a "$SSH_AUTH_SOCK")" >/dev/null;
+          ssh-add ~/.ssh/id_ed25519_ansible;
+        }'
+
   ansible:basic:
     desc: Default-Setup & Hardening für alle Linux-Hosts ausrollen
+    deps: [ansible:check-ssh]
     cmds:
       - '{{.RUN_PREFIX}}ansible-playbook infrastructure/ansible/playbooks/basic.yml {{.CLI_ARGS}}'
 
   ansible:docker:
     desc: Docker-Hosts & Komodo Periphery ausrollen
+    deps: [ansible:check-ssh]
     cmds:
       - '{{.RUN_PREFIX}}ansible-playbook infrastructure/ansible/playbooks/docker_hosts.yml {{.CLI_ARGS}}'
 

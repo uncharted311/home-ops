@@ -10,6 +10,9 @@ fastfetch_version: "2.71.0"
 # renovate: datasource=docker depName=ghcr.io/moghtech/komodo-core
 komodo_version: "2.3.4"
 
+# renovate: datasource=github-releases depName=cloudflare/cloudflared
+cloudflared_version: "2026.11.2"
+
 # devsec.hardening SSH-Vorgaben
 ssh_permit_root_login: "no"
 ssh_password_authentication: "no"

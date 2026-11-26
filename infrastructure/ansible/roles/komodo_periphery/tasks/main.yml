@@ -11,6 +11,15 @@
     - "{{ komodo_base_dir }}"
     - /opt/docker
 
+- name: Optionale Stack-Verzeichnisse auf dem Host anlegen
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner | default('1000') }}"
+    group: "{{ item.group | default('1000') }}"
+    mode: "{{ item.mode | default('0755') }}"
+  loop: "{{ komodo_periphery_stack_directories }}"
+
 - name: Docker Compose Datei für Komodo Periphery ausrollen
   ansible.builtin.template:
     src: docker-compose.yml.j2

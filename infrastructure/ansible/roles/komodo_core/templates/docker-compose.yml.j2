@@ -52,6 +52,14 @@ services:
     image: ghcr.io/ferretdb/postgres-documentdb:{{ komodo_core_postgres_version }}
     container_name: komodo-postgres
     restart: unless-stopped
+    command:
+      - postgres
+      - -c
+      - shared_buffers=128MB
+      - -c
+      - work_mem=4MB
+      - -c
+      - max_connections=50
     environment:
       POSTGRES_USER: komodo
       POSTGRES_PASSWORD: ${KOMODO_DB_PASSWORD}
@@ -103,12 +111,23 @@ services:
       KOMODO_INIT_ADMIN_PASSWORD: ${KOMODO_INIT_ADMIN_PASSWORD}
       KOMODO_FIRST_SERVER: "{{ komodo_core_first_server }}"
       KOMODO_FIRST_SERVER_NAME: "{{ komodo_core_first_server_name }}"
-      KOMODO_LOGGING_LEVEL: "info"
+      KOMODO_MONITORING_INTERVAL: "1-min"
+      KOMODO_KEEP_STATS_FOR_DAYS: "1"
+      KOMODO_LOGGING_LEVEL: "warn"
     volumes:
       - core-keys:/config/keys
       - komodo-repos:/etc/komodo/repos
     networks:
       - localhost
+    logging: *default-logging
+
+  cloudflared:
+    image: cloudflare/cloudflared:{{ cloudflared_version }}
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --no-tls-verify
+    environment:
+      - TUNNEL_TOKEN={{ cloudflare_cloudflared_komodo_token }}
     logging: *default-logging
 
 volumes:
