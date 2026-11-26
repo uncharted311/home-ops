@@ -1,7 +1,22 @@
 creation_rules:
+  # Spezifische App-Secrets (Root-Key + jeweiliger Host-Key) MÜSSEN vor dem Catch-All stehen
+  - path_regex: ^applications/proxy/secrets\.sops\.env$
+    input_type: dotenv
+    age: >-
+      age1y0sfh0eqgfyx07jckhchel9fhlxzmnr9jn6lm0adta6ry052mp6qdez8us,
+      age1xj90e5v4hu5390tcfk0cdakuctzthecvnqtlg3pk8vh90vtwv9uszfkcsv
+
+  - path_regex: ^applications/patchmgmt/secrets\.sops\.env$
+    input_type: dotenv
+    age: >-
+      age1y0sfh0eqgfyx07jckhchel9fhlxzmnr9jn6lm0adta6ry052mp6qdez8us,
+      age146purzp9f3hf8s8anvnv783x9my2a8wm8v8kl7hdllk5ymemgqhqy488s0
+
+  # Fallback für alle übrigen .env-Secrets (nur Root-Key)
   - path_regex: .*[/\\]?.*(secrets\.env|sops\.env)$
     input_type: dotenv
     age: "age1y0sfh0eqgfyx07jckhchel9fhlxzmnr9jn6lm0adta6ry052mp6qdez8us"
 
+  # Ansible-Secrets
   - path_regex: .*[/\\]?infrastructure[/\\]ansible[/\\].*\.sops\.ya?ml$
     age: "age1y0sfh0eqgfyx07jckhchel9fhlxzmnr9jn6lm0adta6ry052mp6qdez8us"
