@@ -135,7 +135,7 @@ services:
     logging: *default-logging
 
   redis:
-    image: docker.io/valkey/valkey:9.2.0-alpine
+    image: docker.io/valkey/valkey:9.2.1-alpine
     container_name: redis
     restart: unless-stopped
     env_file:
