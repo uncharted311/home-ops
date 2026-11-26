@@ -115,7 +115,7 @@ services:
       - POSTGRES_USER=patchmon_user
       - POSTGRES_DB=patchmon_db
     volumes:
-      - postgres_data:/var/lib/postgresql
+      - /opt/docker/postgres:/var/lib/postgresql
     networks:
       - patchmon-internal
     healthcheck:
@@ -137,7 +137,7 @@ services:
       - REDIS_DB=0
     command: valkey-server --requirepass ${REDIS_PASSWORD}
     volumes:
-      - redis_data:/data
+      - /opt/docker/redis:/data
     networks:
       - patchmon-internal
     healthcheck:
@@ -179,10 +179,6 @@ services:
       retries: 3
       start_period: 10s
     logging: *default-logging
-
-volumes:
-  postgres_data:
-  redis_data:
 
 networks:
   patchmon-internal:
