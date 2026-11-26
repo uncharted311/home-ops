@@ -10,6 +10,7 @@ services:
     env_file: /opt/crowdsec-central/secrets.env
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME PUBLIC_IPv4_ZTNA PUBLIC_IPv4_OC_ARM1 PUBLIC_IPv4_OC_ARM2 PUBLIC_IPv4_OC_AMD1 PUBLIC_IPv4_OC_AMD2 PUBLIC_IPv4_MAIL
+      - SECRET_DOMAIN=${SECRET_DOMAIN}
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
     volumes:
       - /opt/crowdsec-central/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -43,6 +44,7 @@ services:
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
     env_file: /opt/crowdsec-central/secrets.env
     environment:
+      - SECRET_DOMAIN=${SECRET_DOMAIN}
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
     volumes:
       - /opt/crowdsec-central/certbot/certs:/etc/letsencrypt
