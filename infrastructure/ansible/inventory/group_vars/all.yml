@@ -11,7 +11,7 @@ komodo_version: "2.3.4"
 # renovate: datasource=github-releases depName=cloudflare/cloudflared
 cloudflared_version: "2026.11.2"
 # renovate: datasource=github-releases depName=getsops/sops
-sops_version: "3.10.2"
+sops_version: "3.13.3"
 
 # devsec.hardening SSH-Vorgaben
 ssh_permit_root_login: "no"
