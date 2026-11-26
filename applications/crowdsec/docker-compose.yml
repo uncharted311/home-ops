@@ -46,7 +46,6 @@ services:
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
     volumes:
       - /opt/crowdsec-central/certbot/certs:/etc/letsencrypt
-      - /opt/crowdsec-central/certbot/cloudflare.ini:/cloudflare.ini:ro
       - /opt/crowdsec-central/certbot/certbot-entrypoint.sh:/entrypoint.sh:ro
     networks:
       crowdsec-net:

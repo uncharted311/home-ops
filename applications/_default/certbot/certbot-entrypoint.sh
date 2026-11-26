@@ -23,52 +23,41 @@ set -e
 #      - SECRET_ADMIN_EMAIL=${SECRET_ADMIN_EMAIL}
 # ------------------------------------------------------------------------------------------------
 
-NAME="${SECRET_CERT_NAME:-$SECRET_DOMAIN}"
-DOMAINS="${SECRET_CERT_DOMAINS:-$NAME}"
-EMAIL="${SECRET_ADMIN_EMAIL}"
+CERT_DOMAIN="${CERT_NAME:-${SECRET_DOMAIN:-}}"
+EMAIL="${SECRET_ADMIN_EMAIL:-}"
+TOKEN="${CF_API_TOKEN:-${SECRET_CLOUDFLARE_API_TOKEN:-}}"
 
-if [ -z "$NAME" ] || [ -z "$EMAIL" ]; then
-    echo "FEHLER: CERT_NAME (oder SECRET_DOMAIN) und SECRET_ADMIN_EMAIL müssen gesetzt sein!"
-    exit 1
+if [ -z "$CERT_DOMAIN" ] || [ -z "$EMAIL" ]; then
+  echo "FEHLER: CERT_NAME (oder SECRET_DOMAIN) und SECRET_ADMIN_EMAIL müssen gesetzt sein!" >&2
+  exit 1
 fi
 
-# Build -d Argument for certbot
-# "a.com,b.com" splitt to "-d a.com -d b.com"
-CERT_ARGS=""
-for d in $(echo "$DOMAINS" | tr "," "\n"); do
-    CERT_ARGS="$CERT_ARGS -d $d"
-done
-
-CERT_PATH="/etc/letsencrypt/live/$NAME/fullchain.pem"
-
-echo "--- Certbot Manager ---"
-echo "Zertifikats-Name: $NAME"
-echo "Enthaltene Domains: $DOMAINS"
-
-if [ ! -f "$CERT_PATH" ]; then
-    echo "Initialisiere neues Zertifikat..."
-    certbot certonly \
-      --dns-cloudflare \
-      --dns-cloudflare-credentials /cloudflare.ini \
-      --dns-cloudflare-propagation-seconds 30 \
-      --agree-tos \
-      --no-eff-email \
-      -m "$EMAIL" \
-      --cert-name "$NAME" \
-      $CERT_ARGS \
-      --non-interactive
+if [ -z "$TOKEN" ]; then
+  echo "FEHLER: CF_API_TOKEN (bzw. SECRET_CLOUDFLARE_API_TOKEN) muss gesetzt sein!" >&2
+  exit 1
 fi
-# Dauerhafte Erneuerungsschleife (alle 12h)
-echo "Starte Certbot Renewal Daemon..."
+
+CF_INI="/tmp/cloudflare.ini"
+umask 077
+printf 'dns_cloudflare_api_token = %s\n' "$TOKEN" > "$CF_INI"
+
+if [ ! -f "/etc/letsencrypt/live/${CERT_DOMAIN}/fullchain.pem" ]; then
+  certbot certonly \
+    --non-interactive \
+    --agree-tos \
+    --email "$EMAIL" \
+    --dns-cloudflare \
+    --dns-cloudflare-credentials "$CF_INI" \
+    --dns-cloudflare-propagation-seconds 30 \
+    --cert-name "$CERT_DOMAIN" \
+    -d "$CERT_DOMAIN"
+fi
+
 while true; do
-    echo "--- Zertifikats-Prüfung gestartet: $(date) ---"
-    certbot renew \
-      --dns-cloudflare \
-      --dns-cloudflare-credentials /cloudflare.ini \
-      --dns-cloudflare-propagation-seconds 30 \
-      --non-interactive
-
-    # 12 Stunden schlafen (12h * 3600s = 43200s)
-    sleep 43200 &
-    wait $!
+  certbot renew \
+    --non-interactive \
+    --dns-cloudflare \
+    --dns-cloudflare-credentials "$CF_INI" \
+    --dns-cloudflare-propagation-seconds 30
+  sleep 12h
 done
