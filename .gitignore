@@ -3,6 +3,7 @@
 *.key
 *.decrypted~*.yaml
 *.decrypted~*.env
+.decrypted~*
 **/secrets.env
 **/*secrets.env
 .sops.tmp*
