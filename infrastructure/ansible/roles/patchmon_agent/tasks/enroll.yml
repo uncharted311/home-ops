@@ -1,0 +1,95 @@
+---
+- name: Prüfen ob /etc/patchmon/credentials.yml bereits existiert
+  ansible.builtin.stat:
+    path: /etc/patchmon/credentials.yml
+  register: patchmon_agent_creds_stat
+
+- name: Vorhandene API-Credentials einlesen
+  when:
+    - patchmon_agent_creds_stat.stat.exists
+    - not (patchmon_agent_force_enroll | bool)
+    - patchmon_agent_api_id | length == 0
+    - patchmon_agent_api_key | length == 0
+  block:
+    - name: Datei /etc/patchmon/credentials.yml laden
+      ansible.builtin.slurp:
+        src: /etc/patchmon/credentials.yml
+      register: patchmon_agent_existing_creds_raw
+      no_log: true
+
+    - name: Vorhandene api_id und api_key übernehmen
+      ansible.builtin.set_fact:
+        patchmon_agent_existing_creds: "{{ (patchmon_agent_existing_creds_raw.content | b64decode) | from_yaml }}"
+      no_log: true
+
+    - name: Aufgelöste Credentials aus bestehender Datei setzen
+      ansible.builtin.set_fact:
+        patchmon_agent_resolved_api_id: "{{ patchmon_agent_existing_creds.api_id | default('') }}"
+        patchmon_agent_resolved_api_key: "{{ patchmon_agent_existing_creds.api_key | default('') }}"
+      no_log: true
+
+- name: Statische API-Credentials übernehmen falls in host_vars gesetzt
+  ansible.builtin.set_fact:
+    patchmon_agent_resolved_api_id: "{{ patchmon_agent_api_id }}"
+    patchmon_agent_resolved_api_key: "{{ patchmon_agent_api_key }}"
+  no_log: true
+  when:
+    - patchmon_agent_api_id | length > 0
+    - patchmon_agent_api_key | length > 0
+
+- name: Host über Direct Auto-Enrollment Token registrieren
+  when:
+    - patchmon_agent_auto_enroll | bool
+    - (patchmon_agent_resolved_api_id | default('')) | length == 0
+    - (patchmon_agent_resolved_api_key | default('')) | length == 0
+    - patchmon_agent_enroll_key | length > 0
+    - patchmon_agent_enroll_secret | length > 0
+  block:
+    - name: Lokale machine-id für Deduplizierung auslesen falls vorhanden
+      ansible.builtin.slurp:
+        src: /etc/machine-id
+      register: patchmon_agent_machine_id_raw
+      failed_when: false
+
+    - name: Bereinigte machine-id setzen
+      ansible.builtin.set_fact:
+        patchmon_agent_machine_id: "{{ (patchmon_agent_machine_id_raw.content | default('') | b64decode).strip() }}"
+
+    - name: Direct Auto-Enrollment am PatchMon-Server ausführen
+      ansible.builtin.uri:
+        url: "{{ patchmon_agent_server_url }}/api/v1/auto-enrollment/enroll"
+        method: POST
+        headers:
+          X-Auto-Enrollment-Key: "{{ patchmon_agent_enroll_key }}"
+          X-Auto-Enrollment-Secret: "{{ patchmon_agent_enroll_secret }}"
+        body_format: json
+        body:
+          friendly_name: "{{ patchmon_agent_host_name }}"
+          hostname: "{{ ansible_facts['fqdn'] | default(patchmon_agent_host_name) }}"
+          ip: "{{ ansible_facts['default_ipv4']['address'] | default(omit) }}"
+          machine_id: "{{ (patchmon_agent_machine_id | length > 0) | ternary(patchmon_agent_machine_id, omit) }}"
+          os_type: "{{ ansible_facts['distribution'] | default(ansible_facts['os_family']) | lower }}"
+          os_version: "{{ ansible_facts['distribution_version'] | default('') }}"
+          architecture: "{{ patchmon_agent_arch }}"
+        status_code: [200, 201]
+      delegate_to: localhost
+      become: false
+      no_log: true
+      register: patchmon_agent_enroll_resp
+
+    - name: Enrollment-Antwort normalisieren
+      ansible.builtin.set_fact:
+        patchmon_agent_enroll_data: >-
+          {{
+            patchmon_agent_enroll_resp.json.credentials
+            | default(patchmon_agent_enroll_resp.json.host)
+            | default(patchmon_agent_enroll_resp.json.data)
+            | default(patchmon_agent_enroll_resp.json)
+          }}
+      no_log: true
+
+    - name: Empfangene Host-Credentials setzen
+      ansible.builtin.set_fact:
+        patchmon_agent_resolved_api_id: "{{ patchmon_agent_enroll_data.api_id | default(patchmon_agent_enroll_data.apiId | default('')) }}"
+        patchmon_agent_resolved_api_key: "{{ patchmon_agent_enroll_data.api_key | default(patchmon_agent_enroll_data.apiKey | default('')) }}"
+      no_log: true

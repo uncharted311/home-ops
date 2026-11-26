@@ -127,7 +127,7 @@ services:
     container_name: redis
     image: docker.io/valkey/valkey:9.2.0-alpine
     volumes:
-      - redisdata:/data
+      - /opt/docker/patchmgmt/redis:/data
     networks:
       - localhost
     restart: unless-stopped
@@ -144,8 +144,7 @@ services:
     container_name: database
     image: postgres:18.7-alpine
     volumes:
-      - pgdata18:/var/lib/postgresql
-
+      - /opt/docker/patchmgmt/postgres:/var/lib/postgresql
     environment:
       POSTGRES_DB: paperless
       POSTGRES_USER: paperless
@@ -226,10 +225,6 @@ services:
       retries: 5
       start_period: 10s
     logging: *default-logging
-
-volumes:
-  pgdata18:
-  redisdata:
 
 networks:
     localhost:

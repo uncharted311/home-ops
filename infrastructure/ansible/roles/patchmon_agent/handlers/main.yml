@@ -1,0 +1,6 @@
+---
+- name: PatchMon-Agent neu starten
+  ansible.builtin.service:
+    name: patchmon-agent
+    state: restarted
+  when: patchmon_agent_enabled | bool

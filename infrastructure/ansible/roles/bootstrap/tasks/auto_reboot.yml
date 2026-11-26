@@ -1,0 +1,72 @@
+---
+- name: Benötigte Pakete für Auto-Reboot auf Alpine installieren
+  community.general.apk:
+    name:
+      - curl
+      - tzdata
+    state: present
+  when: ansible_facts['os_family'] == 'Alpine'
+
+- name: Cron-Dienst auf Alpine aktivieren und starten
+  ansible.builtin.service:
+    name: crond
+    state: started
+    enabled: true
+  when: ansible_facts['os_family'] == 'Alpine'
+
+- name: Benötigte Pakete für Auto-Reboot auf Debian/Ubuntu installieren
+  ansible.builtin.apt:
+    name:
+      - curl
+      - needrestart
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Paket update-notifier-common auf Ubuntu installieren
+  ansible.builtin.apt:
+    name: update-notifier-common
+    state: present
+  when: ansible_facts['distribution'] == 'Ubuntu'
+
+- name: Cron-Dienst auf Debian/Ubuntu aktivieren und starten
+  ansible.builtin.service:
+    name: cron
+    state: started
+    enabled: true
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Umgebungsdatei für Auto-Reboot ausrollen
+  ansible.builtin.template:
+    src: auto-reboot.env.j2
+    dest: /etc/auto-reboot.env
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Zielverzeichnis /usr/local/sbin sicherstellen
+  ansible.builtin.file:
+    path: /usr/local/sbin
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Auto-Reboot-Skript ausrollen
+  ansible.builtin.template:
+    src: auto-reboot.sh.j2
+    dest: /usr/local/sbin/auto-reboot.sh
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Cronjob für automatischen Neustart (Mo & Do 05:00 Uhr + Zufalls-Delay) einrichten
+  ansible.builtin.cron:
+    name: "Automated maintenance reboot check"
+    user: root
+    minute: "{{ bootstrap_auto_reboot_cron_minute }}"
+    hour: "{{ bootstrap_auto_reboot_cron_hour }}"
+    weekday: "{{ bootstrap_auto_reboot_cron_weekday }}"
+    job: "/usr/local/sbin/auto-reboot.sh >/dev/null 2>&1"
+    state: "{{ 'present' if bootstrap_auto_reboot_enabled else 'absent' }}"

@@ -1,14 +1,19 @@
 #ENC[AES256_GCM,data:YsuOz24DOCIoxY9j9QKgq6F/HwF7vMtm3qWvFo1MSGf1gcrkBovI5w2k8D2SYD/9BU346v4xR4Qw,iv:CCHyRAEYPOPMQVJMKJaCyoSZJaypzDjDuzu2AECuciA=,tag:XShXir91kK3bcmFOu5DaFg==,type:comment]
 sops_initialized: ENC[AES256_GCM,data:oquT2w==,iv:zl/HsIaz/9jqVPo5qagm5egnlvVfUtYVXzVoGxX9z0k=,tag:GhdhHURhEkBwctxKR0ZxIw==,type:bool]
+admin_email: ENC[AES256_GCM,data:WtIYN+LnD4zYexNqINBAe4k=,iv:ykAt/YkJKgnYPRkncl5q1QNVwlWjqMzRaIYkbBkxDU4=,tag:cVAU1e8gl6NenuDLMNgB5Q==,type:str]
+#ENC[AES256_GCM,data:GZA9OiV2omGf16AyQSvoZq1eBJY=,iv:Qry+csAi4RVIkw45gOCbQe6AddlpAJp84eQ8CzzCCU0=,tag:wV1OOEiPCxXQ/NRZKziebA==,type:comment]
+cloudflare_dns_api_token: ENC[AES256_GCM,data:ilSY8TGd0he3ZAx1jQzzi+pXmSKpC74ARWE7MAO4MkSKzVl02ACE+Q==,iv:YwF1fS/AhjHr7tzV6earASrXkGnQ5PrGgF7dVJs4hwU=,tag:yyrg9wXci+lNg0CPVE+DQw==,type:str]
+discord_reboot_webhook_url: ENC[AES256_GCM,data:4Y6f8x9LlI2UYGPcVYSntAqRbaVEHQmPvJcS+mWDTj45qOk8s3OP7wokl00hOBY60TDJJyBEk2NmTZafWfNTAOucJnwkHRQh3Mwf4L2fmwUBvEpzsexO5gaVq/qiieiOzm4bd6xKHeEg/7N5nnBha86uybTOUkkabA==,iv:VwRtmur1dv85wxuzMsSw1i0oD7l3fScznXgfslji9MA=,tag:C3OTcgOrZM8cXzTYx6fNtQ==,type:str]
+patchmon_auto_enroll_key: ENC[AES256_GCM,data:9c0nyhnJBpSjIYJazrmzqCefxsWc2XP26dsKKj4mVW9hLCtOjDONu2gmatQ=,iv:10wGkR/BYP7cNRmPOKKRoo4DkJ41W4q4fG6kW2hzawo=,tag:NCftChztnAfwQS1Jzdctdw==,type:str]
+patchmon_auto_enroll_secret: ENC[AES256_GCM,data:17oHzYmKUI0jwYwM+qRE5TqPx5w3BCWigdc5WPO69zfe5vo/F7A6x9ZneYbzwV5HAJsU184lslrGHFGzxGjPKA==,iv:I3hl44V590k7fu/6fFOp49NYlc0eDg++CBca0fMKfgo=,tag:Xjdf2XKOTTloBZGL2yhO9w==,type:str]
+#ENC[AES256_GCM,data:7IloHrhzsE21X7jq8NXpLc/uJg==,iv:tZapaL6ubMpj27qm3IWkEpCuWyKuwBi13HLPq9Yo7mI=,tag:nWaoRRdpirH7GE9KTok8Hw==,type:comment]
 komodo_core_db_password: ENC[AES256_GCM,data:pTNV9g2DZtp8oOnPnH+dsN1Tt6vfuANqusbLkPiDD0I=,iv:5Ywb3sooGPWQJKLMUPa9SJP5iVULwPoizVivwGAysj0=,tag:mIxMeKL1Stj8F8+RPM686g==,type:str]
 komodo_core_passkey: ENC[AES256_GCM,data:XYxOjpmrsuq7J15zMemUMkNKMShlX2YztGklr50ajVY=,iv:oOcaClwyr7PhNX49tb3yY5aGcQ3aZE2F9RlUfGoTcDs=,tag:mwXbSknw6fi8E1XOmFdgdg==,type:str]
 komodo_core_webhook_secret: ENC[AES256_GCM,data:fOhYiJA5QD47wIaItOhn699riGnJdw8BdTkYN6fgCH3QIDr+vubQLcMQvNeBWTROow==,iv:DQzYrtm0J55c27f/cltzX+2Afm8/R2Vj4zxxNLWoB+E=,tag:4pu9A3tg/2o1aPm2aoRt5w==,type:str]
 komodo_core_webhook_github_secret: ENC[AES256_GCM,data:ze3IbIKOHOED5xb3ow0dNV3gQ3DZYmUe0K+qnB3rZSq1fBj8I5xhwX5F8/XSy/lG+ygDuzAu,iv:P7zTRTcZg/mvzBKZsJJVPnwDpa09Ryp5hj9H0Dw8EBo=,tag:mDRZNcvq507QR6xNo4IcHQ==,type:str]
 komodo_core_admin_username: ENC[AES256_GCM,data:ayhsm/JKjL6CuBOY,iv:YxfgBmaXLp/qNkDRug0O3axXCs0LaqRuGIpKKrr97s8=,tag:dlECnMhSoejSWgBRUu81vg==,type:str]
 komodo_core_admin_password: ENC[AES256_GCM,data:eAdrkDoP7ZZG0/5LubzDc5l1xGQ=,iv:eFwpqmLNXjzqGoSwcsUHOSMnyCDTfaiW3QfM8ZPhEIw=,tag:zoKgE5doCbiQOGfL46ZV3Q==,type:str]
-cloudflare_dns_api_token: ENC[AES256_GCM,data:ilSY8TGd0he3ZAx1jQzzi+pXmSKpC74ARWE7MAO4MkSKzVl02ACE+Q==,iv:YwF1fS/AhjHr7tzV6earASrXkGnQ5PrGgF7dVJs4hwU=,tag:yyrg9wXci+lNg0CPVE+DQw==,type:str]
 cloudflare_cloudflared_komodo_token: ENC[AES256_GCM,data:mnMGwWvsCnHICNLT5z9d8caLJ5QpU5DAsqsBPPyUUh8rsSQVowFr3Oil4pL1LI28RmdT/l1eHZELn5qPJmwtdXDPGWyivoHzmBW8Y+J9J+Pq5OAC0/Q20Q4xx5H49TA1mCb3TjCX0gx5wZeWYU1Q5B7BkQ8okIqWYKoH/pGcHK5WO2VZUrkl1b3kxI/Nqf77056orQ6R7DlLUuhjlTkbSa6+G893IaZuqoJizHrxPQIFHyY5gH/giA==,iv:akK5KCjv2Wq+UZpVDO0xm6peteqfJLK71OiESG1DcgY=,tag:44zm79BDDgypp6O16icQ7g==,type:str]
-admin_email: ENC[AES256_GCM,data:WtIYN+LnD4zYexNqINBAe4k=,iv:ykAt/YkJKgnYPRkncl5q1QNVwlWjqMzRaIYkbBkxDU4=,tag:cVAU1e8gl6NenuDLMNgB5Q==,type:str]
 sops:
     kms: []
     gcp_kms: []
@@ -24,8 +29,8 @@ sops:
             enBWN1FPNFFJTWFFS1Z4UDN2TCtwQXMKK+tzPyKCcT5hyeTHUU+/eOBkaOK4pFoE
             XbYFCZWT3rZWwWF00Jfqujo5ZwHlICUfLLE6KKB+DIhVzRCCmpWDTQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-11-26T11:08:01Z"
-    mac: ENC[AES256_GCM,data:bDJVjNi5PHnYHYo6XTZQuGQd3zTh292REAkXmwTo5RDJp/F+a8/EnUIgU/aHnGswHfCZrlwtoCMT95qCvEfWaf2iFj2o3jgghte7KRzswsh50Z7quDPTkAR9A9o7zl3wUjju0EXqmRAMJ7wkHbKQWhKEmmYHkd4XBWkbevGYQPM=,iv:wXQ7DjLOEC+mg788urPCk2ZLPmAFIakJgYvfQT1fwNM=,tag:1nzsxV1H+cMV3AT7KPobpg==,type:str]
+    lastmodified: "2026-11-26T16:21:42Z"
+    mac: ENC[AES256_GCM,data:N6J9Lkoarfv5BMDbe98ABvPwYAgMCNd230yqt3vAPN/KLJO7O3XUrlRrnYoyI7th60lH2Ue5hq2kJJ3S0/kmA4Q2ntHC/mj5Kqi30JSelhqnWar6k19Z+X1DVu9Cm/fwvFFTc24iVgl7kR07933RJ6cSFSx5aTT3SmuhL9WRImE=,iv:7yl4vAKik92sHrZt2FOs22Seu2Bx4nzwm1FK6LTDk1k=,tag:TFpNsK0i/FeEgH5xZZSTzA==,type:str]
     pgp: []
     unencrypted_suffix: _unencrypted
     version: 3.7.1

@@ -1,0 +1,7 @@
+# Automatischer Wartungs-Neustart (Mo & Do 05:00 Uhr + Zufalls-Delay)
+bootstrap_auto_reboot_enabled: true
+bootstrap_auto_reboot_cron_minute: "0"
+bootstrap_auto_reboot_cron_hour: "5"
+bootstrap_auto_reboot_cron_weekday: "1,4"
+bootstrap_auto_reboot_max_delay_seconds: 3000
+bootstrap_auto_reboot_discord_webhook_url: "{{ discord_reboot_webhook_url | default('') }}"

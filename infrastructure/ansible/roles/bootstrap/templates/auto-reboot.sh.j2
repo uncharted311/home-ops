@@ -1,0 +1,110 @@
+#!/bin/sh
+set -eu
+
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+DRY_RUN=0
+SKIP_DELAY=0
+
+for arg in "$@"; do
+  case "$arg" in
+    --dry-run) DRY_RUN=1; SKIP_DELAY=1 ;;
+    --now)     SKIP_DELAY=1 ;;
+  esac
+done
+
+if [ -f /etc/auto-reboot.env ]; then
+  # shellcheck disable=SC1091
+  . /etc/auto-reboot.env
+fi
+
+MAX_DELAY="${AUTO_REBOOT_MAX_DELAY_SECONDS:-3000}"
+
+if [ "$SKIP_DELAY" -eq 0 ] && [ "$MAX_DELAY" -gt 0 ]; then
+  RAW_NUM=$(dd if=/dev/urandom bs=256 count=1 2>/dev/null | tr -dc '0-9' | head -c 5)
+  RAND_INT=$(printf '%s' "$RAW_NUM" | sed 's/^0*//')
+  RAND_INT="${RAND_INT:-0}"
+  SLEEP_SEC=$((RAND_INT % MAX_DELAY))
+  logger -t auto-reboot "Maintenance check triggered; sleeping ${SLEEP_SEC}s before evaluation."
+  sleep "$SLEEP_SEC"
+fi
+
+REBOOT_NEEDED=0
+REBOOT_REASON=""
+
+# 1. Debian/Ubuntu Standard-Flag (/var/run/reboot-required)
+if [ -f /var/run/reboot-required ]; then
+  REBOOT_NEEDED=1
+  if [ -f /var/run/reboot-required.pkgs ]; then
+    PKGS=$(tr '\n' ', ' < /var/run/reboot-required.pkgs | sed 's/, $//')
+    REBOOT_REASON="Systemflag (/var/run/reboot-required: ${PKGS})"
+  else
+    REBOOT_REASON="Systemflag (/var/run/reboot-required)"
+  fi
+fi
+
+# 2. Kernel-Mismatch-Prüfung (Alpine Linux & allgemeine Kernel-Updates)
+if [ "$REBOOT_NEEDED" -eq 0 ] && [ ! -d "/lib/modules/$(uname -r)" ]; then
+  REBOOT_NEEDED=1
+  INSTALLED_KERNELS=$(ls -1 /lib/modules 2>/dev/null | tr '\n' ' ' | sed 's/ $//')
+  REBOOT_REASON="Kernel-Update installiert (aktiv: $(uname -r), neu: ${INSTALLED_KERNELS:-unbekannt})"
+fi
+
+# 3. needrestart-Fallback auf Debian/Ubuntu
+if [ "$REBOOT_NEEDED" -eq 0 ] && command -v needrestart >/dev/null 2>&1; then
+  if needrestart -b -r l 2>/dev/null | grep -q '^NEEDRESTART-KSTA: 3'; then
+    REBOOT_NEEDED=1
+    REBOOT_REASON="Neuer Kernel laut needrestart erkannt (aktiv: $(uname -r))"
+  fi
+fi
+
+if [ "$REBOOT_NEEDED" -eq 0 ] && [ "$DRY_RUN" -eq 0 ]; then
+  logger -t auto-reboot "No reboot required."
+  exit 0
+fi
+
+if [ "$REBOOT_NEEDED" -eq 0 ] && [ "$DRY_RUN" -eq 1 ]; then
+  REBOOT_REASON="Dry-Run Test (aktuell steht kein echter Reboot aus)"
+fi
+
+HOSTNAME_FQDN=$(hostname -f 2>/dev/null || hostname)
+KERNEL_VER=$(uname -r)
+UPTIME_STR=$(uptime -p 2>/dev/null || uptime | sed 's/^ *//')
+TIMESTAMP_UTC=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+ESC_REASON=$(printf '%s' "$REBOOT_REASON" | sed 's/\\/\\\\/g; s/"/\\"/g')
+ESC_UPTIME=$(printf '%s' "$UPTIME_STR" | sed 's/\\/\\\\/g; s/"/\\"/g')
+
+if [ -n "${DISCORD_WEBHOOK_URL:-}" ]; then
+  PAYLOAD=$(cat <<EOF
+{
+  "username": "Infrastructure Maintenance",
+  "embeds": [
+    {
+      "title": "🔄 Maintenance Reboot",
+      "description": "Der Host **${HOSTNAME_FQDN}** führt jetzt einen geplanten Neustart durch.",
+      "color": 16753920,
+      "fields": [
+        { "name": "Grund", "value": "${ESC_REASON}", "inline": false },
+        { "name": "Aktiver Kernel", "value": "${KERNEL_VER}", "inline": true },
+        { "name": "Uptime", "value": "${ESC_UPTIME}", "inline": true }
+      ],
+      "timestamp": "${TIMESTAMP_UTC}"
+    }
+  ]
+}
+EOF
+  )
+  curl -fsS -m 10 --retry 2 -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL" >/dev/null \
+    || logger -t auto-reboot "Warning: Failed to send Discord webhook notification."
+fi
+
+if [ "$DRY_RUN" -eq 1 ]; then
+  echo "DRY-RUN: Reboot würde jetzt ausgelöst werden. Grund: ${REBOOT_REASON}"
+  exit 0
+fi
+
+logger -t auto-reboot "Rebooting system now. Reason: ${REBOOT_REASON}"
+sleep 3
+sync
+reboot

@@ -1,0 +1,167 @@
+---
+- name: System-Facts einsammeln falls noch nicht vorhanden
+  ansible.builtin.setup:
+  when:
+    - patchmon_agent_enabled | bool
+    - ansible_facts['os_family'] is not defined
+
+- name: PatchMon-Credentials prüfen oder per Auto-Enrollment abrufen
+  ansible.builtin.include_tasks: enroll.yml
+  when: patchmon_agent_enabled | bool
+
+- name: Prüfen ob /usr/local/bin/patchmon-agent eine gültige ELF-Datei ist
+  ansible.builtin.command:
+    cmd: "head -c 4 /usr/local/bin/patchmon-agent"
+  register: patchmon_agent_binary_magic
+  changed_when: false
+  failed_when: false
+  when: patchmon_agent_enabled | bool
+
+- name: Prüfen ob /etc/patchmon/config.yml durch offiziellen Installer erzeugt wurde
+  ansible.builtin.command:
+    cmd: "grep -q '^host_id:' /etc/patchmon/config.yml"
+  register: patchmon_agent_config_check
+  changed_when: false
+  failed_when: false
+  when: patchmon_agent_enabled | bool
+
+- name: Installationsbedarf für PatchMon-Agent bewerten
+  ansible.builtin.set_fact:
+    patchmon_agent_needs_install: >-
+      {{
+        (patchmon_agent_binary_magic.rc | default(1)) != 0
+        or ('ELF' not in (patchmon_agent_binary_magic.stdout | default('')))
+        or (patchmon_agent_config_check.rc | default(1)) != 0
+        or (patchmon_agent_force_enroll | bool)
+      }}
+  when: patchmon_agent_enabled | bool
+
+- name: Offiziellen PatchMon-Agent-Installer ausführen
+  when:
+    - patchmon_agent_enabled | bool
+    - patchmon_agent_needs_install | bool
+    - (patchmon_agent_resolved_api_id | default('')) | length > 0
+    - (patchmon_agent_resolved_api_key | default('')) | length > 0
+  block:
+    - name: Vorhandene unvollständige Agent-Dateien vor Neuinstallation bereinigen
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /usr/local/bin/patchmon-agent
+        - /etc/patchmon/config.yml
+        - /etc/patchmon/credentials.yml
+
+    - name: Offizielles PatchMon-Installationsskript authentifiziert herunterladen
+      ansible.builtin.get_url:
+        url: "{{ patchmon_agent_server_url }}/api/v1/hosts/install"
+        dest: /tmp/patchmon-install.sh
+        headers:
+          X-API-ID: "{{ patchmon_agent_resolved_api_id }}"
+          X-API-KEY: "{{ patchmon_agent_resolved_api_key }}"
+        owner: root
+        group: root
+        mode: "0700"
+        force: true
+      no_log: true
+
+    - name: Offizielles PatchMon-Installationsskript ausführen
+      ansible.builtin.command:
+        cmd: "sh /tmp/patchmon-install.sh"
+      register: patchmon_agent_install_result
+      changed_when: true
+
+    - name: Temporäres Installationsskript entfernen
+      ansible.builtin.file:
+        path: /tmp/patchmon-install.sh
+        state: absent
+
+    - name: Installiertes PatchMon-Binary auf ELF-Header prüfen
+      ansible.builtin.command:
+        cmd: "head -c 4 /usr/local/bin/patchmon-agent"
+      register: patchmon_agent_binary_verify
+      changed_when: false
+      failed_when: "'ELF' not in patchmon_agent_binary_verify.stdout"
+
+- name: Prüfen ob /etc/patchmon/config.yml vorhanden ist
+  ansible.builtin.stat:
+    path: /etc/patchmon/config.yml
+  register: patchmon_agent_config_stat
+  when: patchmon_agent_enabled | bool
+
+- name: Docker- und Compliance-Integrationen in /etc/patchmon/config.yml aktivieren
+  when:
+    - patchmon_agent_enabled | bool
+    - patchmon_agent_config_stat.stat.exists | default(false)
+  block:
+    - name: Bestehende PatchMon-Konfiguration einlesen
+      ansible.builtin.slurp:
+        src: /etc/patchmon/config.yml
+      register: patchmon_agent_config_raw
+
+    - name: Integrationen mit bestehender Konfiguration zusammenführen
+      ansible.builtin.set_fact:
+        patchmon_agent_merged_config: >-
+          {{
+            (patchmon_agent_config_raw.content | b64decode | from_yaml)
+            | combine({
+                'integrations': {
+                  'docker': (patchmon_agent_integration_docker | bool),
+                  'compliance': {
+                    'docker_bench_enabled': (patchmon_agent_integration_docker_bench | bool),
+                    'enabled': patchmon_agent_integration_compliance,
+                    'openscap_enabled': (patchmon_agent_integration_openscap | bool)
+                  }
+                }
+              }, recursive=True)
+          }}
+
+    - name: Aktualisierte PatchMon-Konfiguration schreiben
+      ansible.builtin.copy:
+        dest: /etc/patchmon/config.yml
+        content: "{{ patchmon_agent_merged_config | to_nice_yaml(indent=2) }}"
+        owner: root
+        group: root
+        mode: "0640"
+      register: patchmon_agent_config_write
+      notify: PatchMon-Agent neu starten
+
+- name: Logrotate-Regel für PatchMon-Agent-Logs einrichten
+  ansible.builtin.copy:
+    dest: /etc/logrotate.d/patchmon-agent
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      /etc/patchmon/logs/*.log {
+          weekly
+          rotate 4
+          compress
+          missingok
+          notifempty
+          copytruncate
+      }
+  when: patchmon_agent_enabled | bool
+
+- name: PatchMon-Agent-Dienst sicherstellen
+  ansible.builtin.service:
+    name: patchmon-agent
+    state: started
+    enabled: true
+  when:
+    - patchmon_agent_enabled | bool
+    - (patchmon_agent_resolved_api_id | default('')) | length > 0
+    - (patchmon_agent_resolved_api_key | default('')) | length > 0
+
+- name: Ausstehende Agent-Neustarts sofort ausführen
+  ansible.builtin.meta: flush_handlers
+
+- name: Sofortigen Report nach Konfigurationsänderung senden
+  ansible.builtin.command:
+    cmd: /usr/local/bin/patchmon-agent report
+  changed_when: false
+  failed_when: false
+  when:
+    - patchmon_agent_enabled | bool
+    - patchmon_agent_config_write is defined
+    - patchmon_agent_config_write.changed | default(false)

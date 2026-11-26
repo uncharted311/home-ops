@@ -1,0 +1,27 @@
+---
+patchmon_agent_enabled: true
+patchmon_agent_server_url: "https://patchmgmt.srv.seifert.dev"
+
+patchmon_agent_arch_map:
+  x86_64: amd64
+  aarch64: arm64
+  armv7l: arm
+
+patchmon_agent_arch: "{{ patchmon_agent_arch_map[ansible_facts['architecture']] | default('amd64') }}"
+
+# Automatische Host-Registrierung über Direct Host Auto-Enrollment
+patchmon_agent_auto_enroll: true
+patchmon_agent_force_enroll: false
+patchmon_agent_host_name: "{{ ansible_facts['fqdn'] | default(inventory_hostname) }}"
+patchmon_agent_enroll_key: "{{ patchmon_auto_enroll_key | default('') }}"
+patchmon_agent_enroll_secret: "{{ patchmon_auto_enroll_secret | default('') }}"
+
+# Optionale statische Überschreibung pro Host in host_vars/<host>.sops.yml
+patchmon_agent_api_id: ""
+patchmon_agent_api_key: ""
+
+# Standardmäßig aktivierte Agent-Integrationen (PatchMon 2.1.8 Schema)
+patchmon_agent_integration_docker: true
+patchmon_agent_integration_compliance: "on-demand"
+patchmon_agent_integration_docker_bench: false
+patchmon_agent_integration_openscap: true

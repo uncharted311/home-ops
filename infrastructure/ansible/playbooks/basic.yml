@@ -4,7 +4,12 @@
   become: true
   gather_facts: false
   roles:
-    - bootstrap
+    - role: bootstrap
+      tags:
+        - bootstrap
+    - role: patchmon_agent
+      tags:
+        - patchmon_agent
 
 - name: OS- & SSH-Hardening sowie Public-Firewall anwenden
   hosts: linux

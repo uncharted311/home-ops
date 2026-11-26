@@ -78,3 +78,8 @@
           fi
           ;;
       esac
+
+- name: Automatischen Wartungs-Neustart einrichten
+  ansible.builtin.include_tasks: auto_reboot.yml
+  tags:
+    - auto_reboot
