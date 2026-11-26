@@ -3,7 +3,7 @@ services:
   nginx:
     image: nginx:1.31.9-alpine
     container_name: nginx
-    env_file: /opt/docker/secrets.env
+
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
@@ -221,7 +221,7 @@ services:
   isg-exporter:
     image: sfudeus/isg_exporter:1.5.37
     container_name: isg-exporter
-    env_file: /opt/docker/secrets.env
+
     environment:
       - ISG_URL=http://172.16.20.245
       - ISG_USER=admin

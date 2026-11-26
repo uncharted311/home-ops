@@ -45,7 +45,7 @@ services:
       traefik-config-generator:
         condition: service_healthy
     network_mode: service:gerbil
-    env_file: /opt/docker/secrets.env
+
     command:
       - --configFile=/etc/traefik/traefik_config.yml
     volumes:
@@ -96,7 +96,7 @@ services:
     restart: unless-stopped
     labels:
       - "autoheal=true"
-    env_file: /opt/docker/secrets.env
+
     environment:
       DISABLE_LOCAL_API: true
       LOCAL_API_URL: ${CROWDSEC_LAPI_URL}                   # Crowdsec Central LAPI URL https://example.com:8443

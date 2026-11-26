@@ -1,11 +1,13 @@
 name: patchmon
-
 services:
+
   nginx:
     image: nginx:1.31.9-alpine
     container_name: nginx
     depends_on:
       patchmon:
+        condition: service_healthy
+      certbot:
         condition: service_healthy
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME

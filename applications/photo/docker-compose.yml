@@ -169,7 +169,7 @@ services:
     networks:
       - immich-internal
     restart: unless-stopped
-    env_file: /opt/docker/secrets.env
+
     environment:
       ENROLL_TAGS: docker
       GID: "1000"

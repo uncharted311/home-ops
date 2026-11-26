@@ -8,7 +8,7 @@ services:
     #depends_on:
     #  emby:
     #    condition: service_healthy
-    env_file: /opt/docker/secrets.env
+
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
@@ -62,7 +62,7 @@ services:
   emby:
     image: lscr.io/linuxserver/emby:version-4.10.2.0
     container_name: emby
-    env_file: /opt/docker/secrets.env
+
     environment:
       - PUID=3006
       - PGID=3006
@@ -97,7 +97,7 @@ services:
     networks:
       - localhost
     restart: unless-stopped
-    env_file: /opt/docker/secrets.env
+
     environment:
       TZ: Europe/Berlin
       ENROLL_TAGS: docker

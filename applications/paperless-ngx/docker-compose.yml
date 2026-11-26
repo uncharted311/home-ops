@@ -8,7 +8,6 @@ services:
     #depends_on:
     #  paperless:
     #    condition: service_healthy
-    env_file: /opt/docker/secrets.env
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
@@ -76,7 +75,7 @@ services:
       - /mnt/paperless/media:/usr/src/paperless/media
       - /mnt/paperless/export:/usr/src/paperless/export
       - /mnt/paperless/import:/usr/src/paperless/consume
-    env_file: /opt/docker/secrets.env
+
     environment:
       PAPERLESS_REDIS: redis://redis:6379
       PAPERLESS_TIKA_ENABLED: 1
@@ -146,7 +145,7 @@ services:
     image: postgres:18.7-alpine
     volumes:
       - pgdata18:/var/lib/postgresql
-    env_file: /opt/docker/secrets.env
+
     environment:
       POSTGRES_DB: paperless
       POSTGRES_USER: paperless
@@ -205,7 +204,7 @@ services:
     networks:
       - localhost
     restart: unless-stopped
-    env_file: /opt/docker/secrets.env
+
     environment:
       TZ: Europe/Berlin
       ENROLL_TAGS: docker

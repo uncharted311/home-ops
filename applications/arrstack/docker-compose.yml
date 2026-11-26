@@ -4,7 +4,7 @@ services:
   nginx:
     image: nginx:1.31.9-alpine
     container_name: nginx
-    env_file: /opt/docker/secrets.env
+
     labels:
       - "autoheal=true"
     environment:
@@ -76,7 +76,7 @@ services:
       - /opt/docker/sabnzbd/scripts:/scripts
       - /mnt/data/usenet:/data/usenet
       - /mnt/download-temp:/incomplete
-    env_file: /opt/docker/secrets.env
+
     environment:
       - TZ=Europe/Berlin
       - PUID=3006
@@ -106,7 +106,7 @@ services:
     init: true
     labels:
       - "autoheal=true"
-    env_file: /opt/docker/secrets.env
+
     environment:
       - TZ=Europe/Berlin
       - LOG_LEVEL=info
@@ -136,7 +136,7 @@ services:
     container_name: radarr
     labels:
       - "autoheal=true"
-    env_file: /opt/docker/secrets.env
+
     environment:
       - TZ=Europe/Berlin
       - PUID=3006
@@ -164,7 +164,7 @@ services:
     container_name: radarr-list
     labels:
       - "autoheal=true"
-    env_file: /opt/docker/secrets.env
+
     environment:
       - TZ=Europe/Berlin
       - PUID=3006
@@ -192,7 +192,7 @@ services:
     container_name: sonarr
     labels:
       - "autoheal=true"
-    env_file: /opt/docker/secrets.env
+
     environment:
       - TZ=Europe/Berlin
       - PUID=3006
@@ -222,7 +222,7 @@ services:
       - "autoheal=true"
     depends_on:
       - "umlautadaptarr"
-    env_file: /opt/docker/secrets.env
+
     environment:
       - TZ=Europe/Berlin
       - PUID=3006
@@ -252,7 +252,7 @@ services:
     container_name: qbittorrent
     cap_add:
       - NET_ADMIN
-    env_file: /opt/docker/secrets.env
+
     environment:
       - TZ=Europe/Berlin
       - PUID=3006
@@ -323,7 +323,7 @@ services:
   cross-seed:
     image: ghcr.io/cross-seed/cross-seed:6.13.9
     container_name: cross-seed
-    env_file: /opt/docker/secrets.env
+
     command: daemon
     user: "3006:3006"
     environment:
@@ -356,7 +356,7 @@ services:
     container_name: autobrr
     labels:
       - "autoheal=true"
-    env_file: /opt/docker/secrets.env
+
     environment:
       - TZ=Europe/Berlin
       - PUID=3006
@@ -413,7 +413,7 @@ services:
   #  image: uppollo/repollo:v0.6.0
   #  container_name: repollo
   #  network_mode: "service:qbittorrent-vpn"
-  #  env_file: /opt/docker/secrets.env
+  #
   #  user: "3006:3006"
   #  environment:
   #    - TZ=Europe/Berlin
@@ -460,7 +460,7 @@ services:
   mediathekarr:
     image: pcjones/mediathekarr:beta
     container_name: mediathekarr
-    env_file: /opt/docker/secrets.env
+
     environment:
       - TZ=Europe/Berlin
       - PUID=3006
@@ -491,7 +491,7 @@ services:
   umlautadaptarr:
     image: pcjones/umlautadaptarr:0.7.6
     container_name: umlautadaptarr
-    env_file: /opt/docker/secrets.env
+
     environment:
       - TZ=Europe/Berlin
       - SONARR__ENABLED=true
@@ -515,7 +515,7 @@ services:
   umlautadaptarrex:
     image: lexfi/umlautadaptarrex:1.5.1
     container_name: umlautadaptarrex
-    env_file: /opt/docker/secrets.env
+
     environment:
       - TZ=Europe/Berlin
       # Service ports. Set these (e.g. in a .env file next to this compose
@@ -544,7 +544,7 @@ services:
     container_name: episeerr
     depends_on:
       - "sonarr"
-    env_file: /opt/docker/secrets.env
+
     environment:
       - TZ=Europe/Berlin
       - SONARR_URL=http://sonarr:8989
@@ -605,7 +605,7 @@ services:
     networks:
       - arr_network
     restart: unless-stopped
-    env_file: /opt/docker/secrets.env
+
     environment:
       TZ: Europe/Berlin
       ENROLL_TAGS: docker

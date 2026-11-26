@@ -10,7 +10,7 @@ services:
       pangolin-db:
         condition: service_healthy
     restart: unless-stopped
-    env_file: /opt/docker/secrets.env
+
     volumes:
       - /opt/docker/pangolin/config:/app/config
       - /opt/docker/geoip:/app/geoip
@@ -101,7 +101,7 @@ services:
       traefik-config-generator:
         condition: service_healthy
     network_mode: service:gerbil
-    env_file: /opt/docker/secrets.env
+
     environment:
       CLOUDFLARE_DNS_API_TOKEN: ${CLOUDFLARE_DNS_API_TOKEN}  # Cloudflare ACME API TOKEN
       TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL: ${SECRET_ADMIN_EMAIL}
@@ -145,7 +145,7 @@ services:
     labels:
       - "autoheal=true"
     shm_size: '1gb'
-    env_file: /opt/docker/secrets.env
+
     environment:
       - POSTGRES_USER=pangolin
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -182,7 +182,7 @@ services:
     restart: unless-stopped
     labels:
       - "autoheal=true"
-    env_file: /opt/docker/secrets.env
+
     environment:
       GEOIPUPDATE_ACCOUNT_ID: ${GEOIPUPDATE_ACCOUNT_ID}         # Account ID
       GEOIPUPDATE_LICENSE_KEY: ${GEOIPUPDATE_LICENSE_KEY}       # API key
@@ -204,7 +204,7 @@ services:
     restart: unless-stopped
     labels:
       - "autoheal=true"
-    env_file: /opt/docker/secrets.env
+
     environment:
       DISABLE_LOCAL_API: true
       LOCAL_API_URL: ${CROWDSEC_LAPI_URL}                   # Crowdsec Central LAPI URL https://example.com:8443

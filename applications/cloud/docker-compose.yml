@@ -3,7 +3,7 @@ services:
   nginx:
     image: nginx:1.31.9-alpine
     container_name: nginx
-    env_file: /opt/docker/secrets.env
+
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
@@ -60,7 +60,7 @@ services:
       - postgres
       - redis
     restart: unless-stopped
-    env_file: /opt/docker/secrets.env
+
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_DB: nextcloud
@@ -145,7 +145,7 @@ services:
     container_name: postgres
     volumes:
       - nextcloud.db-data:/var/lib/postgresql
-    env_file: /opt/docker/secrets.env
+
     environment:
       POSTGRES_DB: nextcloud
       POSTGRES_USER: nextcloud
@@ -165,7 +165,7 @@ services:
     image: crowdsecurity/crowdsec:v1.8.2
     container_name: crowdsec
     restart: unless-stopped
-    env_file: /opt/docker/secrets.env
+
     environment:
       ENROLL_TAGS: docker
       GID: "1000"
