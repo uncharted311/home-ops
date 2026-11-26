@@ -25,3 +25,7 @@ user: "1000:1000"
 bzw.
 PUID=1000
 PGID=1000
+
+
+
+ wsl bash -c "sops updatekeys -y applications/patchmgmt/secrets.sops.env"

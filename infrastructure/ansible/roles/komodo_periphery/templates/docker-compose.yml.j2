@@ -23,7 +23,7 @@ services:
     ports:
       - "{{ komodo_periphery_port }}:{{ komodo_periphery_port }}"
     tmpfs:
-      - /tmp/komodo:rw,nosuid,nodev,size=256m
+      - "{{ komodo_repo_dir }}:rw,nosuid,nodev,size=256m"
     volumes:
       - periphery-keys:/config/keys
       - /var/run/docker.sock:/var/run/docker.sock
