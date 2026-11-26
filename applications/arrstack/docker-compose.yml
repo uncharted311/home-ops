@@ -43,10 +43,10 @@ services:
     image: certbot/dns-cloudflare:v5.10.0
     container_name: certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
-    env_file: /opt/docker/secrets.env
     environment:
-      - TZ=Europe/Berlin
-      - SECRET_CERT_NAME=${SECRET_CERT_NAME}
+      - CERT_NAME=${SECRET_CERT_NAME}
+      - SECRET_DOMAIN=${SECRET_DOMAIN}
+      - SECRET_ADMIN_EMAIL=${SECRET_ADMIN_EMAIL}
       - SECRET_CERT_DOMAINS=srv.${SECRET_DOMAIN},*.srv.${SECRET_DOMAIN}
     volumes:
       - /opt/docker/certbot/certs:/etc/letsencrypt

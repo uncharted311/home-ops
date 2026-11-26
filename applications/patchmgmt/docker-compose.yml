@@ -51,7 +51,9 @@ services:
     container_name: certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
     environment:
-      - SECRET_CERT_NAME=${SECRET_CERT_NAME}
+      - CERT_NAME=${SECRET_CERT_NAME}
+      - SECRET_DOMAIN=${SECRET_DOMAIN}
+      - SECRET_ADMIN_EMAIL=${SECRET_ADMIN_EMAIL}
     volumes:
       - /opt/docker/certbot/certs:/etc/letsencrypt
       - /opt/docker/certbot/cloudflare.ini:/cloudflare.ini:ro
