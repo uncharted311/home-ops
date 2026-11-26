@@ -1,7 +1,7 @@
 komodo_core_version: "{{ komodo_version }}"
 
 # renovate: datasource=docker depName=ghcr.io/ferretdb/ferretdb
-komodo_core_ferretdb_version: "2.1.0"
+komodo_core_ferretdb_version: "2.7.0"
 
 # renovate: datasource=docker depName=ghcr.io/ferretdb/postgres-documentdb
 komodo_core_postgres_version: "17-0.102.0"
