@@ -15,6 +15,7 @@ services:
 {% endif %}
       PERIPHERY_CORE_PUBLIC_KEYS: "{{ komodo_core_public_keys }}"
       PERIPHERY_SSL_ENABLED: "{{ komodo_ssl_enabled | lower }}"
+      SOPS_AGE_KEY_FILE: "/etc/sops/age/keys.txt"
       PERIPHERY_STATS_POLLING_RATE: "1-min"
       PERIPHERY_DISABLE_TERMINALS: "true"
       PERIPHERY_DISABLE_CONTAINER_TERMINALS: "true"
@@ -29,6 +30,8 @@ services:
       - /proc:/proc
       - "{{ komodo_base_dir }}:{{ komodo_base_dir }}"
       - /opt/docker:/opt/docker:rw
+      - /usr/local/bin/sops:/usr/local/bin/sops:ro
+      - /etc/sops/age/keys.txt:/etc/sops/age/keys.txt:ro
     logging:
       driver: "json-file"
       options:

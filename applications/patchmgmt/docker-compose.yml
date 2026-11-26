@@ -53,9 +53,6 @@ services:
     image: certbot/dns-cloudflare:v5.10.0
     container_name: certbot
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
-    env_file:
-      - /opt/docker/secrets.env
-      - /opt/docker/.env
     environment:
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
     volumes:
@@ -81,9 +78,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    env_file:
-      - /opt/docker/secrets.env
-      - /opt/docker/.env
     environment:
       - CORS_ORIGIN=${CORS_ORIGIN}
       - JWT_SECRET=${JWT_SECRET}
@@ -115,9 +109,6 @@ services:
     image: postgres:18.7-alpine
     container_name: database
     restart: unless-stopped
-    env_file:
-      - /opt/docker/secrets.env
-      - /opt/docker/.env
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_USER=patchmon_user
@@ -138,9 +129,6 @@ services:
     image: docker.io/valkey/valkey:9.2.0-alpine
     container_name: redis
     restart: unless-stopped
-    env_file:
-      - /opt/docker/secrets.env
-      - /opt/docker/.env
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_HOST=redis

@@ -47,7 +47,7 @@ tasks:
           ssh-add ~/.ssh/id_ed25519_ansible;
         }'
 
-  ansible:basic:
+  ansible:base:
     desc: Default-Setup & Hardening für alle Linux-Hosts ausrollen
     deps: [ansible:check-ssh]
     cmds:
