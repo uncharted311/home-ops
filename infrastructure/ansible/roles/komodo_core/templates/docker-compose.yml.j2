@@ -65,7 +65,7 @@ services:
       POSTGRES_PASSWORD: ${KOMODO_DB_PASSWORD}
       POSTGRES_DB: postgres
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - {{ komodo_core_base_dir }}/postgres:/var/lib/postgresql/data
     networks:
       - localhost
     healthcheck:
@@ -115,8 +115,8 @@ services:
       KOMODO_KEEP_STATS_FOR_DAYS: "1"
       KOMODO_LOGGING_LEVEL: "warn"
     volumes:
-      - core-keys:/config/keys
-      - komodo-repos:/etc/komodo/repos
+      - {{ komodo_core_base_dir }}/komodo-keys:/config/keys
+      - {{ komodo_core_base_dir }}/komodo-repos:/etc/komodo/repos
     networks:
       - localhost
     logging: *default-logging
@@ -131,8 +131,6 @@ services:
     logging: *default-logging
 
 volumes:
-  postgres-data:
-  core-keys:
   komodo-repos:
 
 networks:

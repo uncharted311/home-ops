@@ -12,6 +12,12 @@ creation_rules:
       age1y0sfh0eqgfyx07jckhchel9fhlxzmnr9jn6lm0adta6ry052mp6qdez8us,
       age146purzp9f3hf8s8anvnv783x9my2a8wm8v8kl7hdllk5ymemgqhqy488s0
 
+  - path_regex: ^applications/auth/secrets\.sops\.env$
+    input_type: dotenv
+    age: >-
+      age1y0sfh0eqgfyx07jckhchel9fhlxzmnr9jn6lm0adta6ry052mp6qdez8us,
+      age12cjm7yfwcwrxhekw9xl5s20224sluj53lwy43tptfqkz75l7hqaqu33udn
+
   # Fallback für alle übrigen .env-Secrets (nur Root-Key)
   - path_regex: .*[/\\]?.*(secrets\.env|sops\.env)$
     input_type: dotenv

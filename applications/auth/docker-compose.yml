@@ -1,14 +1,13 @@
+name: auth
 services:
-  # Nginx Reverse Proxy - https://github.com/nginx/nginx
   nginx:
     image: nginx:1.31.9-alpine
     container_name: nginx
-
-    #depends_on:
-    #  lldap:
-    #    condition: service_healthy
-    #  pocket-id:
-    #    condition: service_healthy
+    depends_on:
+      pocket-id:
+        condition: service_healthy
+      certbot:
+        condition: service_healthy
     environment:
       - NGINX_ENVSUBST_FILTERED_VAR_NAMES=SECRET_DOMAIN SECRET_CERT_NAME
       - SECRET_CERT_NAME=${SECRET_CERT_NAME}
@@ -20,23 +19,34 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "636:636"
     networks:
       - auth-net
     restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+      - /var/run
+      - /etc/nginx/conf.d
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+      - CHOWN
+      - SETUID
+      - SETGID
     healthcheck:
-      test: ["CMD-SHELL", "curl -so /dev/null http://localhost/ || exit 1"]
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1/healthz || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 30s
-    logging: &default-logging # default logging
+    logging: &default-logging
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
 
-  # Certbot - https://github.com/cloudflare/certbot-dns-cloudflare
   certbot:
     image: certbot/dns-cloudflare:v5.10.0
     container_name: certbot
@@ -64,7 +74,6 @@ services:
     image: ghcr.io/lldap/lldap:v0.6.3-alpine
     container_name: lldap
     restart: unless-stopped
-
     environment:
       - LLDAP_JWT_SECRET=${LLDAP_JWT_SECRET}
       - LLDAP_LDAP_USER_PASS=${LLDAP_LDAP_USER_PASS}
@@ -96,7 +105,6 @@ services:
     image: ghcr.io/pocket-id/pocket-id:v2.19.3
     container_name: pocket-id
     restart: unless-stopped
-
     environment:
       ENCRYPTION_KEY_FILE: /app/encryption.key
       APP_URL: https://auth.${SECRET_DOMAIN}
@@ -112,7 +120,6 @@ services:
     volumes:
       - "/opt/docker/pocket-id/data:/app/data"
       - "/opt/docker/pocket-id/encryption.key:/app/encryption.key:ro"
-    # Optional healthcheck
     healthcheck:
       test: [ "CMD", "/app/pocket-id", "healthcheck" ]
       interval: 1m30s
@@ -131,7 +138,6 @@ services:
     networks:
       - auth-net
     restart: unless-stopped
-
     environment:
       ENROLL_TAGS: docker
       GID: "1000"
