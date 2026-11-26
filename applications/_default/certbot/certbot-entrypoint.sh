@@ -2,8 +2,9 @@
 set -e
 #
 # -------------------------------------------- README --------------------------------------------
-# SECRET_DOMAIN=> (Main-Domain for Certbot-Path /live/)
-# optional SECRET_CERT_DOMAINS=> Commaseparted list for multiple Domains "example.comf,*.example.com"
+# SECRET_DOMAIN=> (Main-Domain for Certbot-Path /live/ if SECRET_CERT_NAME is not set)
+# optional SECRET_CERT_NAME=> Custom Certbot-Path /live/<SECRET_CERT_NAME>
+# optional SECRET_CERT_DOMAINS=> Commaseparated list for multiple Domains "example.com,*.example.com"
 # SECRET_ADMIN_EMAIL=> Admin E-Mail
 #
 # 1. Example for Wildcards
@@ -23,12 +24,14 @@ set -e
 #      - SECRET_ADMIN_EMAIL=${SECRET_ADMIN_EMAIL}
 # ------------------------------------------------------------------------------------------------
 
-CERT_DOMAIN="${CERT_NAME:-${SECRET_DOMAIN:-}}"
+CERT_NAME="${CERT_NAME:-${SECRET_CERT_NAME:-${SECRET_DOMAIN:-}}}"
+DOMAINS_LIST="${SECRET_CERT_DOMAINS:-${SECRET_DOMAIN:-$CERT_NAME}}"
+
 EMAIL="${SECRET_ADMIN_EMAIL:-}"
 TOKEN="${CF_API_TOKEN:-${SECRET_CLOUDFLARE_API_TOKEN:-}}"
 
-if [ -z "$CERT_DOMAIN" ] || [ -z "$EMAIL" ]; then
-  echo "FEHLER: CERT_NAME (oder SECRET_DOMAIN) und SECRET_ADMIN_EMAIL müssen gesetzt sein!" >&2
+if [ -z "$CERT_NAME" ] || [ -z "$DOMAINS_LIST" ] || [ -z "$EMAIL" ]; then
+  echo "FEHLER: SECRET_CERT_NAME (oder SECRET_DOMAIN) und SECRET_ADMIN_EMAIL müssen gesetzt sein!" >&2
   exit 1
 fi
 
@@ -41,7 +44,19 @@ CF_INI="/tmp/cloudflare.ini"
 umask 077
 printf 'dns_cloudflare_api_token = %s\n' "$TOKEN" > "$CF_INI"
 
-if [ ! -f "/etc/letsencrypt/live/${CERT_DOMAIN}/fullchain.pem" ]; then
+set --
+OLD_IFS="$IFS"
+IFS=','
+for d in $DOMAINS_LIST; do
+  d_clean=$(printf '%s' "$d" | tr -d ' ')
+  if [ -n "$d_clean" ]; then
+    set -- "$@" -d "$d_clean"
+  fi
+done
+IFS="$OLD_IFS"
+
+if [ ! -f "/etc/letsencrypt/live/${CERT_NAME}/fullchain.pem" ]; then
+  echo "Erstelle Zertifikat '${CERT_NAME}' für Domains: ${DOMAINS_LIST}"
   certbot certonly \
     --non-interactive \
     --agree-tos \
@@ -49,8 +64,8 @@ if [ ! -f "/etc/letsencrypt/live/${CERT_DOMAIN}/fullchain.pem" ]; then
     --dns-cloudflare \
     --dns-cloudflare-credentials "$CF_INI" \
     --dns-cloudflare-propagation-seconds 30 \
-    --cert-name "$CERT_DOMAIN" \
-    -d "$CERT_DOMAIN"
+    --cert-name "$CERT_NAME" \
+    "$@"
 fi
 
 while true; do

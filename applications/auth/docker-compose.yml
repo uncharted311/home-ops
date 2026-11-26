@@ -53,6 +53,7 @@ services:
     entrypoint: ["/bin/sh", "/entrypoint.sh"]
     environment:
       - CERT_NAME=${SECRET_CERT_NAME}
+      - SECRET_CERT_DOMAINS=${SECRET_CERT_NAME},auth.srv.${SECRET_DOMAIN}
       - SECRET_DOMAIN=${SECRET_DOMAIN}
       - SECRET_ADMIN_EMAIL=${SECRET_ADMIN_EMAIL}
       - CF_API_TOKEN=${SECRET_CLOUDFLARE_API_TOKEN}
