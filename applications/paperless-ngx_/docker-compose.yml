@@ -143,7 +143,7 @@ services:
   # Postgres-DB for Paperless
   database:
     container_name: database
-    image: postgres:18.7-alpine
+    image: postgres:19.0-alpine
     volumes:
       - /opt/docker/patchmgmt/postgres:/var/lib/postgresql
     environment:
